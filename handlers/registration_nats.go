@@ -14,12 +14,12 @@ type natsRegistrationHandler struct {
 	service                services.RegistrationService
 }
 
-func NewNatsRegistrationHandler(conn *nats.Conn, registrationReqSubject string, service services.RegistrationService) domain.RegistrationHandler {
+func NewNatsRegistrationHandler(conn *nats.Conn, registrationReqSubject string, service services.RegistrationService) (domain.RegistrationHandler, error) {
 	return natsRegistrationHandler{
 		conn:                   conn,
 		registrationReqSubject: registrationReqSubject,
 		service:                service,
-	}
+	}, nil
 }
 
 func (nrh natsRegistrationHandler) Handle() (chan bool, error) {

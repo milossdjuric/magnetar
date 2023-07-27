@@ -7,17 +7,39 @@ import (
 )
 
 type RegistrationService struct {
+	nodeRepo domain.NodeRepo
 }
 
-func NewRegistrationService() *RegistrationService {
-	return &RegistrationService{}
-}
-
-func (rs *RegistrationService) Register(req domain.RegistrationReq) (*domain.RegistrationResp, error) {
-	nodeId := uuid.NewString()
-	log.Println(nodeId)
-	// todo: save node id and labels to db
-	return &domain.RegistrationResp{
-		NodeId: nodeId,
+func NewRegistrationService(nodeRepo domain.NodeRepo) (*RegistrationService, error) {
+	return &RegistrationService{
+		nodeRepo: nodeRepo,
 	}, nil
+}
+
+func (r *RegistrationService) Register(req domain.RegistrationReq) (*domain.RegistrationResp, error) {
+	node := domain.Node{
+		Id: domain.NodeId{
+			Value: generateNodeId(),
+		},
+		Labels: req.Labels,
+	}
+
+	err := r.nodeRepo.Put(node)
+	if err != nil {
+		return nil, err
+	}
+
+	// todo: delete this later
+	log.Println("TEST GETTING THE NODE")
+	fetchedNode, err := r.nodeRepo.Get(node.Id)
+	log.Println(err)
+	log.Println(fetchedNode)
+
+	return &domain.RegistrationResp{
+		NodeId: node.Id.Value,
+	}, nil
+}
+
+func generateNodeId() string {
+	return uuid.NewString()
 }

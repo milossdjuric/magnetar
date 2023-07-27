@@ -5,6 +5,7 @@ type RegistrationHandler interface {
 }
 
 type RegistrationReq struct {
+	Labels []Label
 }
 
 type RegistrationResp struct {
