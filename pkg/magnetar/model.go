@@ -1,12 +1,11 @@
-package domain
+package magnetar
 
-type Node struct {
-	Id     NodeId
+type RegistrationReq struct {
 	Labels []Label
 }
 
-type NodeId struct {
-	Value string
+type RegistrationResp struct {
+	NodeId string
 }
 
 type Label interface {
@@ -46,13 +45,4 @@ func (b label) Key() string {
 
 func (b label) Value() interface{} {
 	return b.value
-}
-
-// todo: support operators other than == (<, >, !=)
-type QuerySelector []Label
-
-type NodeRepo interface {
-	Put(node Node) error
-	Get(nodeId NodeId) (*Node, error)
-	Query(selector QuerySelector) ([]Node, error)
 }

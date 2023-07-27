@@ -1,10 +1,11 @@
 package startup
 
 import (
-	"github.com/c12s/magnetar/configs"
-	"github.com/c12s/magnetar/handlers"
-	"github.com/c12s/magnetar/repos"
-	"github.com/c12s/magnetar/services"
+	"github.com/c12s/magnetar/internal/configs"
+	"github.com/c12s/magnetar/internal/handlers"
+	"github.com/c12s/magnetar/internal/repos"
+	"github.com/c12s/magnetar/internal/services"
+	"github.com/c12s/magnetar/pkg/marshallers/proto"
 )
 
 func StartApp(config *configs.Config) error {
@@ -16,7 +17,8 @@ func StartApp(config *configs.Config) error {
 	if err != nil {
 		return err
 	}
-	nodeRepo, err := repos.NewNodeEtcdRepo(etcdClient)
+	marshaller := proto.NewMarshaller()
+	nodeRepo, err := repos.NewNodeEtcdRepo(etcdClient, marshaller)
 	if err != nil {
 		return err
 	}
@@ -24,7 +26,7 @@ func StartApp(config *configs.Config) error {
 	if err != nil {
 		return err
 	}
-	registrationHandler, err := handlers.NewNatsRegistrationHandler(natsConn, config.RegistrationSubject(), *registrationService)
+	registrationHandler, err := handlers.NewNatsRegistrationHandler(natsConn, config.RegistrationSubject(), *registrationService, marshaller)
 	if err != nil {
 		return err
 	}

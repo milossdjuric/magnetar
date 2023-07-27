@@ -4,17 +4,20 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/c12s/magnetar/domain"
+	"github.com/c12s/magnetar/internal/domain"
+	"github.com/c12s/magnetar/pkg/magnetar"
 	etcd "go.etcd.io/etcd/client/v3"
 )
 
 type nodeEtcdRepo struct {
-	etcd *etcd.Client
+	etcd       *etcd.Client
+	marshaller magnetar.Marshaller
 }
 
-func NewNodeEtcdRepo(etcd *etcd.Client) (domain.NodeRepo, error) {
+func NewNodeEtcdRepo(etcd *etcd.Client, marshaller magnetar.Marshaller) (domain.NodeRepo, error) {
 	return &nodeEtcdRepo{
-		etcd: etcd,
+		etcd:       etcd,
+		marshaller: marshaller,
 	}, nil
 }
 
@@ -28,7 +31,7 @@ func (n nodeEtcdRepo) Put(node domain.Node) error {
 
 func (n nodeEtcdRepo) putForGetting(node domain.Node) error {
 	for _, label := range node.Labels {
-		labelMarshalled, err := MarshalLabel(label)
+		labelMarshalled, err := n.marshaller.MarshalLabel(label)
 		if err != nil {
 			return err
 		}
@@ -43,7 +46,7 @@ func (n nodeEtcdRepo) putForGetting(node domain.Node) error {
 
 func (n nodeEtcdRepo) putForQuerying(node domain.Node) error {
 	for _, label := range node.Labels {
-		labelMarshalled, err := MarshalLabel(label)
+		labelMarshalled, err := n.marshaller.MarshalLabel(label)
 		if err != nil {
 			return err
 		}
@@ -65,9 +68,9 @@ func (n nodeEtcdRepo) Get(nodeId domain.NodeId) (*domain.Node, error) {
 	if resp.Count == 0 {
 		return nil, errors.New("node not found")
 	}
-	var labels []domain.Label
+	var labels []magnetar.Label
 	for _, kv := range resp.Kvs {
-		label, err := UnmarshalLabel(kv.Value)
+		label, err := n.marshaller.UnmarshalLabel(kv.Value)
 		if err != nil {
 			return nil, err
 		}

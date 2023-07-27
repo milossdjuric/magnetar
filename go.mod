@@ -6,6 +6,7 @@ require (
 	github.com/golang/protobuf v1.5.3
 	github.com/google/uuid v1.3.0
 	github.com/nats-io/nats.go v1.28.0
+	go.etcd.io/etcd/client/v3 v3.5.9
 	google.golang.org/protobuf v1.31.0
 )
 
@@ -19,7 +20,6 @@ require (
 	github.com/nats-io/nuid v1.0.1 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.9 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.9 // indirect
-	go.etcd.io/etcd/client/v3 v3.5.9 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.17.0 // indirect

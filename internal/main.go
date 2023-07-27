@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/c12s/magnetar/configs"
-	"github.com/c12s/magnetar/startup"
+	"github.com/c12s/magnetar/internal/configs"
+	"github.com/c12s/magnetar/internal/startup"
 	"log"
 )
 

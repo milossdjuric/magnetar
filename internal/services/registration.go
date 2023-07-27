@@ -1,7 +1,8 @@
 package services
 
 import (
-	"github.com/c12s/magnetar/domain"
+	"github.com/c12s/magnetar/internal/domain"
+	"github.com/c12s/magnetar/pkg/magnetar"
 	"github.com/google/uuid"
 	"log"
 )
@@ -16,7 +17,7 @@ func NewRegistrationService(nodeRepo domain.NodeRepo) (*RegistrationService, err
 	}, nil
 }
 
-func (r *RegistrationService) Register(req domain.RegistrationReq) (*domain.RegistrationResp, error) {
+func (r *RegistrationService) Register(req magnetar.RegistrationReq) (*magnetar.RegistrationResp, error) {
 	node := domain.Node{
 		Id: domain.NodeId{
 			Value: generateNodeId(),
@@ -35,7 +36,7 @@ func (r *RegistrationService) Register(req domain.RegistrationReq) (*domain.Regi
 	log.Println(err)
 	log.Println(fetchedNode)
 
-	return &domain.RegistrationResp{
+	return &magnetar.RegistrationResp{
 		NodeId: node.Id.Value,
 	}, nil
 }
