@@ -1,4 +1,4 @@
-module github.com/c12s/magnetar
+module github.com/tamararankovic/magnetar
 
 go 1.19
 
