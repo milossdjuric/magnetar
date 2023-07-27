@@ -20,7 +20,8 @@ services:
 
   star:
     build:
-      context: ../star
+      context: ..
+      dockerfile: star/Dockerfile
     image: star
     container_name: star
     hostname: ${STAR_HOSTNAME}
