@@ -6,7 +6,10 @@ import (
 	"fmt"
 	"github.com/c12s/magnetar/internal/domain"
 	"github.com/c12s/magnetar/pkg/magnetar"
+	"github.com/juliangruber/go-intersect"
 	etcd "go.etcd.io/etcd/client/v3"
+	"golang.org/x/exp/slices"
+	"strings"
 )
 
 type nodeEtcdRepo struct {
@@ -82,6 +85,51 @@ func (n nodeEtcdRepo) Get(nodeId domain.NodeId) (*domain.Node, error) {
 	}, nil
 }
 
-func (n nodeEtcdRepo) Query(selector domain.QuerySelector) ([]domain.Node, error) {
-	return nil, nil
+func (n nodeEtcdRepo) Query(selector magnetar.QuerySelector) ([]domain.NodeId, error) {
+	if len(selector) == 0 {
+		return nil, errors.New("empty selector")
+	}
+	nodes := make([]domain.NodeId, 0)
+	for i, query := range selector {
+		currNodes, err := n.query(query)
+		if err != nil {
+			return nil, err
+		}
+		if i == 0 {
+			nodes = currNodes
+		} else {
+			intersection := intersect.Simple(nodes, currNodes)
+			nodes = make([]domain.NodeId, len(intersection))
+			for i, node := range intersection {
+				nodes[i] = node.(domain.NodeId)
+			}
+		}
+	}
+	return nodes, nil
+}
+
+func (n nodeEtcdRepo) query(query magnetar.Query) ([]domain.NodeId, error) {
+	prefix := fmt.Sprintf("%s/", query.LabelKey)
+	resp, err := n.etcd.Get(context.TODO(), prefix, etcd.WithPrefix())
+	if err != nil {
+		return nil, err
+	}
+	nodeIds := make([]domain.NodeId, 0)
+	for _, kv := range resp.Kvs {
+		nodeLabel, err := n.marshaller.UnmarshalLabel(kv.Value)
+		if err != nil {
+			return nil, err
+		}
+		compResult := nodeLabel.Compare(query.Value)
+		if compResult == magnetar.CompResIncomparable {
+			continue
+		}
+		if slices.Contains(query.Expected, compResult) {
+			nodeId := strings.Split(string(kv.Key), "/")[1]
+			nodeIds = append(nodeIds, domain.NodeId{
+				Value: nodeId,
+			})
+		}
+	}
+	return nodeIds, nil
 }

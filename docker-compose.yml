@@ -54,6 +54,10 @@ services:
     image: 'bitnami/etcd:latest'
     container_name: etcd
     hostname: ${ETCD_HOSTNAME}
+    expose:
+      - ${ETCD_PORT}
+    ports:
+      - ${ETCD_PORT}:${ETCD_PORT}
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
       - ETCD_ADVERTISE_CLIENT_URLS=http://${ETCD_HOSTNAME}:${ETCD_PORT}

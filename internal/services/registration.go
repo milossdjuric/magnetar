@@ -35,6 +35,25 @@ func (r *RegistrationService) Register(req magnetar.RegistrationReq) (*magnetar.
 	fetchedNode, err := r.nodeRepo.Get(node.Id)
 	log.Println(err)
 	log.Println(fetchedNode)
+	res, err := r.nodeRepo.Query([]magnetar.Query{
+		{
+			LabelKey: "skey",
+			Expected: []magnetar.ComparisonResult{magnetar.CompResEq},
+			Value:    "abcd",
+		},
+		{
+			LabelKey: "bkey",
+			Expected: []magnetar.ComparisonResult{magnetar.CompResEq},
+			Value:    "true",
+		},
+	})
+	if err != nil {
+		log.Println(err)
+	}
+	log.Println(len(res))
+	for _, id := range res {
+		log.Println(id.Value)
+	}
 
 	return &magnetar.RegistrationResp{
 		NodeId: node.Id.Value,
