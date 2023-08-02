@@ -3,28 +3,44 @@ package apis
 import (
 	"context"
 	"github.com/c12s/magnetar/internal/services"
-	"github.com/c12s/magnetar/pkg/api"
+	"github.com/c12s/magnetar/pkg/proto"
 )
 
 type MagnetarGrpcServer struct {
-	api.UnimplementedMagnetarServer
-	service services.QueryService
+	proto.UnimplementedMagnetarServer
+	queryService services.QueryService
+	labelService services.LabelService
 }
 
-func NewMagnetarGrpcServer(service services.QueryService) (api.MagnetarServer, error) {
+func NewMagnetarGrpcServer(queryService services.QueryService, labelService services.LabelService) (proto.MagnetarServer, error) {
 	return &MagnetarGrpcServer{
-		service: service,
+		queryService: queryService,
+		labelService: labelService,
 	}, nil
 }
 
-func (m *MagnetarGrpcServer) QueryNodes(ctx context.Context, req *api.QueryNodesReq) (*api.QueryNodesResp, error) {
-	selector, err := QueryNodesReq2Selector(req)
+func (m *MagnetarGrpcServer) QueryNodes(ctx context.Context, req *proto.QueryNodesReq) (*proto.QueryNodesResp, error) {
+	domainReq, err := req.ToDomain()
 	if err != nil {
 		return nil, err
 	}
-	nodes, err := m.service.QueryNodes(selector)
+	domainResp, err := m.queryService.QueryNodes(*domainReq)
 	if err != nil {
 		return nil, err
 	}
-	return Nodes2QueryNodesResp(nodes)
+	resp := &proto.QueryNodesResp{}
+	return resp.FromDomain(*domainResp)
+}
+
+func (m *MagnetarGrpcServer) PutLabel(ctx context.Context, req *proto.PutLabelReq) (*proto.PutLabelResp, error) {
+	domainReq, err := req.ToDomain()
+	if err != nil {
+		return nil, err
+	}
+	domainResp, err := m.labelService.PutLabel(*domainReq)
+	if err != nil {
+		return nil, err
+	}
+	resp := proto.PutLabelResp{}
+	return resp.FromDomain(*domainResp)
 }

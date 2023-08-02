@@ -25,21 +25,16 @@ func NewNodeEtcdRepo(etcd *etcd.Client, marshaller magnetar.Marshaller) (domain.
 }
 
 func (n nodeEtcdRepo) Put(node domain.Node) error {
-	err := n.putForGetting(node)
+	err := n.putNodeForGetting(node)
 	if err != nil {
 		return err
 	}
-	return n.putForQuerying(node)
+	return n.putNodeForQuerying(node)
 }
 
-func (n nodeEtcdRepo) putForGetting(node domain.Node) error {
+func (n nodeEtcdRepo) putNodeForGetting(node domain.Node) error {
 	for _, label := range node.Labels {
-		labelMarshalled, err := n.marshaller.MarshalLabel(label)
-		if err != nil {
-			return err
-		}
-		key := fmt.Sprintf("%s/labels/%s", node.Id.Value, label.Key())
-		_, err = n.etcd.Put(context.TODO(), key, string(labelMarshalled))
+		err := n.putLabelForGetting(node.Id, label)
 		if err != nil {
 			return err
 		}
@@ -47,19 +42,34 @@ func (n nodeEtcdRepo) putForGetting(node domain.Node) error {
 	return nil
 }
 
-func (n nodeEtcdRepo) putForQuerying(node domain.Node) error {
+func (n nodeEtcdRepo) putLabelForGetting(nodeId domain.NodeId, label magnetar.Label) error {
+	labelMarshalled, err := n.marshaller.MarshalLabel(label)
+	if err != nil {
+		return err
+	}
+	key := fmt.Sprintf("%s/labels/%s", nodeId.Value, label.Key())
+	_, err = n.etcd.Put(context.TODO(), key, string(labelMarshalled))
+	return err
+}
+
+func (n nodeEtcdRepo) putNodeForQuerying(node domain.Node) error {
 	for _, label := range node.Labels {
-		labelMarshalled, err := n.marshaller.MarshalLabel(label)
-		if err != nil {
-			return err
-		}
-		key := fmt.Sprintf("%s/%s", label.Key(), node.Id.Value)
-		_, err = n.etcd.Put(context.TODO(), key, string(labelMarshalled))
+		err := n.putLabelForQuerying(node.Id, label)
 		if err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func (n nodeEtcdRepo) putLabelForQuerying(nodeId domain.NodeId, label magnetar.Label) error {
+	labelMarshalled, err := n.marshaller.MarshalLabel(label)
+	if err != nil {
+		return err
+	}
+	key := fmt.Sprintf("%s/%s", label.Key(), nodeId.Value)
+	_, err = n.etcd.Put(context.TODO(), key, string(labelMarshalled))
+	return err
 }
 
 func (n nodeEtcdRepo) Get(nodeId domain.NodeId) (*domain.Node, error) {
@@ -106,6 +116,14 @@ func (n nodeEtcdRepo) Query(selector magnetar.QuerySelector) ([]domain.NodeId, e
 		}
 	}
 	return nodes, nil
+}
+
+func (n nodeEtcdRepo) PutLabel(nodeId domain.NodeId, label magnetar.Label) error {
+	err := n.putLabelForGetting(nodeId, label)
+	if err != nil {
+		return err
+	}
+	return n.putLabelForQuerying(nodeId, label)
 }
 
 func (n nodeEtcdRepo) query(query magnetar.Query) ([]domain.NodeId, error) {

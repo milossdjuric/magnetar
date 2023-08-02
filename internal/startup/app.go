@@ -6,7 +6,7 @@ import (
 	"github.com/c12s/magnetar/internal/handlers"
 	"github.com/c12s/magnetar/internal/repos"
 	"github.com/c12s/magnetar/internal/services"
-	"github.com/c12s/magnetar/pkg/marshallers/proto"
+	"github.com/c12s/magnetar/pkg/proto"
 )
 
 func StartApp(config *configs.Config) error {
@@ -41,7 +41,11 @@ func StartApp(config *configs.Config) error {
 	if err != nil {
 		return err
 	}
-	server, err := apis.NewMagnetarGrpcServer(*queryService)
+	labelService, err := services.NewLabelService(nodeRepo)
+	if err != nil {
+		return err
+	}
+	server, err := apis.NewMagnetarGrpcServer(*queryService, *labelService)
 	startServer(config.ServerAddress(), server)
 
 	<-subscriptionClosedCh

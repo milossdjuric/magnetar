@@ -2,70 +2,10 @@ package proto
 
 import (
 	"errors"
+	"github.com/c12s/magnetar/internal/domain"
 	"github.com/c12s/magnetar/pkg/magnetar"
 	"github.com/golang/protobuf/proto"
 )
-
-type protoMarshaller struct {
-}
-
-func NewMarshaller() magnetar.Marshaller {
-	return &protoMarshaller{}
-}
-
-func (p protoMarshaller) MarshalRegistrationReq(req magnetar.RegistrationReq) ([]byte, error) {
-	protoReq := &RegistrationReq{}
-	protoReq, err := protoReq.fromDomain(req)
-	if err != nil {
-		return nil, err
-	}
-	return proto.Marshal(protoReq)
-}
-
-func (p protoMarshaller) UnmarshalRegistrationReq(reqMarshalled []byte) (*magnetar.RegistrationReq, error) {
-	protoReq := RegistrationReq{}
-	err := proto.Unmarshal(reqMarshalled, &protoReq)
-	if err != nil {
-		return nil, err
-	}
-	return protoReq.toDomain()
-}
-
-func (p protoMarshaller) MarshalRegistrationResp(resp magnetar.RegistrationResp) ([]byte, error) {
-	protoResp := &RegistrationResp{}
-	protoResp, err := protoResp.fromDomain(resp)
-	if err != nil {
-		return nil, err
-	}
-	return proto.Marshal(protoResp)
-}
-
-func (p protoMarshaller) UnmarshalRegistrationResp(resp []byte) (*magnetar.RegistrationResp, error) {
-	protoResp := RegistrationResp{}
-	err := proto.Unmarshal(resp, &protoResp)
-	if err != nil {
-		return nil, err
-	}
-	return protoResp.toDomain()
-}
-
-func (p protoMarshaller) MarshalLabel(label magnetar.Label) ([]byte, error) {
-	protoLabel := &Label{}
-	protoLabel, err := protoLabel.fromDomain(label)
-	if err != nil {
-		return nil, err
-	}
-	return proto.Marshal(protoLabel)
-}
-
-func (p protoMarshaller) UnmarshalLabel(labelMarshalled []byte) (magnetar.Label, error) {
-	protoLabel := Label{}
-	err := proto.Unmarshal(labelMarshalled, &protoLabel)
-	if err != nil {
-		return nil, err
-	}
-	return protoLabel.toDomain()
-}
 
 func (x *RegistrationReq) fromDomain(req magnetar.RegistrationReq) (*RegistrationReq, error) {
 	var protoLabels []*Label
@@ -169,4 +109,98 @@ func (x *Label) toDomain() (magnetar.Label, error) {
 		err = errors.New("unsupported data type")
 	}
 	return label, err
+}
+
+func (x *QueryNodesReq) ToDomain() (*domain.QueryNodesReq, error) {
+	selector := make([]magnetar.Query, 0)
+	for _, query := range x.Queries {
+		resQuery, err := query.toDomain()
+		if err != nil {
+			return nil, err
+		}
+		selector = append(selector, *resQuery)
+	}
+	return &domain.QueryNodesReq{
+		Selector: selector,
+	}, nil
+}
+
+func (x *Query) toDomain() (*magnetar.Query, error) {
+	shouldBe, err := magnetar.NewCompResultFromString(x.ShouldBe)
+	if err != nil {
+		return nil, err
+	}
+	return &magnetar.Query{
+		LabelKey: x.LabelKey,
+		ShouldBe: shouldBe,
+		Value:    x.Value,
+	}, nil
+}
+
+func (x *QueryNodesResp) FromDomain(resp domain.QueryNodesResp) (*QueryNodesResp, error) {
+	protoResp := &QueryNodesResp{
+		Nodes: make([]*NodeStringified, 0),
+	}
+	for _, node := range resp.Nodes {
+		protoNode := &NodeStringified{
+			Id:     node.Id.Value,
+			Labels: make([]*LabelStringified, 0),
+		}
+		for _, label := range node.Labels {
+			protoLabel := &LabelStringified{
+				Key:   label.Key(),
+				Value: label.StringValue(),
+			}
+			protoNode.Labels = append(protoNode.Labels, protoLabel)
+		}
+		protoResp.Nodes = append(protoResp.Nodes, protoNode)
+	}
+	return protoResp, nil
+}
+
+func (x *PutLabelReq) ToDomain() (*domain.PutLabelReq, error) {
+	label, err := x.Label.toDomain()
+	if err != nil {
+		return nil, err
+	}
+	return &domain.PutLabelReq{
+		NodeId: domain.NodeId{
+			Value: x.NodeId,
+		},
+		Label: label,
+	}, nil
+}
+
+func (x *PutLabelResp) FromDomain(resp domain.PutLabelResp) (*PutLabelResp, error) {
+	node := &NodeStringified{}
+	node, err := node.fromDomain(resp.Node)
+	if err != nil {
+		return nil, err
+	}
+	return &PutLabelResp{
+		Node: node,
+	}, nil
+}
+
+func (x *NodeStringified) fromDomain(node domain.Node) (*NodeStringified, error) {
+	labels := make([]*LabelStringified, len(node.Labels))
+	for i, label := range node.Labels {
+		labelProto := &LabelStringified{}
+		labelProto, err := labelProto.fromDomain(label)
+		if err != nil {
+			return nil, err
+		}
+		labels[i] = labelProto
+	}
+	return &NodeStringified{
+		Id:     node.Id.Value,
+		Labels: labels,
+	}, nil
+}
+
+func (x *LabelStringified) fromDomain(label magnetar.Label) (*LabelStringified, error) {
+	return &LabelStringified{
+		Key:   label.Key(),
+		Value: label.StringValue(),
+	}, nil
 }

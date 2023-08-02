@@ -4,7 +4,7 @@
 // - protoc             v3.12.4
 // source: magnetar.proto
 
-package api
+package proto
 
 import (
 	context "context"
@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MagnetarClient interface {
 	QueryNodes(ctx context.Context, in *QueryNodesReq, opts ...grpc.CallOption) (*QueryNodesResp, error)
+	PutLabel(ctx context.Context, in *PutLabelReq, opts ...grpc.CallOption) (*PutLabelResp, error)
 }
 
 type magnetarClient struct {
@@ -35,7 +36,16 @@ func NewMagnetarClient(cc grpc.ClientConnInterface) MagnetarClient {
 
 func (c *magnetarClient) QueryNodes(ctx context.Context, in *QueryNodesReq, opts ...grpc.CallOption) (*QueryNodesResp, error) {
 	out := new(QueryNodesResp)
-	err := c.cc.Invoke(ctx, "/Magnetar/QueryNodes", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.Magnetar/QueryNodes", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *magnetarClient) PutLabel(ctx context.Context, in *PutLabelReq, opts ...grpc.CallOption) (*PutLabelResp, error) {
+	out := new(PutLabelResp)
+	err := c.cc.Invoke(ctx, "/proto.Magnetar/PutLabel", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -47,6 +57,7 @@ func (c *magnetarClient) QueryNodes(ctx context.Context, in *QueryNodesReq, opts
 // for forward compatibility
 type MagnetarServer interface {
 	QueryNodes(context.Context, *QueryNodesReq) (*QueryNodesResp, error)
+	PutLabel(context.Context, *PutLabelReq) (*PutLabelResp, error)
 	mustEmbedUnimplementedMagnetarServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedMagnetarServer struct {
 
 func (UnimplementedMagnetarServer) QueryNodes(context.Context, *QueryNodesReq) (*QueryNodesResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryNodes not implemented")
+}
+func (UnimplementedMagnetarServer) PutLabel(context.Context, *PutLabelReq) (*PutLabelResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutLabel not implemented")
 }
 func (UnimplementedMagnetarServer) mustEmbedUnimplementedMagnetarServer() {}
 
@@ -80,10 +94,28 @@ func _Magnetar_QueryNodes_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Magnetar/QueryNodes",
+		FullMethod: "/proto.Magnetar/QueryNodes",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MagnetarServer).QueryNodes(ctx, req.(*QueryNodesReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Magnetar_PutLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutLabelReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MagnetarServer).PutLabel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Magnetar/PutLabel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MagnetarServer).PutLabel(ctx, req.(*PutLabelReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -92,12 +124,16 @@ func _Magnetar_QueryNodes_Handler(srv interface{}, ctx context.Context, dec func
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Magnetar_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "Magnetar",
+	ServiceName: "proto.Magnetar",
 	HandlerType: (*MagnetarServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "QueryNodes",
 			Handler:    _Magnetar_QueryNodes_Handler,
+		},
+		{
+			MethodName: "PutLabel",
+			Handler:    _Magnetar_PutLabel_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

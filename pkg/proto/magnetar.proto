@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package proto;
+
+import "model.proto";
+
+service Magnetar {
+  rpc QueryNodes(QueryNodesReq) returns (QueryNodesResp) {}
+  rpc PutLabel(PutLabelReq) returns (PutLabelResp) {}
+}
+
+message QueryNodesReq {
+  repeated Query queries = 1;
+}
+
+message QueryNodesResp {
+  repeated NodeStringified nodes = 1;
+}
+
+message PutLabelReq {
+  string nodeId = 1;
+  Label label = 2;
+}
+
+message PutLabelResp {
+  NodeStringified node = 1;
+}
+
+message RegistrationReq {
+  repeated Label labels = 1;
+}
+
+message RegistrationResp {
+  string NodeId = 1;
+}

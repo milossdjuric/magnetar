@@ -2,7 +2,6 @@ package services
 
 import (
 	"github.com/c12s/magnetar/internal/domain"
-	"github.com/c12s/magnetar/pkg/magnetar"
 )
 
 type QueryService struct {
@@ -15,8 +14,8 @@ func NewQueryService(nodeRepo domain.NodeRepo) (*QueryService, error) {
 	}, nil
 }
 
-func (q *QueryService) QueryNodes(selector magnetar.QuerySelector) ([]domain.Node, error) {
-	nodeIds, err := q.nodeRepo.Query(selector)
+func (q *QueryService) QueryNodes(req domain.QueryNodesReq) (*domain.QueryNodesResp, error) {
+	nodeIds, err := q.nodeRepo.Query(req.Selector)
 	if err != nil {
 		return nil, err
 	}
@@ -28,5 +27,7 @@ func (q *QueryService) QueryNodes(selector magnetar.QuerySelector) ([]domain.Nod
 		}
 		nodes[i] = *node
 	}
-	return nodes, nil
+	return &domain.QueryNodesResp{
+		Nodes: nodes,
+	}, nil
 }
