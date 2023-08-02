@@ -8,10 +8,15 @@ services:
     container_name: magnetar
     hostname: ${MAGNETAR_HOSTNAME}
     restart: on-failure
+    expose:
+      - ${MAGNETAR_PORT}
+    ports:
+      - ${MAGNETAR_PORT}:${MAGNETAR_PORT}
     environment:
       - NATS_ADDRESS=${NATS_HOSTNAME}:${NATS_PORT}
       - ETCD_ADDRESS=${ETCD_HOSTNAME}:${ETCD_PORT}
       - REGISTRATION_SUBJECT=${REGISTRATION_SUBJECT}
+      - MAGNETAR_ADDRESS=:${MAGNETAR_PORT}
     networks:
       - network
     depends_on:

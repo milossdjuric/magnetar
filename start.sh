@@ -1,5 +1,6 @@
 export STAR_HOSTNAME="star"
 export MAGNETAR_HOSTNAME="magnetar"
+export MAGNETAR_PORT=5000
 
 export NATS_HOSTNAME="nats"
 export NATS_PORT=4222

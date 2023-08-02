@@ -8,7 +8,7 @@ import (
 	"github.com/c12s/magnetar/pkg/magnetar"
 	"github.com/juliangruber/go-intersect"
 	etcd "go.etcd.io/etcd/client/v3"
-	"golang.org/x/exp/slices"
+	"log"
 	"strings"
 )
 
@@ -120,11 +120,12 @@ func (n nodeEtcdRepo) query(query magnetar.Query) ([]domain.NodeId, error) {
 		if err != nil {
 			return nil, err
 		}
-		compResult := nodeLabel.Compare(query.Value)
-		if compResult == magnetar.CompResIncomparable {
+		compResult, err := nodeLabel.Compare(query.Value)
+		if err != nil {
+			log.Println(err)
 			continue
 		}
-		if slices.Contains(query.Expected, compResult) {
+		if query.ShouldBe == compResult {
 			nodeId := strings.Split(string(kv.Key), "/")[1]
 			nodeIds = append(nodeIds, domain.NodeId{
 				Value: nodeId,

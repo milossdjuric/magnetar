@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+service Magnetar {
+  rpc QueryNodes(QueryNodesReq) returns (QueryNodesResp) {}
+}
+
+message QueryNodesReq {
+  repeated Query queries = 1;
+}
+
+message QueryNodesResp {
+  repeated NodePretty nodes = 1;
+}
+
+message NodePretty {
+  string id = 1;
+  repeated LabelPretty labels = 2;
+}
+
+message LabelPretty {
+  string key = 1;
+  string value = 2;
+}
+
+message Query {
+  string labelKey = 3;
+  string shouldBe = 2;
+  string value = 1;
+}

@@ -1,6 +1,7 @@
 package magnetar
 
 import (
+	"errors"
 	"math"
 	"strconv"
 )
@@ -16,7 +17,8 @@ type RegistrationResp struct {
 type Label interface {
 	Key() string
 	Value() interface{}
-	Compare(value string) ComparisonResult
+	StringValue() string
+	Compare(value string) (ComparisonResult, error)
 }
 
 func NewBoolLabel(key string, value bool) Label {
@@ -53,15 +55,19 @@ func (b boolLabel) Value() interface{} {
 	return b.value
 }
 
-func (b boolLabel) Compare(value string) ComparisonResult {
+func (b boolLabel) Compare(value string) (ComparisonResult, error) {
 	refValue, err := strconv.ParseBool(value)
 	if err != nil {
-		return CompResIncomparable
+		return defaultCompRes, errors.New("incomparable")
 	}
 	if b.value == refValue {
-		return CompResEq
+		return CompResEq, nil
 	}
-	return CompResNeq
+	return CompResNeq, nil
+}
+
+func (b boolLabel) StringValue() string {
+	return strconv.FormatBool(b.value)
 }
 
 type float64Label struct {
@@ -77,18 +83,22 @@ func (f float64Label) Value() interface{} {
 	return f.value
 }
 
-func (f float64Label) Compare(value string) ComparisonResult {
+func (f float64Label) Compare(value string) (ComparisonResult, error) {
 	refValue, err := strconv.ParseFloat(value, 64)
 	if err != nil {
-		return CompResIncomparable
+		return defaultCompRes, errors.New("incomparable")
 	}
 	if math.Round(f.value*100)/100 == math.Round(refValue*100)/100 {
-		return CompResEq
+		return CompResEq, nil
 	}
 	if f.value > refValue {
-		return CompResGt
+		return CompResGt, nil
 	}
-	return CompResLt
+	return CompResLt, nil
+}
+
+func (f float64Label) StringValue() string {
+	return strconv.FormatFloat(f.value, 'f', 2, 64)
 }
 
 type stringLabel struct {
@@ -104,19 +114,23 @@ func (s stringLabel) Value() interface{} {
 	return s.value
 }
 
-func (s stringLabel) Compare(value string) ComparisonResult {
+func (s stringLabel) StringValue() string {
+	return s.value
+}
+
+func (s stringLabel) Compare(value string) (ComparisonResult, error) {
 	if s.value == value {
-		return CompResEq
+		return CompResEq, nil
 	}
-	return CompResNeq
+	return CompResNeq, nil
 }
 
 type QuerySelector []Query
 
 type Query struct {
 	LabelKey string
+	ShouldBe ComparisonResult
 	Value    string
-	Expected []ComparisonResult
 }
 
 type ComparisonResult int8
@@ -126,5 +140,43 @@ const (
 	CompResNeq
 	CompResGt
 	CompResLt
-	CompResIncomparable
+)
+
+func (c ComparisonResult) String() string {
+	switch c {
+	case CompResEq:
+		return eqString
+	case CompResNeq:
+		return neqString
+	case CompResGt:
+		return gtString
+	case CompResLt:
+		return ltString
+	default:
+		return ""
+	}
+}
+
+func NewCompResultFromString(value string) (ComparisonResult, error) {
+	switch value {
+	case eqString:
+		return CompResEq, nil
+	case neqString:
+		return CompResNeq, nil
+	case ltString:
+		return CompResLt, nil
+	case gtString:
+		return CompResGt, nil
+	default:
+		return CompResEq, errors.New("invalid string")
+	}
+}
+
+const (
+	eqString  = "EQ"
+	neqString = "NEQ"
+	ltString  = "LT"
+	gtString  = "GT"
+
+	defaultCompRes = CompResEq
 )

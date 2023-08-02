@@ -1,6 +1,7 @@
 package startup
 
 import (
+	"github.com/c12s/magnetar/internal/apis"
 	"github.com/c12s/magnetar/internal/configs"
 	"github.com/c12s/magnetar/internal/handlers"
 	"github.com/c12s/magnetar/internal/repos"
@@ -22,6 +23,7 @@ func StartApp(config *configs.Config) error {
 	if err != nil {
 		return err
 	}
+
 	registrationService, err := services.NewRegistrationService(nodeRepo)
 	if err != nil {
 		return err
@@ -30,11 +32,17 @@ func StartApp(config *configs.Config) error {
 	if err != nil {
 		return err
 	}
-
 	subscriptionClosedCh, err := registrationHandler.Handle()
 	if err != nil {
 		return err
 	}
+
+	queryService, err := services.NewQueryService(nodeRepo)
+	if err != nil {
+		return err
+	}
+	server, err := apis.NewMagnetarGrpcServer(*queryService)
+	startServer(config.ServerAddress(), server)
 
 	<-subscriptionClosedCh
 

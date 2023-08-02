@@ -38,12 +38,12 @@ func (r *RegistrationService) Register(req magnetar.RegistrationReq) (*magnetar.
 	res, err := r.nodeRepo.Query([]magnetar.Query{
 		{
 			LabelKey: "skey",
-			Expected: []magnetar.ComparisonResult{magnetar.CompResEq},
+			ShouldBe: magnetar.CompResEq,
 			Value:    "abcd",
 		},
 		{
 			LabelKey: "bkey",
-			Expected: []magnetar.ComparisonResult{magnetar.CompResEq},
+			ShouldBe: magnetar.CompResEq,
 			Value:    "true",
 		},
 	})
