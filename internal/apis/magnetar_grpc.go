@@ -18,7 +18,7 @@ func NewMagnetarGrpcServer(service services.QueryService) (api.MagnetarServer, e
 }
 
 func (m *MagnetarGrpcServer) QueryNodes(ctx context.Context, req *api.QueryNodesReq) (*api.QueryNodesResp, error) {
-	selector, err := QueryNodesReq2Selector(*req)
+	selector, err := QueryNodesReq2Selector(req)
 	if err != nil {
 		return nil, err
 	}

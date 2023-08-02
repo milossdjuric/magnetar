@@ -9,15 +9,15 @@ message QueryNodesReq {
 }
 
 message QueryNodesResp {
-  repeated NodePretty nodes = 1;
+  repeated NodeStringified nodes = 1;
 }
 
-message NodePretty {
+message NodeStringified {
   string id = 1;
-  repeated LabelPretty labels = 2;
+  repeated LabelStringified labels = 2;
 }
 
-message LabelPretty {
+message LabelStringified {
   string key = 1;
   string value = 2;
 }

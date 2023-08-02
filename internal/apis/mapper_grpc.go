@@ -6,7 +6,7 @@ import (
 	"github.com/c12s/magnetar/pkg/magnetar"
 )
 
-func QueryNodesReq2Selector(req api.QueryNodesReq) (magnetar.QuerySelector, error) {
+func QueryNodesReq2Selector(req *api.QueryNodesReq) (magnetar.QuerySelector, error) {
 	res := make([]magnetar.Query, 0)
 	for _, query := range req.Queries {
 		shouldBe, err := magnetar.NewCompResultFromString(query.ShouldBe)
@@ -25,15 +25,15 @@ func QueryNodesReq2Selector(req api.QueryNodesReq) (magnetar.QuerySelector, erro
 
 func Nodes2QueryNodesResp(nodes []domain.Node) (*api.QueryNodesResp, error) {
 	resp := &api.QueryNodesResp{
-		Nodes: make([]*api.NodePretty, 0),
+		Nodes: make([]*api.NodeStringified, 0),
 	}
 	for _, node := range nodes {
-		protoNode := &api.NodePretty{
+		protoNode := &api.NodeStringified{
 			Id:     node.Id.Value,
-			Labels: make([]*api.LabelPretty, 0),
+			Labels: make([]*api.LabelStringified, 0),
 		}
 		for _, label := range node.Labels {
-			protoLabel := &api.LabelPretty{
+			protoLabel := &api.LabelStringified{
 				Key:   label.Key(),
 				Value: label.StringValue(),
 			}
