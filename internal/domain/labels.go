@@ -10,3 +10,12 @@ type PutLabelReq struct {
 type PutLabelResp struct {
 	Node Node
 }
+
+type DeleteLabelReq struct {
+	NodeId   NodeId
+	LabelKey string
+}
+
+type DeleteLabelResp struct {
+	Node Node
+}

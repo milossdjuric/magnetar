@@ -72,6 +72,14 @@ func (m *MagnetarGrpcServer) PutLabel(ctx context.Context, req *proto.PutLabelRe
 }
 
 func (m *MagnetarGrpcServer) DeleteLabel(ctx context.Context, req *proto.DeleteLabelReq) (*proto.DeleteLabelResp, error) {
-	//TODO implement me
-	panic("implement me")
+	domainReq, err := req.ToDomain()
+	if err != nil {
+		return nil, err
+	}
+	domainResp, err := m.labelService.DeleteLabel(*domainReq)
+	if err != nil {
+		return nil, err
+	}
+	resp := proto.DeleteLabelResp{}
+	return resp.FromDomain(*domainResp)
 }

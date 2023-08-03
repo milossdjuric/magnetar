@@ -220,6 +220,26 @@ func (x *PutLabelResp) FromDomain(resp domain.PutLabelResp) (*PutLabelResp, erro
 	}, nil
 }
 
+func (x *DeleteLabelReq) ToDomain() (*domain.DeleteLabelReq, error) {
+	return &domain.DeleteLabelReq{
+		NodeId: domain.NodeId{
+			Value: x.NodeId,
+		},
+		LabelKey: x.LabelKey,
+	}, nil
+}
+
+func (x *DeleteLabelResp) FromDomain(resp domain.DeleteLabelResp) (*DeleteLabelResp, error) {
+	node := &NodeStringified{}
+	node, err := node.fromDomain(resp.Node)
+	if err != nil {
+		return nil, err
+	}
+	return &DeleteLabelResp{
+		Node: node,
+	}, nil
+}
+
 func (x *NodeStringified) fromDomain(node domain.Node) (*NodeStringified, error) {
 	labels := make([]*LabelStringified, len(node.Labels))
 	for i, label := range node.Labels {

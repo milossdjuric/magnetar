@@ -17,6 +17,7 @@ type NodeRepo interface {
 	List() ([]Node, error)
 	Query(selector magnetar.QuerySelector) ([]NodeId, error)
 	PutLabel(nodeId NodeId, label magnetar.Label) error
+	DeleteLabel(nodeId NodeId, labelKey string) error
 }
 
 type GetNodeReq struct {

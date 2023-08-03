@@ -27,3 +27,17 @@ func (l *LabelService) PutLabel(req domain.PutLabelReq) (*domain.PutLabelResp, e
 		Node: *node,
 	}, nil
 }
+
+func (l *LabelService) DeleteLabel(req domain.DeleteLabelReq) (*domain.DeleteLabelResp, error) {
+	err := l.nodeRepo.DeleteLabel(req.NodeId, req.LabelKey)
+	if err != nil {
+		return nil, err
+	}
+	node, err := l.nodeRepo.Get(req.NodeId)
+	if err != nil {
+		return nil, err
+	}
+	return &domain.DeleteLabelResp{
+		Node: *node,
+	}, nil
+}

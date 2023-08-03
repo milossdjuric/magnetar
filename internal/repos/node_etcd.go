@@ -9,6 +9,7 @@ import (
 	"github.com/c12s/magnetar/pkg/magnetar"
 	"github.com/juliangruber/go-intersect"
 	etcd "go.etcd.io/etcd/client/v3"
+	"golang.org/x/exp/slices"
 	"log"
 	"strings"
 )
@@ -93,6 +94,14 @@ func (n nodeEtcdRepo) PutLabel(nodeId domain.NodeId, label magnetar.Label) error
 	return n.putLabelForQuerying(nodeId, label)
 }
 
+func (n nodeEtcdRepo) DeleteLabel(nodeId domain.NodeId, labelKey string) error {
+	err := n.deleteLabelForGetting(nodeId, labelKey)
+	if err != nil {
+		return err
+	}
+	return n.deleteLabelForQuerying(nodeId, labelKey)
+}
+
 func (n nodeEtcdRepo) putNodeForGetting(node domain.Node) error {
 	nodeMarshalled, err := n.marshaller.MarshalNode(node)
 	if err != nil {
@@ -122,6 +131,24 @@ func (n nodeEtcdRepo) putLabelForGetting(nodeId domain.NodeId, label magnetar.La
 	return n.putNodeForGetting(*node)
 }
 
+func (n nodeEtcdRepo) deleteLabelForGetting(nodeId domain.NodeId, labelKey string) error {
+	node, err := n.Get(nodeId)
+	if err != nil {
+		return err
+	}
+	labelIndex := -1
+	for i, nodeLabel := range node.Labels {
+		if nodeLabel.Key() == labelKey {
+			labelIndex = i
+		}
+	}
+	if labelIndex >= 0 {
+		node.Labels = slices.Delete(node.Labels, labelIndex, labelIndex+1)
+		return n.putNodeForGetting(*node)
+	}
+	return nil
+}
+
 func (n nodeEtcdRepo) putNodeForQuerying(node domain.Node) error {
 	for _, label := range node.Labels {
 		err := n.putLabelForQuerying(node.Id, label)
@@ -139,6 +166,12 @@ func (n nodeEtcdRepo) putLabelForQuerying(nodeId domain.NodeId, label magnetar.L
 	}
 	key := fmt.Sprintf("%s/%s", label.Key(), nodeId.Value)
 	_, err = n.etcd.Put(context.TODO(), key, string(labelMarshalled))
+	return err
+}
+
+func (n nodeEtcdRepo) deleteLabelForQuerying(nodeId domain.NodeId, labelKey string) error {
+	key := fmt.Sprintf("%s/%s", labelKey, nodeId.Value)
+	_, err := n.etcd.Delete(context.TODO(), key)
 	return err
 }
 
