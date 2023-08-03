@@ -37,7 +37,7 @@ func StartApp(config *configs.Config) error {
 		return err
 	}
 
-	queryService, err := services.NewQueryService(nodeRepo)
+	nodeService, err := services.NewNodeService(nodeRepo)
 	if err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func StartApp(config *configs.Config) error {
 	if err != nil {
 		return err
 	}
-	server, err := apis.NewMagnetarGrpcServer(*queryService, *labelService)
+	server, err := apis.NewMagnetarGrpcServer(*nodeService, *labelService)
 	startServer(config.ServerAddress(), server)
 
 	<-subscriptionClosedCh

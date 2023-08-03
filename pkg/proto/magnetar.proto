@@ -5,8 +5,25 @@ package proto;
 import "model.proto";
 
 service Magnetar {
+  rpc GetNode(GetNodeReq) returns (GetNodeResp) {}
+  rpc ListNodes(ListNodesReq) returns (ListNodesResp) {}
   rpc QueryNodes(QueryNodesReq) returns (QueryNodesResp) {}
   rpc PutLabel(PutLabelReq) returns (PutLabelResp) {}
+  rpc DeleteLabel(DeleteLabelReq) returns (DeleteLabelResp) {}
+}
+
+message GetNodeReq {
+  string nodeId = 1;
+}
+
+message GetNodeResp {
+  NodeStringified node = 1;
+}
+
+message ListNodesReq { }
+
+message ListNodesResp {
+  repeated NodeStringified nodes = 1;
 }
 
 message QueryNodesReq {
@@ -23,6 +40,15 @@ message PutLabelReq {
 }
 
 message PutLabelResp {
+  NodeStringified node = 1;
+}
+
+message DeleteLabelReq {
+  string nodeId = 1;
+  string labelKey = 2;
+}
+
+message DeleteLabelResp {
   NodeStringified node = 1;
 }
 

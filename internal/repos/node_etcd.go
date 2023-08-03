@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/c12s/magnetar/internal/domain"
+	"github.com/c12s/magnetar/pkg"
 	"github.com/c12s/magnetar/pkg/magnetar"
 	"github.com/juliangruber/go-intersect"
 	etcd "go.etcd.io/etcd/client/v3"
@@ -14,10 +15,10 @@ import (
 
 type nodeEtcdRepo struct {
 	etcd       *etcd.Client
-	marshaller magnetar.Marshaller
+	marshaller pkg.Marshaller
 }
 
-func NewNodeEtcdRepo(etcd *etcd.Client, marshaller magnetar.Marshaller) (domain.NodeRepo, error) {
+func NewNodeEtcdRepo(etcd *etcd.Client, marshaller pkg.Marshaller) (domain.NodeRepo, error) {
 	return &nodeEtcdRepo{
 		etcd:       etcd,
 		marshaller: marshaller,
@@ -32,67 +33,33 @@ func (n nodeEtcdRepo) Put(node domain.Node) error {
 	return n.putNodeForQuerying(node)
 }
 
-func (n nodeEtcdRepo) putNodeForGetting(node domain.Node) error {
-	for _, label := range node.Labels {
-		err := n.putLabelForGetting(node.Id, label)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (n nodeEtcdRepo) putLabelForGetting(nodeId domain.NodeId, label magnetar.Label) error {
-	labelMarshalled, err := n.marshaller.MarshalLabel(label)
-	if err != nil {
-		return err
-	}
-	key := fmt.Sprintf("%s/labels/%s", nodeId.Value, label.Key())
-	_, err = n.etcd.Put(context.TODO(), key, string(labelMarshalled))
-	return err
-}
-
-func (n nodeEtcdRepo) putNodeForQuerying(node domain.Node) error {
-	for _, label := range node.Labels {
-		err := n.putLabelForQuerying(node.Id, label)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (n nodeEtcdRepo) putLabelForQuerying(nodeId domain.NodeId, label magnetar.Label) error {
-	labelMarshalled, err := n.marshaller.MarshalLabel(label)
-	if err != nil {
-		return err
-	}
-	key := fmt.Sprintf("%s/%s", label.Key(), nodeId.Value)
-	_, err = n.etcd.Put(context.TODO(), key, string(labelMarshalled))
-	return err
-}
-
 func (n nodeEtcdRepo) Get(nodeId domain.NodeId) (*domain.Node, error) {
-	prefix := fmt.Sprintf("%s/labels/", nodeId.Value)
-	resp, err := n.etcd.Get(context.TODO(), prefix, etcd.WithPrefix())
+	key := fmt.Sprintf("nodes/%s", nodeId.Value)
+	resp, err := n.etcd.Get(context.TODO(), key)
 	if err != nil {
 		return nil, err
 	}
 	if resp.Count == 0 {
 		return nil, errors.New("node not found")
 	}
-	var labels []magnetar.Label
+	return n.marshaller.UnmarshalNode(resp.Kvs[0].Value)
+}
+
+func (n nodeEtcdRepo) List() ([]domain.Node, error) {
+	nodes := make([]domain.Node, 0)
+	prefix := "nodes/"
+	resp, err := n.etcd.Get(context.TODO(), prefix, etcd.WithPrefix())
+	if err != nil {
+		return nil, err
+	}
 	for _, kv := range resp.Kvs {
-		label, err := n.marshaller.UnmarshalLabel(kv.Value)
+		node, err := n.marshaller.UnmarshalNode(kv.Value)
 		if err != nil {
 			return nil, err
 		}
-		labels = append(labels, label)
+		nodes = append(nodes, *node)
 	}
-	return &domain.Node{
-		Id:     nodeId,
-		Labels: labels,
-	}, nil
+	return nodes, nil
 }
 
 func (n nodeEtcdRepo) Query(selector magnetar.QuerySelector) ([]domain.NodeId, error) {
@@ -124,6 +91,55 @@ func (n nodeEtcdRepo) PutLabel(nodeId domain.NodeId, label magnetar.Label) error
 		return err
 	}
 	return n.putLabelForQuerying(nodeId, label)
+}
+
+func (n nodeEtcdRepo) putNodeForGetting(node domain.Node) error {
+	nodeMarshalled, err := n.marshaller.MarshalNode(node)
+	if err != nil {
+		return err
+	}
+	key := fmt.Sprintf("nodes/%s", node.Id.Value)
+	_, err = n.etcd.Put(context.TODO(), key, string(nodeMarshalled))
+	return err
+}
+
+func (n nodeEtcdRepo) putLabelForGetting(nodeId domain.NodeId, label magnetar.Label) error {
+	node, err := n.Get(nodeId)
+	if err != nil {
+		return err
+	}
+	labelIndex := -1
+	for i, nodeLabel := range node.Labels {
+		if nodeLabel.Key() == label.Key() {
+			labelIndex = i
+		}
+	}
+	if labelIndex >= 0 {
+		node.Labels[labelIndex] = label
+	} else {
+		node.Labels = append(node.Labels, label)
+	}
+	return n.putNodeForGetting(*node)
+}
+
+func (n nodeEtcdRepo) putNodeForQuerying(node domain.Node) error {
+	for _, label := range node.Labels {
+		err := n.putLabelForQuerying(node.Id, label)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (n nodeEtcdRepo) putLabelForQuerying(nodeId domain.NodeId, label magnetar.Label) error {
+	labelMarshalled, err := n.marshaller.MarshalLabel(label)
+	if err != nil {
+		return err
+	}
+	key := fmt.Sprintf("%s/%s", label.Key(), nodeId.Value)
+	_, err = n.etcd.Put(context.TODO(), key, string(labelMarshalled))
+	return err
 }
 
 func (n nodeEtcdRepo) query(query magnetar.Query) ([]domain.NodeId, error) {

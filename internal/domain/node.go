@@ -14,8 +14,24 @@ type NodeId struct {
 type NodeRepo interface {
 	Put(node Node) error
 	Get(nodeId NodeId) (*Node, error)
+	List() ([]Node, error)
 	Query(selector magnetar.QuerySelector) ([]NodeId, error)
 	PutLabel(nodeId NodeId, label magnetar.Label) error
+}
+
+type GetNodeReq struct {
+	Id NodeId
+}
+
+type GetNodeResp struct {
+	Node Node
+}
+
+type ListNodesReq struct {
+}
+
+type ListNodesResp struct {
+	Nodes []Node
 }
 
 type QueryNodesReq struct {

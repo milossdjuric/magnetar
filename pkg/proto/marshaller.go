@@ -1,6 +1,8 @@
 package proto
 
 import (
+	"github.com/c12s/magnetar/internal/domain"
+	"github.com/c12s/magnetar/pkg"
 	"github.com/c12s/magnetar/pkg/magnetar"
 	"github.com/golang/protobuf/proto"
 )
@@ -8,7 +10,7 @@ import (
 type protoMarshaller struct {
 }
 
-func NewMarshaller() magnetar.Marshaller {
+func NewMarshaller() pkg.Marshaller {
 	return &protoMarshaller{}
 }
 
@@ -64,4 +66,22 @@ func (p protoMarshaller) UnmarshalLabel(labelMarshalled []byte) (magnetar.Label,
 		return nil, err
 	}
 	return protoLabel.toDomain()
+}
+
+func (p protoMarshaller) MarshalNode(node domain.Node) ([]byte, error) {
+	protoNode := &Node{}
+	protoNode, err := protoNode.fromDomain(node)
+	if err != nil {
+		return nil, err
+	}
+	return proto.Marshal(protoNode)
+}
+
+func (p protoMarshaller) UnmarshalNode(nodeMarshalled []byte) (*domain.Node, error) {
+	protoNode := Node{}
+	err := proto.Unmarshal(nodeMarshalled, &protoNode)
+	if err != nil {
+		return nil, err
+	}
+	return protoNode.toDomain()
 }

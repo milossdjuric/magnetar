@@ -111,6 +111,44 @@ func (x *Label) toDomain() (magnetar.Label, error) {
 	return label, err
 }
 
+func (x *GetNodeReq) ToDomain() (*domain.GetNodeReq, error) {
+	return &domain.GetNodeReq{
+		Id: domain.NodeId{
+			Value: x.NodeId,
+		},
+	}, nil
+}
+
+func (x *GetNodeResp) FromDomain(resp domain.GetNodeResp) (*GetNodeResp, error) {
+	nodeProto := &NodeStringified{}
+	nodeProto, err := nodeProto.fromDomain(resp.Node)
+	if err != nil {
+		return nil, err
+	}
+	return &GetNodeResp{
+		Node: nodeProto,
+	}, nil
+}
+
+func (x *ListNodesReq) ToDomain() (*domain.ListNodesReq, error) {
+	return &domain.ListNodesReq{}, nil
+}
+
+func (x *ListNodesResp) FromDomain(resp domain.ListNodesResp) (*ListNodesResp, error) {
+	nodesProto := make([]*NodeStringified, len(resp.Nodes))
+	for i, node := range resp.Nodes {
+		nodeProto := &NodeStringified{}
+		nodeProto, err := nodeProto.fromDomain(node)
+		if err != nil {
+			return nil, err
+		}
+		nodesProto[i] = nodeProto
+	}
+	return &ListNodesResp{
+		Nodes: nodesProto,
+	}, nil
+}
+
 func (x *QueryNodesReq) ToDomain() (*domain.QueryNodesReq, error) {
 	selector := make([]magnetar.Query, 0)
 	for _, query := range x.Queries {
@@ -203,4 +241,37 @@ func (x *LabelStringified) fromDomain(label magnetar.Label) (*LabelStringified, 
 		Key:   label.Key(),
 		Value: label.StringValue(),
 	}, nil
+}
+
+func (x *Node) fromDomain(node domain.Node) (*Node, error) {
+	resp := &Node{
+		Id:     node.Id.Value,
+		Labels: make([]*Label, len(node.Labels)),
+	}
+	for i, label := range node.Labels {
+		protoLabel := &Label{}
+		protoLabel, err := protoLabel.fromDomain(label)
+		if err != nil {
+			return nil, err
+		}
+		resp.Labels[i] = protoLabel
+	}
+	return resp, nil
+}
+
+func (x *Node) toDomain() (*domain.Node, error) {
+	resp := &domain.Node{
+		Id: domain.NodeId{
+			Value: x.Id,
+		},
+		Labels: make([]magnetar.Label, len(x.Labels)),
+	}
+	for i, protoLabel := range x.Labels {
+		label, err := protoLabel.toDomain()
+		if err != nil {
+			return nil, err
+		}
+		resp.Labels[i] = label
+	}
+	return resp, nil
 }

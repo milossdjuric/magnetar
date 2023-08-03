@@ -20,6 +20,185 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type GetNodeReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	NodeId string `protobuf:"bytes,1,opt,name=nodeId,proto3" json:"nodeId,omitempty"`
+}
+
+func (x *GetNodeReq) Reset() {
+	*x = GetNodeReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_magnetar_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetNodeReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetNodeReq) ProtoMessage() {}
+
+func (x *GetNodeReq) ProtoReflect() protoreflect.Message {
+	mi := &file_magnetar_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetNodeReq.ProtoReflect.Descriptor instead.
+func (*GetNodeReq) Descriptor() ([]byte, []int) {
+	return file_magnetar_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *GetNodeReq) GetNodeId() string {
+	if x != nil {
+		return x.NodeId
+	}
+	return ""
+}
+
+type GetNodeResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Node *NodeStringified `protobuf:"bytes,1,opt,name=node,proto3" json:"node,omitempty"`
+}
+
+func (x *GetNodeResp) Reset() {
+	*x = GetNodeResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_magnetar_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetNodeResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetNodeResp) ProtoMessage() {}
+
+func (x *GetNodeResp) ProtoReflect() protoreflect.Message {
+	mi := &file_magnetar_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetNodeResp.ProtoReflect.Descriptor instead.
+func (*GetNodeResp) Descriptor() ([]byte, []int) {
+	return file_magnetar_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GetNodeResp) GetNode() *NodeStringified {
+	if x != nil {
+		return x.Node
+	}
+	return nil
+}
+
+type ListNodesReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *ListNodesReq) Reset() {
+	*x = ListNodesReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_magnetar_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListNodesReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListNodesReq) ProtoMessage() {}
+
+func (x *ListNodesReq) ProtoReflect() protoreflect.Message {
+	mi := &file_magnetar_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListNodesReq.ProtoReflect.Descriptor instead.
+func (*ListNodesReq) Descriptor() ([]byte, []int) {
+	return file_magnetar_proto_rawDescGZIP(), []int{2}
+}
+
+type ListNodesResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Nodes []*NodeStringified `protobuf:"bytes,1,rep,name=nodes,proto3" json:"nodes,omitempty"`
+}
+
+func (x *ListNodesResp) Reset() {
+	*x = ListNodesResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_magnetar_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListNodesResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListNodesResp) ProtoMessage() {}
+
+func (x *ListNodesResp) ProtoReflect() protoreflect.Message {
+	mi := &file_magnetar_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListNodesResp.ProtoReflect.Descriptor instead.
+func (*ListNodesResp) Descriptor() ([]byte, []int) {
+	return file_magnetar_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ListNodesResp) GetNodes() []*NodeStringified {
+	if x != nil {
+		return x.Nodes
+	}
+	return nil
+}
+
 type QueryNodesReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -31,7 +210,7 @@ type QueryNodesReq struct {
 func (x *QueryNodesReq) Reset() {
 	*x = QueryNodesReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_magnetar_proto_msgTypes[0]
+		mi := &file_magnetar_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -44,7 +223,7 @@ func (x *QueryNodesReq) String() string {
 func (*QueryNodesReq) ProtoMessage() {}
 
 func (x *QueryNodesReq) ProtoReflect() protoreflect.Message {
-	mi := &file_magnetar_proto_msgTypes[0]
+	mi := &file_magnetar_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -57,7 +236,7 @@ func (x *QueryNodesReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryNodesReq.ProtoReflect.Descriptor instead.
 func (*QueryNodesReq) Descriptor() ([]byte, []int) {
-	return file_magnetar_proto_rawDescGZIP(), []int{0}
+	return file_magnetar_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *QueryNodesReq) GetQueries() []*Query {
@@ -78,7 +257,7 @@ type QueryNodesResp struct {
 func (x *QueryNodesResp) Reset() {
 	*x = QueryNodesResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_magnetar_proto_msgTypes[1]
+		mi := &file_magnetar_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -91,7 +270,7 @@ func (x *QueryNodesResp) String() string {
 func (*QueryNodesResp) ProtoMessage() {}
 
 func (x *QueryNodesResp) ProtoReflect() protoreflect.Message {
-	mi := &file_magnetar_proto_msgTypes[1]
+	mi := &file_magnetar_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -104,7 +283,7 @@ func (x *QueryNodesResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryNodesResp.ProtoReflect.Descriptor instead.
 func (*QueryNodesResp) Descriptor() ([]byte, []int) {
-	return file_magnetar_proto_rawDescGZIP(), []int{1}
+	return file_magnetar_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *QueryNodesResp) GetNodes() []*NodeStringified {
@@ -126,7 +305,7 @@ type PutLabelReq struct {
 func (x *PutLabelReq) Reset() {
 	*x = PutLabelReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_magnetar_proto_msgTypes[2]
+		mi := &file_magnetar_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -139,7 +318,7 @@ func (x *PutLabelReq) String() string {
 func (*PutLabelReq) ProtoMessage() {}
 
 func (x *PutLabelReq) ProtoReflect() protoreflect.Message {
-	mi := &file_magnetar_proto_msgTypes[2]
+	mi := &file_magnetar_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -152,7 +331,7 @@ func (x *PutLabelReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PutLabelReq.ProtoReflect.Descriptor instead.
 func (*PutLabelReq) Descriptor() ([]byte, []int) {
-	return file_magnetar_proto_rawDescGZIP(), []int{2}
+	return file_magnetar_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *PutLabelReq) GetNodeId() string {
@@ -180,7 +359,7 @@ type PutLabelResp struct {
 func (x *PutLabelResp) Reset() {
 	*x = PutLabelResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_magnetar_proto_msgTypes[3]
+		mi := &file_magnetar_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -193,7 +372,7 @@ func (x *PutLabelResp) String() string {
 func (*PutLabelResp) ProtoMessage() {}
 
 func (x *PutLabelResp) ProtoReflect() protoreflect.Message {
-	mi := &file_magnetar_proto_msgTypes[3]
+	mi := &file_magnetar_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -206,10 +385,112 @@ func (x *PutLabelResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PutLabelResp.ProtoReflect.Descriptor instead.
 func (*PutLabelResp) Descriptor() ([]byte, []int) {
-	return file_magnetar_proto_rawDescGZIP(), []int{3}
+	return file_magnetar_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *PutLabelResp) GetNode() *NodeStringified {
+	if x != nil {
+		return x.Node
+	}
+	return nil
+}
+
+type DeleteLabelReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	NodeId   string `protobuf:"bytes,1,opt,name=nodeId,proto3" json:"nodeId,omitempty"`
+	LabelKey string `protobuf:"bytes,2,opt,name=labelKey,proto3" json:"labelKey,omitempty"`
+}
+
+func (x *DeleteLabelReq) Reset() {
+	*x = DeleteLabelReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_magnetar_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteLabelReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteLabelReq) ProtoMessage() {}
+
+func (x *DeleteLabelReq) ProtoReflect() protoreflect.Message {
+	mi := &file_magnetar_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteLabelReq.ProtoReflect.Descriptor instead.
+func (*DeleteLabelReq) Descriptor() ([]byte, []int) {
+	return file_magnetar_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *DeleteLabelReq) GetNodeId() string {
+	if x != nil {
+		return x.NodeId
+	}
+	return ""
+}
+
+func (x *DeleteLabelReq) GetLabelKey() string {
+	if x != nil {
+		return x.LabelKey
+	}
+	return ""
+}
+
+type DeleteLabelResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Node *NodeStringified `protobuf:"bytes,1,opt,name=node,proto3" json:"node,omitempty"`
+}
+
+func (x *DeleteLabelResp) Reset() {
+	*x = DeleteLabelResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_magnetar_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteLabelResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteLabelResp) ProtoMessage() {}
+
+func (x *DeleteLabelResp) ProtoReflect() protoreflect.Message {
+	mi := &file_magnetar_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteLabelResp.ProtoReflect.Descriptor instead.
+func (*DeleteLabelResp) Descriptor() ([]byte, []int) {
+	return file_magnetar_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *DeleteLabelResp) GetNode() *NodeStringified {
 	if x != nil {
 		return x.Node
 	}
@@ -227,7 +508,7 @@ type RegistrationReq struct {
 func (x *RegistrationReq) Reset() {
 	*x = RegistrationReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_magnetar_proto_msgTypes[4]
+		mi := &file_magnetar_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -240,7 +521,7 @@ func (x *RegistrationReq) String() string {
 func (*RegistrationReq) ProtoMessage() {}
 
 func (x *RegistrationReq) ProtoReflect() protoreflect.Message {
-	mi := &file_magnetar_proto_msgTypes[4]
+	mi := &file_magnetar_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -253,7 +534,7 @@ func (x *RegistrationReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegistrationReq.ProtoReflect.Descriptor instead.
 func (*RegistrationReq) Descriptor() ([]byte, []int) {
-	return file_magnetar_proto_rawDescGZIP(), []int{4}
+	return file_magnetar_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *RegistrationReq) GetLabels() []*Label {
@@ -274,7 +555,7 @@ type RegistrationResp struct {
 func (x *RegistrationResp) Reset() {
 	*x = RegistrationResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_magnetar_proto_msgTypes[5]
+		mi := &file_magnetar_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -287,7 +568,7 @@ func (x *RegistrationResp) String() string {
 func (*RegistrationResp) ProtoMessage() {}
 
 func (x *RegistrationResp) ProtoReflect() protoreflect.Message {
-	mi := &file_magnetar_proto_msgTypes[5]
+	mi := &file_magnetar_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -300,7 +581,7 @@ func (x *RegistrationResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegistrationResp.ProtoReflect.Descriptor instead.
 func (*RegistrationResp) Descriptor() ([]byte, []int) {
-	return file_magnetar_proto_rawDescGZIP(), []int{5}
+	return file_magnetar_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *RegistrationResp) GetNodeId() string {
@@ -315,7 +596,18 @@ var File_magnetar_proto protoreflect.FileDescriptor
 var file_magnetar_proto_rawDesc = []byte{
 	0x0a, 0x0e, 0x6d, 0x61, 0x67, 0x6e, 0x65, 0x74, 0x61, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x12, 0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x0b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x22, 0x37, 0x0a, 0x0d, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4e, 0x6f, 0x64,
+	0x72, 0x6f, 0x74, 0x6f, 0x22, 0x24, 0x0a, 0x0a, 0x47, 0x65, 0x74, 0x4e, 0x6f, 0x64, 0x65, 0x52,
+	0x65, 0x71, 0x12, 0x16, 0x0a, 0x06, 0x6e, 0x6f, 0x64, 0x65, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x06, 0x6e, 0x6f, 0x64, 0x65, 0x49, 0x64, 0x22, 0x39, 0x0a, 0x0b, 0x47, 0x65,
+	0x74, 0x4e, 0x6f, 0x64, 0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x2a, 0x0a, 0x04, 0x6e, 0x6f, 0x64,
+	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e,
+	0x4e, 0x6f, 0x64, 0x65, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x69, 0x66, 0x69, 0x65, 0x64, 0x52,
+	0x04, 0x6e, 0x6f, 0x64, 0x65, 0x22, 0x0e, 0x0a, 0x0c, 0x4c, 0x69, 0x73, 0x74, 0x4e, 0x6f, 0x64,
+	0x65, 0x73, 0x52, 0x65, 0x71, 0x22, 0x3d, 0x0a, 0x0d, 0x4c, 0x69, 0x73, 0x74, 0x4e, 0x6f, 0x64,
+	0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x12, 0x2c, 0x0a, 0x05, 0x6e, 0x6f, 0x64, 0x65, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x4e, 0x6f,
+	0x64, 0x65, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x69, 0x66, 0x69, 0x65, 0x64, 0x52, 0x05, 0x6e,
+	0x6f, 0x64, 0x65, 0x73, 0x22, 0x37, 0x0a, 0x0d, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4e, 0x6f, 0x64,
 	0x65, 0x73, 0x52, 0x65, 0x71, 0x12, 0x26, 0x0a, 0x07, 0x71, 0x75, 0x65, 0x72, 0x69, 0x65, 0x73,
 	0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x51,
 	0x75, 0x65, 0x72, 0x79, 0x52, 0x07, 0x71, 0x75, 0x65, 0x72, 0x69, 0x65, 0x73, 0x22, 0x3e, 0x0a,
@@ -331,22 +623,41 @@ var file_magnetar_proto_rawDesc = []byte{
 	0x61, 0x62, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x12, 0x2a, 0x0a, 0x04, 0x6e, 0x6f, 0x64, 0x65,
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x4e,
 	0x6f, 0x64, 0x65, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x69, 0x66, 0x69, 0x65, 0x64, 0x52, 0x04,
-	0x6e, 0x6f, 0x64, 0x65, 0x22, 0x37, 0x0a, 0x0f, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x72, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x12, 0x24, 0x0a, 0x06, 0x6c, 0x61, 0x62, 0x65, 0x6c,
-	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e,
-	0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52, 0x06, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x22, 0x2a, 0x0a,
-	0x10, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73,
-	0x70, 0x12, 0x16, 0x0a, 0x06, 0x4e, 0x6f, 0x64, 0x65, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x06, 0x4e, 0x6f, 0x64, 0x65, 0x49, 0x64, 0x32, 0x7e, 0x0a, 0x08, 0x4d, 0x61, 0x67,
-	0x6e, 0x65, 0x74, 0x61, 0x72, 0x12, 0x3b, 0x0a, 0x0a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4e, 0x6f,
-	0x64, 0x65, 0x73, 0x12, 0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x4e, 0x6f, 0x64, 0x65, 0x73, 0x52, 0x65, 0x71, 0x1a, 0x15, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4e, 0x6f, 0x64, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70,
-	0x22, 0x00, 0x12, 0x35, 0x0a, 0x08, 0x50, 0x75, 0x74, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x12, 0x12,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x75, 0x74, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52,
-	0x65, 0x71, 0x1a, 0x13, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x75, 0x74, 0x4c, 0x61,
-	0x62, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x22, 0x00, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x33,
+	0x6e, 0x6f, 0x64, 0x65, 0x22, 0x44, 0x0a, 0x0e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x4c, 0x61,
+	0x62, 0x65, 0x6c, 0x52, 0x65, 0x71, 0x12, 0x16, 0x0a, 0x06, 0x6e, 0x6f, 0x64, 0x65, 0x49, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6e, 0x6f, 0x64, 0x65, 0x49, 0x64, 0x12, 0x1a,
+	0x0a, 0x08, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x4b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x08, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x4b, 0x65, 0x79, 0x22, 0x3d, 0x0a, 0x0f, 0x44, 0x65,
+	0x6c, 0x65, 0x74, 0x65, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x12, 0x2a, 0x0a,
+	0x04, 0x6e, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x2e, 0x4e, 0x6f, 0x64, 0x65, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x69, 0x66,
+	0x69, 0x65, 0x64, 0x52, 0x04, 0x6e, 0x6f, 0x64, 0x65, 0x22, 0x37, 0x0a, 0x0f, 0x52, 0x65, 0x67,
+	0x69, 0x73, 0x74, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x12, 0x24, 0x0a, 0x06,
+	0x6c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52, 0x06, 0x6c, 0x61, 0x62, 0x65,
+	0x6c, 0x73, 0x22, 0x2a, 0x0a, 0x10, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x72, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x12, 0x16, 0x0a, 0x06, 0x4e, 0x6f, 0x64, 0x65, 0x49, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x4e, 0x6f, 0x64, 0x65, 0x49, 0x64, 0x32, 0xac,
+	0x02, 0x0a, 0x08, 0x4d, 0x61, 0x67, 0x6e, 0x65, 0x74, 0x61, 0x72, 0x12, 0x32, 0x0a, 0x07, 0x47,
+	0x65, 0x74, 0x4e, 0x6f, 0x64, 0x65, 0x12, 0x11, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x47,
+	0x65, 0x74, 0x4e, 0x6f, 0x64, 0x65, 0x52, 0x65, 0x71, 0x1a, 0x12, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x2e, 0x47, 0x65, 0x74, 0x4e, 0x6f, 0x64, 0x65, 0x52, 0x65, 0x73, 0x70, 0x22, 0x00, 0x12,
+	0x38, 0x0a, 0x09, 0x4c, 0x69, 0x73, 0x74, 0x4e, 0x6f, 0x64, 0x65, 0x73, 0x12, 0x13, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x4e, 0x6f, 0x64, 0x65, 0x73, 0x52, 0x65,
+	0x71, 0x1a, 0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x4e, 0x6f,
+	0x64, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x22, 0x00, 0x12, 0x3b, 0x0a, 0x0a, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x4e, 0x6f, 0x64, 0x65, 0x73, 0x12, 0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x4e, 0x6f, 0x64, 0x65, 0x73, 0x52, 0x65, 0x71, 0x1a, 0x15, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4e, 0x6f, 0x64, 0x65, 0x73,
+	0x52, 0x65, 0x73, 0x70, 0x22, 0x00, 0x12, 0x35, 0x0a, 0x08, 0x50, 0x75, 0x74, 0x4c, 0x61, 0x62,
+	0x65, 0x6c, 0x12, 0x12, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x75, 0x74, 0x4c, 0x61,
+	0x62, 0x65, 0x6c, 0x52, 0x65, 0x71, 0x1a, 0x13, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50,
+	0x75, 0x74, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x22, 0x00, 0x12, 0x3e, 0x0a,
+	0x0b, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x12, 0x15, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x4c, 0x61, 0x62, 0x65, 0x6c,
+	0x52, 0x65, 0x71, 0x1a, 0x16, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x44, 0x65, 0x6c, 0x65,
+	0x74, 0x65, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x22, 0x00, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -361,33 +672,48 @@ func file_magnetar_proto_rawDescGZIP() []byte {
 	return file_magnetar_proto_rawDescData
 }
 
-var file_magnetar_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_magnetar_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_magnetar_proto_goTypes = []interface{}{
-	(*QueryNodesReq)(nil),    // 0: proto.QueryNodesReq
-	(*QueryNodesResp)(nil),   // 1: proto.QueryNodesResp
-	(*PutLabelReq)(nil),      // 2: proto.PutLabelReq
-	(*PutLabelResp)(nil),     // 3: proto.PutLabelResp
-	(*RegistrationReq)(nil),  // 4: proto.RegistrationReq
-	(*RegistrationResp)(nil), // 5: proto.RegistrationResp
-	(*Query)(nil),            // 6: proto.Query
-	(*NodeStringified)(nil),  // 7: proto.NodeStringified
-	(*Label)(nil),            // 8: proto.Label
+	(*GetNodeReq)(nil),       // 0: proto.GetNodeReq
+	(*GetNodeResp)(nil),      // 1: proto.GetNodeResp
+	(*ListNodesReq)(nil),     // 2: proto.ListNodesReq
+	(*ListNodesResp)(nil),    // 3: proto.ListNodesResp
+	(*QueryNodesReq)(nil),    // 4: proto.QueryNodesReq
+	(*QueryNodesResp)(nil),   // 5: proto.QueryNodesResp
+	(*PutLabelReq)(nil),      // 6: proto.PutLabelReq
+	(*PutLabelResp)(nil),     // 7: proto.PutLabelResp
+	(*DeleteLabelReq)(nil),   // 8: proto.DeleteLabelReq
+	(*DeleteLabelResp)(nil),  // 9: proto.DeleteLabelResp
+	(*RegistrationReq)(nil),  // 10: proto.RegistrationReq
+	(*RegistrationResp)(nil), // 11: proto.RegistrationResp
+	(*NodeStringified)(nil),  // 12: proto.NodeStringified
+	(*Query)(nil),            // 13: proto.Query
+	(*Label)(nil),            // 14: proto.Label
 }
 var file_magnetar_proto_depIdxs = []int32{
-	6, // 0: proto.QueryNodesReq.queries:type_name -> proto.Query
-	7, // 1: proto.QueryNodesResp.nodes:type_name -> proto.NodeStringified
-	8, // 2: proto.PutLabelReq.label:type_name -> proto.Label
-	7, // 3: proto.PutLabelResp.node:type_name -> proto.NodeStringified
-	8, // 4: proto.RegistrationReq.labels:type_name -> proto.Label
-	0, // 5: proto.Magnetar.QueryNodes:input_type -> proto.QueryNodesReq
-	2, // 6: proto.Magnetar.PutLabel:input_type -> proto.PutLabelReq
-	1, // 7: proto.Magnetar.QueryNodes:output_type -> proto.QueryNodesResp
-	3, // 8: proto.Magnetar.PutLabel:output_type -> proto.PutLabelResp
-	7, // [7:9] is the sub-list for method output_type
-	5, // [5:7] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	12, // 0: proto.GetNodeResp.node:type_name -> proto.NodeStringified
+	12, // 1: proto.ListNodesResp.nodes:type_name -> proto.NodeStringified
+	13, // 2: proto.QueryNodesReq.queries:type_name -> proto.Query
+	12, // 3: proto.QueryNodesResp.nodes:type_name -> proto.NodeStringified
+	14, // 4: proto.PutLabelReq.label:type_name -> proto.Label
+	12, // 5: proto.PutLabelResp.node:type_name -> proto.NodeStringified
+	12, // 6: proto.DeleteLabelResp.node:type_name -> proto.NodeStringified
+	14, // 7: proto.RegistrationReq.labels:type_name -> proto.Label
+	0,  // 8: proto.Magnetar.GetNode:input_type -> proto.GetNodeReq
+	2,  // 9: proto.Magnetar.ListNodes:input_type -> proto.ListNodesReq
+	4,  // 10: proto.Magnetar.QueryNodes:input_type -> proto.QueryNodesReq
+	6,  // 11: proto.Magnetar.PutLabel:input_type -> proto.PutLabelReq
+	8,  // 12: proto.Magnetar.DeleteLabel:input_type -> proto.DeleteLabelReq
+	1,  // 13: proto.Magnetar.GetNode:output_type -> proto.GetNodeResp
+	3,  // 14: proto.Magnetar.ListNodes:output_type -> proto.ListNodesResp
+	5,  // 15: proto.Magnetar.QueryNodes:output_type -> proto.QueryNodesResp
+	7,  // 16: proto.Magnetar.PutLabel:output_type -> proto.PutLabelResp
+	9,  // 17: proto.Magnetar.DeleteLabel:output_type -> proto.DeleteLabelResp
+	13, // [13:18] is the sub-list for method output_type
+	8,  // [8:13] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_magnetar_proto_init() }
@@ -398,7 +724,7 @@ func file_magnetar_proto_init() {
 	file_model_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_magnetar_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryNodesReq); i {
+			switch v := v.(*GetNodeReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -410,7 +736,7 @@ func file_magnetar_proto_init() {
 			}
 		}
 		file_magnetar_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryNodesResp); i {
+			switch v := v.(*GetNodeResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -422,7 +748,7 @@ func file_magnetar_proto_init() {
 			}
 		}
 		file_magnetar_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PutLabelReq); i {
+			switch v := v.(*ListNodesReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -434,7 +760,7 @@ func file_magnetar_proto_init() {
 			}
 		}
 		file_magnetar_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PutLabelResp); i {
+			switch v := v.(*ListNodesResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -446,7 +772,7 @@ func file_magnetar_proto_init() {
 			}
 		}
 		file_magnetar_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RegistrationReq); i {
+			switch v := v.(*QueryNodesReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -458,6 +784,78 @@ func file_magnetar_proto_init() {
 			}
 		}
 		file_magnetar_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryNodesResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_magnetar_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PutLabelReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_magnetar_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PutLabelResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_magnetar_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteLabelReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_magnetar_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteLabelResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_magnetar_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RegistrationReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_magnetar_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*RegistrationResp); i {
 			case 0:
 				return &v.state
@@ -476,7 +874,7 @@ func file_magnetar_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_magnetar_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -3,6 +3,11 @@ syntax = "proto3";
 option go_package="github.com/c12s/magnetar/pkg/proto";
 package proto;
 
+message Node {
+  string id = 1;
+  repeated Label labels = 2;
+}
+
 message Label {
   string key = 1;
   Value value = 2;
