@@ -1,7 +1,6 @@
 package startup
 
 import (
-	"github.com/c12s/magnetar/internal/apis"
 	"github.com/c12s/magnetar/internal/configs"
 	"github.com/c12s/magnetar/internal/handlers"
 	"github.com/c12s/magnetar/internal/repos"
@@ -45,7 +44,7 @@ func StartApp(config *configs.Config) error {
 	if err != nil {
 		return err
 	}
-	server, err := apis.NewMagnetarGrpcServer(*nodeService, *labelService)
+	server, err := handlers.NewMagnetarGrpcServer(*nodeService, *labelService)
 	startServer(config.ServerAddress(), server)
 
 	<-subscriptionClosedCh
