@@ -50,6 +50,10 @@ services:
   nats:
     image: nats:latest
     container_name: nats
+    expose:
+      - ${NATS_PORT}
+    ports:
+      - ${NATS_PORT}:${NATS_PORT}
     hostname: ${NATS_HOSTNAME}
     restart: on-failure
     networks:
