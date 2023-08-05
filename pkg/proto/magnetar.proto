@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package proto;
 
-import "model.proto";
+import "magnetar-model.proto";
 
 service Magnetar {
   rpc GetNode(GetNodeReq) returns (GetNodeResp) {}

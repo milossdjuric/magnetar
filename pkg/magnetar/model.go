@@ -125,6 +125,15 @@ func (s stringLabel) Compare(value string) (ComparisonResult, error) {
 	return CompResNeq, nil
 }
 
+type Node struct {
+	Id     NodeId
+	Labels []Label
+}
+
+type NodeId struct {
+	Value string
+}
+
 type QuerySelector []Query
 
 type Query struct {

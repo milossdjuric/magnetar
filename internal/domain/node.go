@@ -2,37 +2,28 @@ package domain
 
 import "github.com/c12s/magnetar/pkg/magnetar"
 
-type Node struct {
-	Id     NodeId
-	Labels []magnetar.Label
-}
-
-type NodeId struct {
-	Value string
-}
-
 type NodeRepo interface {
-	Put(node Node) error
-	Get(nodeId NodeId) (*Node, error)
-	List() ([]Node, error)
-	Query(selector magnetar.QuerySelector) ([]NodeId, error)
-	PutLabel(nodeId NodeId, label magnetar.Label) error
-	DeleteLabel(nodeId NodeId, labelKey string) error
+	Put(node magnetar.Node) error
+	Get(nodeId magnetar.NodeId) (*magnetar.Node, error)
+	List() ([]magnetar.Node, error)
+	Query(selector magnetar.QuerySelector) ([]magnetar.NodeId, error)
+	PutLabel(nodeId magnetar.NodeId, label magnetar.Label) error
+	DeleteLabel(nodeId magnetar.NodeId, labelKey string) error
 }
 
 type GetNodeReq struct {
-	Id NodeId
+	Id magnetar.NodeId
 }
 
 type GetNodeResp struct {
-	Node Node
+	Node magnetar.Node
 }
 
 type ListNodesReq struct {
 }
 
 type ListNodesResp struct {
-	Nodes []Node
+	Nodes []magnetar.Node
 }
 
 type QueryNodesReq struct {
@@ -40,5 +31,5 @@ type QueryNodesReq struct {
 }
 
 type QueryNodesResp struct {
-	Nodes []Node
+	Nodes []magnetar.Node
 }

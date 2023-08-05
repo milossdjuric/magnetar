@@ -18,8 +18,8 @@ func NewRegistrationService(nodeRepo domain.NodeRepo) (*RegistrationService, err
 }
 
 func (r *RegistrationService) Register(req magnetar.RegistrationReq) (*magnetar.RegistrationResp, error) {
-	node := domain.Node{
-		Id: domain.NodeId{
+	node := magnetar.Node{
+		Id: magnetar.NodeId{
 			Value: generateNodeId(),
 		},
 		Labels: req.Labels,

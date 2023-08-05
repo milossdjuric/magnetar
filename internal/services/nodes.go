@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/c12s/magnetar/internal/domain"
+	"github.com/c12s/magnetar/pkg/magnetar"
 )
 
 type NodeService struct {
@@ -39,7 +40,7 @@ func (n *NodeService) Query(req domain.QueryNodesReq) (*domain.QueryNodesResp, e
 	if err != nil {
 		return nil, err
 	}
-	nodes := make([]domain.Node, len(nodeIds))
+	nodes := make([]magnetar.Node, len(nodeIds))
 	for i, nodeId := range nodeIds {
 		node, err := n.nodeRepo.Get(nodeId)
 		if err != nil {

@@ -113,7 +113,7 @@ func (x *Label) toDomain() (magnetar.Label, error) {
 
 func (x *GetNodeReq) ToDomain() (*domain.GetNodeReq, error) {
 	return &domain.GetNodeReq{
-		Id: domain.NodeId{
+		Id: magnetar.NodeId{
 			Value: x.NodeId,
 		},
 	}, nil
@@ -202,7 +202,7 @@ func (x *PutLabelReq) ToDomain() (*domain.PutLabelReq, error) {
 		return nil, err
 	}
 	return &domain.PutLabelReq{
-		NodeId: domain.NodeId{
+		NodeId: magnetar.NodeId{
 			Value: x.NodeId,
 		},
 		Label: label,
@@ -222,7 +222,7 @@ func (x *PutLabelResp) FromDomain(resp domain.PutLabelResp) (*PutLabelResp, erro
 
 func (x *DeleteLabelReq) ToDomain() (*domain.DeleteLabelReq, error) {
 	return &domain.DeleteLabelReq{
-		NodeId: domain.NodeId{
+		NodeId: magnetar.NodeId{
 			Value: x.NodeId,
 		},
 		LabelKey: x.LabelKey,
@@ -240,7 +240,7 @@ func (x *DeleteLabelResp) FromDomain(resp domain.DeleteLabelResp) (*DeleteLabelR
 	}, nil
 }
 
-func (x *NodeStringified) fromDomain(node domain.Node) (*NodeStringified, error) {
+func (x *NodeStringified) fromDomain(node magnetar.Node) (*NodeStringified, error) {
 	labels := make([]*LabelStringified, len(node.Labels))
 	for i, label := range node.Labels {
 		labelProto := &LabelStringified{}
@@ -263,7 +263,7 @@ func (x *LabelStringified) fromDomain(label magnetar.Label) (*LabelStringified, 
 	}, nil
 }
 
-func (x *Node) fromDomain(node domain.Node) (*Node, error) {
+func (x *Node) fromDomain(node magnetar.Node) (*Node, error) {
 	resp := &Node{
 		Id:     node.Id.Value,
 		Labels: make([]*Label, len(node.Labels)),
@@ -279,9 +279,9 @@ func (x *Node) fromDomain(node domain.Node) (*Node, error) {
 	return resp, nil
 }
 
-func (x *Node) toDomain() (*domain.Node, error) {
-	resp := &domain.Node{
-		Id: domain.NodeId{
+func (x *Node) toDomain() (*magnetar.Node, error) {
+	resp := &magnetar.Node{
+		Id: magnetar.NodeId{
 			Value: x.Id,
 		},
 		Labels: make([]magnetar.Label, len(x.Labels)),

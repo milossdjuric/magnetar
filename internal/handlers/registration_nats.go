@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/c12s/magnetar/internal/domain"
 	"github.com/c12s/magnetar/internal/services"
-	"github.com/c12s/magnetar/pkg"
+	"github.com/c12s/magnetar/pkg/magnetar"
 	"github.com/nats-io/nats.go"
 	"log"
 	"time"
@@ -13,10 +13,10 @@ type natsRegistrationHandler struct {
 	conn                   *nats.Conn
 	registrationReqSubject string
 	service                services.RegistrationService
-	marshaller             pkg.Marshaller
+	marshaller             magnetar.Marshaller
 }
 
-func NewNatsRegistrationHandler(conn *nats.Conn, registrationReqSubject string, service services.RegistrationService, marshaller pkg.Marshaller) (domain.RegistrationHandler, error) {
+func NewNatsRegistrationHandler(conn *nats.Conn, registrationReqSubject string, service services.RegistrationService, marshaller magnetar.Marshaller) (domain.RegistrationHandler, error) {
 	return natsRegistrationHandler{
 		conn:                   conn,
 		registrationReqSubject: registrationReqSubject,

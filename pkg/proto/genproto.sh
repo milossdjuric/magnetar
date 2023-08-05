@@ -1,8 +1,8 @@
 protoc --proto_path=./ \
         --go_out=./ \
         --go_opt=paths=source_relative \
-        --go_opt=Mmodel.proto=github.com/c12s/magnetar/pkg/proto \
-        model.proto
+        --go_opt=Mmagnetar-model.proto=github.com/c12s/magnetar/pkg/proto \
+        magnetar-model.proto
 
 protoc --proto_path=./ \
         --go_out=. \
@@ -11,5 +11,5 @@ protoc --proto_path=./ \
         --go-grpc_opt=paths=source_relative \
         --go_opt=Mmagnetar.proto=github.com/c12s/magnetar/pkg/proto \
         --go-grpc_opt=Mmagnetar.proto=github.com/c12s/magnetar/pkg/proto \
-        -I ./model.proto \
+        -I ./magnetar-model.proto \
         magnetar.proto
