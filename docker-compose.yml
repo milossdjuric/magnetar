@@ -30,7 +30,13 @@ services:
     image: star
     container_name: star
     hostname: ${STAR_HOSTNAME}
+    expose:
+      - ${STAR_PORT}
+    ports:
+      - ${STAR_PORT}:${STAR_PORT}
     environment:
+      - STAR_ADDRESS=:${STAR_PORT}
+      - OORT_ADDRESS=${OORT_HOSTNAME}:${OORT_PORT}
       - NATS_ADDRESS=${NATS_HOSTNAME}:${NATS_PORT}
       - REGISTRATION_SUBJECT=${REGISTRATION_SUBJECT}
       - REGISTRATION_REQ_TIMEOUT_MILLISECONDS=${REGISTRATION_REQ_TIMEOUT_MILLISECONDS}
@@ -46,6 +52,82 @@ services:
     depends_on:
       - nats
       - magnetar
+
+  oort:
+    build:
+      context: ../oort
+    image: oort
+    container_name: oort
+    hostname: ${OORT_HOSTNAME}
+    expose:
+      - ${OORT_PORT}
+    ports:
+      - ${OORT_PORT}:${OORT_PORT}
+    environment:
+      - OORT_PORT=${OORT_PORT}
+      - NEO4J_HOSTNAME=${NEO4J_HOSTNAME}
+      - NEO4J_BOLT_PORT=${NEO4J_BOLT_PORT}
+      - NEO4J_DBNAME=${NEO4J_DBNAME}
+      - NATS_HOSTNAME=${NATS_HOSTNAME}
+      - NATS_PORT=${NATS_PORT}
+      - REDIS_HOSTNAME=${REDIS_HOSTNAME}
+      - REDIS_PORT=${REDIS_PORT}
+      - CACHE_EVICTION_MIN=${CACHE_EVICTION_MIN}
+    networks:
+      - network
+    depends_on:
+      - neo4j
+      - nats
+      - redis
+
+  poller:
+    build:
+      context: ../oort/poller
+    container_name: poller
+    hostname: poller
+    restart: on-failure
+    environment:
+      - NEO4J_HOSTNAME=${NEO4J_HOSTNAME}
+      - NEO4J_BOLT_PORT=${NEO4J_BOLT_PORT}
+      - NEO4J_DBNAME=${NEO4J_DBNAME}
+      - NATS_HOSTNAME=${NATS_HOSTNAME}
+      - NATS_PORT=${NATS_PORT}
+      - POLL_INTERVAL_IN_MS=${POLL_INTERVAL_IN_MS}
+    depends_on:
+      - neo4j
+      - nats
+    networks:
+      - network
+
+  neo4j:
+    image: neo4j:4.4.12
+    container_name: neo4j
+    hostname: ${NEO4J_HOSTNAME}
+    restart: on-failure
+    expose:
+      - ${NEO4J_HTTP_PORT}
+      - ${NEO4J_BOLT_PORT}
+    ports:
+      - ${NEO4J_HTTP_PORT}:${NEO4J_HTTP_PORT}
+      - ${NEO4J_BOLT_PORT}:${NEO4J_BOLT_PORT}
+    environment:
+      - NEO4J_apoc_export_file_enabled=${NEO4J_apoc_export_file_enabled}
+      - NEO4J_apoc_import_file_enabled=${NEO4J_apoc_import_file_enabled}
+      - NEO4J_apoc_import_file_use__neo4j__config=${NEO4J_apoc_import_file_use__neo4j__config}
+      - NEO4JLABS_PLUGINS=${NEO4J_PLUGINS}
+      - NEO4J_dbms_connector_bolt_listen__address=:${NEO4J_BOLT_PORT}
+      - NEO4J_dbms_connector_http_listen__address=:${NEO4J_HTTP_PORT}
+      - NEO4J_dbms_security_auth__enabled=${NEO4J_AUTH_ENABLED}
+    networks:
+      - network
+
+  redis:
+    image: redis:6.2-alpine
+    restart: on-failure
+    container_name: redis
+    hostname: ${REDIS_HOSTNAME}
+    networks:
+      - network
 
   nats:
     image: nats:latest
