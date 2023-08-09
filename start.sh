@@ -29,10 +29,5 @@ export NEO4J_apoc_import_file_enabled=true
 export NEO4J_apoc_import_file_use__neo4j__config=true
 export NEO4J_PLUGINS="[\"apoc\"]"
 
-export POLL_INTERVAL_IN_MS=500000
-
-export REDIS_HOSTNAME=redis
-export REDIS_PORT=6379
-export CACHE_EVICTION_MIN=5
-
-docker-compose up --build
+docker-compose build
+#docker-compose up --build

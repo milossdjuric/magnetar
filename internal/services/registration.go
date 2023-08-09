@@ -2,9 +2,7 @@ package services
 
 import (
 	"github.com/c12s/magnetar/internal/domain"
-	"github.com/c12s/magnetar/pkg/magnetar"
 	"github.com/google/uuid"
-	"log"
 )
 
 type RegistrationService struct {
@@ -17,9 +15,9 @@ func NewRegistrationService(nodeRepo domain.NodeRepo) (*RegistrationService, err
 	}, nil
 }
 
-func (r *RegistrationService) Register(req magnetar.RegistrationReq) (*magnetar.RegistrationResp, error) {
-	node := magnetar.Node{
-		Id: magnetar.NodeId{
+func (r *RegistrationService) Register(req domain.RegistrationReq) (*domain.RegistrationResp, error) {
+	node := domain.Node{
+		Id: domain.NodeId{
 			Value: generateNodeId(),
 		},
 		Labels: req.Labels,
@@ -30,32 +28,7 @@ func (r *RegistrationService) Register(req magnetar.RegistrationReq) (*magnetar.
 		return nil, err
 	}
 
-	// todo: delete this later
-	log.Println("TEST GETTING THE NODE")
-	fetchedNode, err := r.nodeRepo.Get(node.Id)
-	log.Println(err)
-	log.Println(fetchedNode)
-	res, err := r.nodeRepo.Query([]magnetar.Query{
-		{
-			LabelKey: "skey",
-			ShouldBe: magnetar.CompResEq,
-			Value:    "abcd",
-		},
-		{
-			LabelKey: "bkey",
-			ShouldBe: magnetar.CompResEq,
-			Value:    "true",
-		},
-	})
-	if err != nil {
-		log.Println(err)
-	}
-	log.Println(len(res))
-	for _, id := range res {
-		log.Println(id.Value)
-	}
-
-	return &magnetar.RegistrationResp{
+	return &domain.RegistrationResp{
 		NodeId: node.Id.Value,
 	}, nil
 }

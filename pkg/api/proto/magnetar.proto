@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package proto;
 
-import "magnetar-model.proto";
+import "magnetar-model.api";
 
 service Magnetar {
   rpc GetNode(GetNodeReq) returns (GetNodeResp) {}
@@ -24,6 +24,12 @@ message ListNodesReq { }
 
 message ListNodesResp {
   repeated NodeStringified nodes = 1;
+}
+
+message Query {
+  string labelKey = 3;
+  string shouldBe = 2;
+  string value = 1;
 }
 
 message QueryNodesReq {
@@ -50,12 +56,4 @@ message DeleteLabelReq {
 
 message DeleteLabelResp {
   NodeStringified node = 1;
-}
-
-message RegistrationReq {
-  repeated Label labels = 1;
-}
-
-message RegistrationResp {
-  string NodeId = 1;
 }

@@ -2,25 +2,26 @@ package handlers
 
 import (
 	"context"
+	"github.com/c12s/magnetar/internal/mappers/proto"
 	"github.com/c12s/magnetar/internal/services"
-	"github.com/c12s/magnetar/pkg/proto"
+	"github.com/c12s/magnetar/pkg/api"
 )
 
 type MagnetarGrpcServer struct {
-	proto.UnimplementedMagnetarServer
+	api.UnimplementedMagnetarServer
 	nodeService  services.NodeService
 	labelService services.LabelService
 }
 
-func NewMagnetarGrpcServer(nodeService services.NodeService, labelService services.LabelService) (proto.MagnetarServer, error) {
+func NewMagnetarGrpcServer(nodeService services.NodeService, labelService services.LabelService) (api.MagnetarServer, error) {
 	return &MagnetarGrpcServer{
 		nodeService:  nodeService,
 		labelService: labelService,
 	}, nil
 }
 
-func (m *MagnetarGrpcServer) GetNode(ctx context.Context, req *proto.GetNodeReq) (*proto.GetNodeResp, error) {
-	domainReq, err := req.ToDomain()
+func (m *MagnetarGrpcServer) GetNode(ctx context.Context, req *api.GetNodeReq) (*api.GetNodeResp, error) {
+	domainReq, err := proto.GetNodeReqToDomain(req)
 	if err != nil {
 		return nil, err
 	}
@@ -28,12 +29,11 @@ func (m *MagnetarGrpcServer) GetNode(ctx context.Context, req *proto.GetNodeReq)
 	if err != nil {
 		return nil, err
 	}
-	resp := &proto.GetNodeResp{}
-	return resp.FromDomain(*domainResp)
+	return proto.GetNodeRespFromDomain(*domainResp)
 }
 
-func (m *MagnetarGrpcServer) ListNodes(ctx context.Context, req *proto.ListNodesReq) (*proto.ListNodesResp, error) {
-	domainReq, err := req.ToDomain()
+func (m *MagnetarGrpcServer) ListNodes(ctx context.Context, req *api.ListNodesReq) (*api.ListNodesResp, error) {
+	domainReq, err := proto.ListNodesReqToDomain(req)
 	if err != nil {
 		return nil, err
 	}
@@ -41,12 +41,11 @@ func (m *MagnetarGrpcServer) ListNodes(ctx context.Context, req *proto.ListNodes
 	if err != nil {
 		return nil, err
 	}
-	resp := &proto.ListNodesResp{}
-	return resp.FromDomain(*domainResp)
+	return proto.ListNodesRespFromDomain(*domainResp)
 }
 
-func (m *MagnetarGrpcServer) QueryNodes(ctx context.Context, req *proto.QueryNodesReq) (*proto.QueryNodesResp, error) {
-	domainReq, err := req.ToDomain()
+func (m *MagnetarGrpcServer) QueryNodes(ctx context.Context, req *api.QueryNodesReq) (*api.QueryNodesResp, error) {
+	domainReq, err := proto.QueryNodesReqToDomain(req)
 	if err != nil {
 		return nil, err
 	}
@@ -54,12 +53,11 @@ func (m *MagnetarGrpcServer) QueryNodes(ctx context.Context, req *proto.QueryNod
 	if err != nil {
 		return nil, err
 	}
-	resp := &proto.QueryNodesResp{}
-	return resp.FromDomain(*domainResp)
+	return proto.QueryNodesRespFromDomain(*domainResp)
 }
 
-func (m *MagnetarGrpcServer) PutLabel(ctx context.Context, req *proto.PutLabelReq) (*proto.PutLabelResp, error) {
-	domainReq, err := req.ToDomain()
+func (m *MagnetarGrpcServer) PutLabel(ctx context.Context, req *api.PutLabelReq) (*api.PutLabelResp, error) {
+	domainReq, err := proto.PutLabelReqToDomain(req)
 	if err != nil {
 		return nil, err
 	}
@@ -67,12 +65,11 @@ func (m *MagnetarGrpcServer) PutLabel(ctx context.Context, req *proto.PutLabelRe
 	if err != nil {
 		return nil, err
 	}
-	resp := proto.PutLabelResp{}
-	return resp.FromDomain(*domainResp)
+	return proto.PutLabelRespFromDomain(*domainResp)
 }
 
-func (m *MagnetarGrpcServer) DeleteLabel(ctx context.Context, req *proto.DeleteLabelReq) (*proto.DeleteLabelResp, error) {
-	domainReq, err := req.ToDomain()
+func (m *MagnetarGrpcServer) DeleteLabel(ctx context.Context, req *api.DeleteLabelReq) (*api.DeleteLabelResp, error) {
+	domainReq, err := proto.DeleteLabelReqToDomain(req)
 	if err != nil {
 		return nil, err
 	}
@@ -80,6 +77,5 @@ func (m *MagnetarGrpcServer) DeleteLabel(ctx context.Context, req *proto.DeleteL
 	if err != nil {
 		return nil, err
 	}
-	resp := proto.DeleteLabelResp{}
-	return resp.FromDomain(*domainResp)
+	return proto.DeleteLabelRespFromDomain(*domainResp)
 }

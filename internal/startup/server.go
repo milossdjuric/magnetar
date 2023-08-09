@@ -1,24 +1,21 @@
 package startup
 
 import (
-	"github.com/c12s/magnetar/pkg/proto"
+	"github.com/c12s/magnetar/pkg/api"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
-func startServer(address string, server proto.MagnetarServer) chan bool {
+func startServer(address string, magnetarServer api.MagnetarServer) (*grpc.Server, error) {
 	lis, err := net.Listen("tcp", address)
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		return nil, err
 	}
+
 	s := grpc.NewServer()
-	proto.RegisterMagnetarServer(s, server)
-	log.Printf("server listening at %v", lis.Addr())
+	api.RegisterMagnetarServer(s, magnetarServer)
 	reflection.Register(s)
 
 	go func() {
@@ -28,15 +25,5 @@ func startServer(address string, server proto.MagnetarServer) chan bool {
 		}
 	}()
 
-	var serverStoppedCh chan bool
-	go func() {
-		quit := make(chan os.Signal, 1)
-		signal.Notify(quit, syscall.SIGKILL, syscall.SIGINT)
-		<-quit
-
-		s.GracefulStop()
-		serverStoppedCh <- true
-	}()
-
-	return serverStoppedCh
+	return s, nil
 }
