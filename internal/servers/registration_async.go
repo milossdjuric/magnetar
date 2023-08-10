@@ -9,21 +9,21 @@ import (
 )
 
 type RegistrationAsyncServer struct {
-	reqSubscriber messaging.Subscriber
-	respPublisher messaging.Publisher
-	service       services.RegistrationService
+	subscriber messaging.Subscriber
+	publisher  messaging.Publisher
+	service    services.RegistrationService
 }
 
-func NewRegistrationAsyncServer(reqSubscriber messaging.Subscriber, respPublisher messaging.Publisher, service services.RegistrationService) (*RegistrationAsyncServer, error) {
+func NewRegistrationAsyncServer(subscriber messaging.Subscriber, publisher messaging.Publisher, service services.RegistrationService) (*RegistrationAsyncServer, error) {
 	return &RegistrationAsyncServer{
-		reqSubscriber: reqSubscriber,
-		respPublisher: respPublisher,
-		service:       service,
+		subscriber: subscriber,
+		publisher:  publisher,
+		service:    service,
 	}, nil
 }
 
 func (n *RegistrationAsyncServer) Serve() error {
-	return n.reqSubscriber.Subscribe(n.register)
+	return n.subscriber.Subscribe(n.register)
 }
 
 func (n *RegistrationAsyncServer) register(msg []byte, replySubject string) {
@@ -53,14 +53,14 @@ func (n *RegistrationAsyncServer) register(msg []byte, replySubject string) {
 		log.Println(err)
 		return
 	}
-	err = n.respPublisher.Publish(respMarshalled, replySubject)
+	err = n.publisher.Publish(respMarshalled, replySubject)
 	if err != nil {
 		log.Println(err)
 	}
 }
 
 func (n *RegistrationAsyncServer) GracefulStop() {
-	err := n.reqSubscriber.Unsubscribe()
+	err := n.subscriber.Unsubscribe()
 	if err != nil {
 		log.Println(err)
 	}
