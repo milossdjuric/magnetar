@@ -1,6 +1,8 @@
 package startup
 
 import (
+	"context"
+	"errors"
 	"github.com/c12s/magnetar/internal/configs"
 	"github.com/c12s/magnetar/internal/handlers"
 	"github.com/c12s/magnetar/internal/marshallers/proto"
@@ -9,23 +11,48 @@ import (
 	"github.com/c12s/magnetar/pkg/api"
 	"github.com/c12s/magnetar/pkg/messaging/nats"
 	"log"
-	"os"
-	"os/signal"
-	"syscall"
+	"sync"
 )
 
-func StartApp(config *configs.Config) error {
-	natsConn, err := NewNatsConn(config.NatsAddress())
+type app struct {
+	config                    *configs.Config
+	gracefulShutdownProcesses []func(group *sync.WaitGroup)
+	shutdownProcesses         []func()
+}
+
+func NewAppWithConfig(config *configs.Config) (*app, error) {
+	if config == nil {
+		return nil, errors.New("config is nil")
+	}
+	return &app{
+		config: config,
+	}, nil
+}
+
+func (a *app) Start() error {
+	natsConn, err := NewNatsConn(a.config.NatsAddress())
 	if err != nil {
 		return err
 	}
-	etcdClient, err := NewEtcdClient(config.EtcdAddress())
+
+	a.shutdownProcesses = append(a.shutdownProcesses, func() {
+		log.Println("closing nats conn")
+		natsConn.Close()
+	})
+
+	etcdClient, err := NewEtcdClient(a.config.EtcdAddress())
 	if err != nil {
 		return err
 	}
-	nodeMarshaller := proto.NewProtoNodeMarshaller()
-	labelMarshaller := proto.NewProtoLabelMarshaller()
-	nodeRepo, err := repos.NewNodeEtcdRepo(etcdClient, nodeMarshaller, labelMarshaller)
+	a.shutdownProcesses = append(a.shutdownProcesses, func() {
+		log.Println("closing etcd client conn")
+		err := etcdClient.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	})
+
+	nodeRepo, err := repos.NewNodeEtcdRepo(etcdClient, proto.NewProtoNodeMarshaller(), proto.NewProtoLabelMarshaller())
 	if err != nil {
 		return err
 	}
@@ -34,13 +61,23 @@ func StartApp(config *configs.Config) error {
 	if err != nil {
 		return err
 	}
+	a.gracefulShutdownProcesses = append(a.gracefulShutdownProcesses, func(wg *sync.WaitGroup) {
+		err := regReqSubscriber.Unsubscribe()
+		if err != nil {
+			log.Println(err)
+		} else {
+			log.Println("registration req subscriber gracefully stopped")
+		}
+		wg.Done()
+	})
+
 	regRespPublisher, err := nats.NewPublisher(natsConn)
 
 	registrationService, err := services.NewRegistrationService(nodeRepo)
 	if err != nil {
 		return err
 	}
-	registrationHandler, err := handlers.NewNatsRegistrationHandler(regReqSubscriber, regRespPublisher, *registrationService)
+	registrationHandler, err := handlers.NewAsyncRegistrationHandler(regReqSubscriber, regRespPublisher, *registrationService)
 	if err != nil {
 		return err
 	}
@@ -57,22 +94,51 @@ func StartApp(config *configs.Config) error {
 	if err != nil {
 		return err
 	}
+
 	magnetarServer, err := handlers.NewMagnetarGrpcServer(*nodeService, *labelService)
-	server, err := startServer(config.ServerAddress(), magnetarServer)
+	server, err := startServer(a.config.ServerAddress(), magnetarServer)
 	if err != nil {
 		return err
 	}
-
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGKILL, syscall.SIGINT)
-	<-quit
-
-	server.GracefulStop()
-	err = regReqSubscriber.Unsubscribe()
-	if err != nil {
-		log.Println(err)
-	}
-	natsConn.Close()
+	a.gracefulShutdownProcesses = append(a.gracefulShutdownProcesses, func(wg *sync.WaitGroup) {
+		server.GracefulStop()
+		log.Println("grpc server gracefully stopped")
+		wg.Done()
+	})
 
 	return nil
+}
+
+func (a *app) GracefulShutdown(ctx context.Context) {
+	// call all shutdown processes after a timeout or graceful shutdown processes completion
+	defer a.shutdown()
+
+	// wait for all graceful shutdown processes to complete
+	wg := &sync.WaitGroup{}
+	wg.Add(len(a.gracefulShutdownProcesses))
+
+	for _, gracefulShutdownProcess := range a.gracefulShutdownProcesses {
+		go gracefulShutdownProcess(wg)
+	}
+
+	// notify when graceful shutdown processes are done
+	gracefulShutdownDone := make(chan struct{})
+	go func() {
+		wg.Wait()
+		gracefulShutdownDone <- struct{}{}
+	}()
+
+	// wait for graceful shutdown processes to complete or for ctx timeout
+	select {
+	case <-ctx.Done():
+		log.Println("ctx timeout ... shutting down")
+	case <-gracefulShutdownDone:
+		log.Println("app gracefully stopped")
+	}
+}
+
+func (a *app) shutdown() {
+	for _, shutdownProcess := range a.shutdownProcesses {
+		shutdownProcess()
+	}
 }

@@ -30,4 +30,4 @@ export NEO4J_apoc_import_file_use__neo4j__config=true
 export NEO4J_PLUGINS="[\"apoc\"]"
 
 docker-compose build
-#docker-compose up --build
+docker-compose up

@@ -40,7 +40,7 @@ func (s *subscriber) Subscribe(handler func(msg []byte, replySubject string)) er
 
 func (s *subscriber) Unsubscribe() error {
 	if s.subscription != nil && s.subscription.IsValid() {
-		return s.subscription.Unsubscribe()
+		return s.subscription.Drain()
 	}
 	return nil
 }

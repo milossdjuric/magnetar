@@ -14,7 +14,7 @@ type AsyncRegistrationHandler struct {
 	service       services.RegistrationService
 }
 
-func NewNatsRegistrationHandler(reqSubscriber messaging.Subscriber, respPublisher messaging.Publisher, service services.RegistrationService) (AsyncRegistrationHandler, error) {
+func NewAsyncRegistrationHandler(reqSubscriber messaging.Subscriber, respPublisher messaging.Publisher, service services.RegistrationService) (AsyncRegistrationHandler, error) {
 	return AsyncRegistrationHandler{
 		reqSubscriber: reqSubscriber,
 		respPublisher: respPublisher,
