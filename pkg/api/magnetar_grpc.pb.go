@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.12.4
-// source: magnetar.api
+// source: magnetar.proto
 
 package api
 
@@ -39,7 +39,7 @@ func NewMagnetarClient(cc grpc.ClientConnInterface) MagnetarClient {
 
 func (c *magnetarClient) GetNode(ctx context.Context, in *GetNodeReq, opts ...grpc.CallOption) (*GetNodeResp, error) {
 	out := new(GetNodeResp)
-	err := c.cc.Invoke(ctx, "/api.Magnetar/GetNode", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.Magnetar/GetNode", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (c *magnetarClient) GetNode(ctx context.Context, in *GetNodeReq, opts ...gr
 
 func (c *magnetarClient) ListNodes(ctx context.Context, in *ListNodesReq, opts ...grpc.CallOption) (*ListNodesResp, error) {
 	out := new(ListNodesResp)
-	err := c.cc.Invoke(ctx, "/api.Magnetar/ListNodes", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.Magnetar/ListNodes", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (c *magnetarClient) ListNodes(ctx context.Context, in *ListNodesReq, opts .
 
 func (c *magnetarClient) QueryNodes(ctx context.Context, in *QueryNodesReq, opts ...grpc.CallOption) (*QueryNodesResp, error) {
 	out := new(QueryNodesResp)
-	err := c.cc.Invoke(ctx, "/api.Magnetar/QueryNodes", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.Magnetar/QueryNodes", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (c *magnetarClient) QueryNodes(ctx context.Context, in *QueryNodesReq, opts
 
 func (c *magnetarClient) PutLabel(ctx context.Context, in *PutLabelReq, opts ...grpc.CallOption) (*PutLabelResp, error) {
 	out := new(PutLabelResp)
-	err := c.cc.Invoke(ctx, "/api.Magnetar/PutLabel", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.Magnetar/PutLabel", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (c *magnetarClient) PutLabel(ctx context.Context, in *PutLabelReq, opts ...
 
 func (c *magnetarClient) DeleteLabel(ctx context.Context, in *DeleteLabelReq, opts ...grpc.CallOption) (*DeleteLabelResp, error) {
 	out := new(DeleteLabelResp)
-	err := c.cc.Invoke(ctx, "/api.Magnetar/DeleteLabel", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.Magnetar/DeleteLabel", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +136,7 @@ func _Magnetar_GetNode_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.Magnetar/GetNode",
+		FullMethod: "/proto.Magnetar/GetNode",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MagnetarServer).GetNode(ctx, req.(*GetNodeReq))
@@ -154,7 +154,7 @@ func _Magnetar_ListNodes_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.Magnetar/ListNodes",
+		FullMethod: "/proto.Magnetar/ListNodes",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MagnetarServer).ListNodes(ctx, req.(*ListNodesReq))
@@ -172,7 +172,7 @@ func _Magnetar_QueryNodes_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.Magnetar/QueryNodes",
+		FullMethod: "/proto.Magnetar/QueryNodes",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MagnetarServer).QueryNodes(ctx, req.(*QueryNodesReq))
@@ -190,7 +190,7 @@ func _Magnetar_PutLabel_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.Magnetar/PutLabel",
+		FullMethod: "/proto.Magnetar/PutLabel",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MagnetarServer).PutLabel(ctx, req.(*PutLabelReq))
@@ -208,7 +208,7 @@ func _Magnetar_DeleteLabel_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.Magnetar/DeleteLabel",
+		FullMethod: "/proto.Magnetar/DeleteLabel",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MagnetarServer).DeleteLabel(ctx, req.(*DeleteLabelReq))
@@ -220,7 +220,7 @@ func _Magnetar_DeleteLabel_Handler(srv interface{}, ctx context.Context, dec fun
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Magnetar_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "api.Magnetar",
+	ServiceName: "proto.Magnetar",
 	HandlerType: (*MagnetarServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -245,5 +245,5 @@ var Magnetar_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "magnetar.api",
+	Metadata: "magnetar.proto",
 }

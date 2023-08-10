@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.28.1
 // 	protoc        v3.12.4
-// source: magnetar-model.api
+// source: magnetar_model.proto
 
 package api
 
@@ -184,7 +184,7 @@ type Value struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Type       Value_ValueTYpe `protobuf:"varint,1,opt,name=type,proto3,enum=api.Value_ValueTYpe" json:"type,omitempty"`
+	Type       Value_ValueTYpe `protobuf:"varint,1,opt,name=type,proto3,enum=proto.Value_ValueTYpe" json:"type,omitempty"`
 	Marshalled []byte          `protobuf:"bytes,2,opt,name=marshalled,proto3" json:"marshalled,omitempty"`
 }
 
@@ -488,7 +488,7 @@ func (x *LabelStringified) GetValue() string {
 var File_magnetar_model_proto protoreflect.FileDescriptor
 
 var file_magnetar_model_proto_rawDesc = []byte{
-	0x0a, 0x14, 0x6d, 0x61, 0x67, 0x6e, 0x65, 0x74, 0x61, 0x72, 0x2d, 0x6d, 0x6f, 0x64, 0x65, 0x6c,
+	0x0a, 0x14, 0x6d, 0x61, 0x67, 0x6e, 0x65, 0x74, 0x61, 0x72, 0x5f, 0x6d, 0x6f, 0x64, 0x65, 0x6c,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x3c, 0x0a,
 	0x04, 0x4e, 0x6f, 0x64, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x24, 0x0a, 0x06, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x18,
@@ -542,21 +542,21 @@ func file_magnetar_model_proto_rawDescGZIP() []byte {
 var file_magnetar_model_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_magnetar_model_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_magnetar_model_proto_goTypes = []interface{}{
-	(Value_ValueTYpe)(0),     // 0: api.Value.ValueTYpe
-	(*Node)(nil),             // 1: api.Node
-	(*Label)(nil),            // 2: api.Label
-	(*Value)(nil),            // 3: api.Value
-	(*BoolValue)(nil),        // 4: api.BoolValue
-	(*Float64Value)(nil),     // 5: api.Float64Value
-	(*StringValue)(nil),      // 6: api.StringValue
-	(*NodeStringified)(nil),  // 7: api.NodeStringified
-	(*LabelStringified)(nil), // 8: api.LabelStringified
+	(Value_ValueTYpe)(0),     // 0: proto.Value.ValueTYpe
+	(*Node)(nil),             // 1: proto.Node
+	(*Label)(nil),            // 2: proto.Label
+	(*Value)(nil),            // 3: proto.Value
+	(*BoolValue)(nil),        // 4: proto.BoolValue
+	(*Float64Value)(nil),     // 5: proto.Float64Value
+	(*StringValue)(nil),      // 6: proto.StringValue
+	(*NodeStringified)(nil),  // 7: proto.NodeStringified
+	(*LabelStringified)(nil), // 8: proto.LabelStringified
 }
 var file_magnetar_model_proto_depIdxs = []int32{
-	2, // 0: api.Node.labels:type_name -> api.Label
-	3, // 1: api.Label.value:type_name -> api.Value
-	0, // 2: api.Value.type:type_name -> api.Value.ValueTYpe
-	8, // 3: api.NodeStringified.labels:type_name -> api.LabelStringified
+	2, // 0: proto.Node.labels:type_name -> proto.Label
+	3, // 1: proto.Label.value:type_name -> proto.Value
+	0, // 2: proto.Value.type:type_name -> proto.Value.ValueTYpe
+	8, // 3: proto.NodeStringified.labels:type_name -> proto.LabelStringified
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

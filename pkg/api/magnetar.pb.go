@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.28.1
 // 	protoc        v3.12.4
-// source: magnetar.api
+// source: magnetar.proto
 
 package api
 
@@ -565,7 +565,7 @@ var File_magnetar_proto protoreflect.FileDescriptor
 var file_magnetar_proto_rawDesc = []byte{
 	0x0a, 0x0e, 0x6d, 0x61, 0x67, 0x6e, 0x65, 0x74, 0x61, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x12, 0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x6d, 0x61, 0x67, 0x6e, 0x65, 0x74, 0x61,
-	0x72, 0x2d, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x24, 0x0a,
+	0x72, 0x5f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x24, 0x0a,
 	0x0a, 0x47, 0x65, 0x74, 0x4e, 0x6f, 0x64, 0x65, 0x52, 0x65, 0x71, 0x12, 0x16, 0x0a, 0x06, 0x6e,
 	0x6f, 0x64, 0x65, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6e, 0x6f, 0x64,
 	0x65, 0x49, 0x64, 0x22, 0x39, 0x0a, 0x0b, 0x47, 0x65, 0x74, 0x4e, 0x6f, 0x64, 0x65, 0x52, 0x65,
@@ -642,38 +642,38 @@ func file_magnetar_proto_rawDescGZIP() []byte {
 
 var file_magnetar_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_magnetar_proto_goTypes = []interface{}{
-	(*GetNodeReq)(nil),      // 0: api.GetNodeReq
-	(*GetNodeResp)(nil),     // 1: api.GetNodeResp
-	(*ListNodesReq)(nil),    // 2: api.ListNodesReq
-	(*ListNodesResp)(nil),   // 3: api.ListNodesResp
-	(*Query)(nil),           // 4: api.Query
-	(*QueryNodesReq)(nil),   // 5: api.QueryNodesReq
-	(*QueryNodesResp)(nil),  // 6: api.QueryNodesResp
-	(*PutLabelReq)(nil),     // 7: api.PutLabelReq
-	(*PutLabelResp)(nil),    // 8: api.PutLabelResp
-	(*DeleteLabelReq)(nil),  // 9: api.DeleteLabelReq
-	(*DeleteLabelResp)(nil), // 10: api.DeleteLabelResp
-	(*NodeStringified)(nil), // 11: api.NodeStringified
-	(*Label)(nil),           // 12: api.Label
+	(*GetNodeReq)(nil),      // 0: proto.GetNodeReq
+	(*GetNodeResp)(nil),     // 1: proto.GetNodeResp
+	(*ListNodesReq)(nil),    // 2: proto.ListNodesReq
+	(*ListNodesResp)(nil),   // 3: proto.ListNodesResp
+	(*Query)(nil),           // 4: proto.Query
+	(*QueryNodesReq)(nil),   // 5: proto.QueryNodesReq
+	(*QueryNodesResp)(nil),  // 6: proto.QueryNodesResp
+	(*PutLabelReq)(nil),     // 7: proto.PutLabelReq
+	(*PutLabelResp)(nil),    // 8: proto.PutLabelResp
+	(*DeleteLabelReq)(nil),  // 9: proto.DeleteLabelReq
+	(*DeleteLabelResp)(nil), // 10: proto.DeleteLabelResp
+	(*NodeStringified)(nil), // 11: proto.NodeStringified
+	(*Label)(nil),           // 12: proto.Label
 }
 var file_magnetar_proto_depIdxs = []int32{
-	11, // 0: api.GetNodeResp.node:type_name -> api.NodeStringified
-	11, // 1: api.ListNodesResp.nodes:type_name -> api.NodeStringified
-	4,  // 2: api.QueryNodesReq.queries:type_name -> api.Query
-	11, // 3: api.QueryNodesResp.nodes:type_name -> api.NodeStringified
-	12, // 4: api.PutLabelReq.label:type_name -> api.Label
-	11, // 5: api.PutLabelResp.node:type_name -> api.NodeStringified
-	11, // 6: api.DeleteLabelResp.node:type_name -> api.NodeStringified
-	0,  // 7: api.Magnetar.GetNode:input_type -> api.GetNodeReq
-	2,  // 8: api.Magnetar.ListNodes:input_type -> api.ListNodesReq
-	5,  // 9: api.Magnetar.QueryNodes:input_type -> api.QueryNodesReq
-	7,  // 10: api.Magnetar.PutLabel:input_type -> api.PutLabelReq
-	9,  // 11: api.Magnetar.DeleteLabel:input_type -> api.DeleteLabelReq
-	1,  // 12: api.Magnetar.GetNode:output_type -> api.GetNodeResp
-	3,  // 13: api.Magnetar.ListNodes:output_type -> api.ListNodesResp
-	6,  // 14: api.Magnetar.QueryNodes:output_type -> api.QueryNodesResp
-	8,  // 15: api.Magnetar.PutLabel:output_type -> api.PutLabelResp
-	10, // 16: api.Magnetar.DeleteLabel:output_type -> api.DeleteLabelResp
+	11, // 0: proto.GetNodeResp.node:type_name -> proto.NodeStringified
+	11, // 1: proto.ListNodesResp.nodes:type_name -> proto.NodeStringified
+	4,  // 2: proto.QueryNodesReq.queries:type_name -> proto.Query
+	11, // 3: proto.QueryNodesResp.nodes:type_name -> proto.NodeStringified
+	12, // 4: proto.PutLabelReq.label:type_name -> proto.Label
+	11, // 5: proto.PutLabelResp.node:type_name -> proto.NodeStringified
+	11, // 6: proto.DeleteLabelResp.node:type_name -> proto.NodeStringified
+	0,  // 7: proto.Magnetar.GetNode:input_type -> proto.GetNodeReq
+	2,  // 8: proto.Magnetar.ListNodes:input_type -> proto.ListNodesReq
+	5,  // 9: proto.Magnetar.QueryNodes:input_type -> proto.QueryNodesReq
+	7,  // 10: proto.Magnetar.PutLabel:input_type -> proto.PutLabelReq
+	9,  // 11: proto.Magnetar.DeleteLabel:input_type -> proto.DeleteLabelReq
+	1,  // 12: proto.Magnetar.GetNode:output_type -> proto.GetNodeResp
+	3,  // 13: proto.Magnetar.ListNodes:output_type -> proto.ListNodesResp
+	6,  // 14: proto.Magnetar.QueryNodes:output_type -> proto.QueryNodesResp
+	8,  // 15: proto.Magnetar.PutLabel:output_type -> proto.PutLabelResp
+	10, // 16: proto.Magnetar.DeleteLabel:output_type -> proto.DeleteLabelResp
 	12, // [12:17] is the sub-list for method output_type
 	7,  // [7:12] is the sub-list for method input_type
 	7,  // [7:7] is the sub-list for extension type_name

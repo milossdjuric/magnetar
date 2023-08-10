@@ -3,7 +3,7 @@ syntax = "proto3";
 option go_package="github.com/c12s/magnetar/pkg/api";
 package proto;
 
-import "magnetar-model.api";
+import "magnetar_model.proto";
 
 message RegistrationReq {
   repeated Label labels = 1;

@@ -1,28 +1,39 @@
 package api
 
 import (
-	"errors"
+	"fmt"
 	"github.com/c12s/magnetar/pkg/messaging"
+	"github.com/c12s/magnetar/pkg/messaging/nats"
 	"github.com/golang/protobuf/proto"
+	natsgo "github.com/nats-io/nats.go"
 	"log"
 )
 
-type AsyncRegistrationClient struct {
+type RegistrationAsyncClient struct {
 	publisher         messaging.Publisher
 	subscriberFactory func(subject string) messaging.Subscriber
 }
 
-func NewAsyncRegistrationClient(publisher messaging.Publisher, subscriberFactory func(subject string) messaging.Subscriber) (*AsyncRegistrationClient, error) {
-	if publisher == nil {
-		return nil, errors.New("publisher is nil")
+func NewRegistrationAsyncClient(natsAddress string) (*RegistrationAsyncClient, error) {
+	conn, err := natsgo.Connect(fmt.Sprintf("nats://%s", natsAddress))
+	if err != nil {
+		return nil, err
 	}
-	return &AsyncRegistrationClient{
+	publisher, err := nats.NewPublisher(conn)
+	if err != nil {
+		return nil, err
+	}
+	subscriberFactory := func(subject string) messaging.Subscriber {
+		subscriber, _ := nats.NewSubscriber(conn, subject, "")
+		return subscriber
+	}
+	return &RegistrationAsyncClient{
 		publisher:         publisher,
 		subscriberFactory: subscriberFactory,
 	}, nil
 }
 
-func (n *AsyncRegistrationClient) Register(req *RegistrationReq, callback RegistrationCallback) error {
+func (n *RegistrationAsyncClient) Register(req *RegistrationReq, callback RegistrationCallback) error {
 	reqMarshalled, err := req.Marshal()
 	if err != nil {
 		return err
