@@ -1,4 +1,4 @@
-package handlers
+package servers
 
 import (
 	"context"
@@ -13,7 +13,7 @@ type MagnetarGrpcServer struct {
 	labelService services.LabelService
 }
 
-func NewMagnetarGrpcServer(nodeService services.NodeService, labelService services.LabelService) (api.MagnetarServer, error) {
+func NewMagnetarGrpcServer(nodeService services.NodeService, labelService services.LabelService) (*MagnetarGrpcServer, error) {
 	return &MagnetarGrpcServer{
 		nodeService:  nodeService,
 		labelService: labelService,

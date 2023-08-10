@@ -1,4 +1,4 @@
-package handlers
+package servers
 
 import (
 	"github.com/c12s/magnetar/internal/mappers/proto"
@@ -8,25 +8,25 @@ import (
 	"log"
 )
 
-type AsyncRegistrationHandler struct {
+type RegistrationAsyncServer struct {
 	reqSubscriber messaging.Subscriber
 	respPublisher messaging.Publisher
 	service       services.RegistrationService
 }
 
-func NewAsyncRegistrationHandler(reqSubscriber messaging.Subscriber, respPublisher messaging.Publisher, service services.RegistrationService) (AsyncRegistrationHandler, error) {
-	return AsyncRegistrationHandler{
+func NewRegistrationAsyncServer(reqSubscriber messaging.Subscriber, respPublisher messaging.Publisher, service services.RegistrationService) (*RegistrationAsyncServer, error) {
+	return &RegistrationAsyncServer{
 		reqSubscriber: reqSubscriber,
 		respPublisher: respPublisher,
 		service:       service,
 	}, nil
 }
 
-func (n AsyncRegistrationHandler) Handle() error {
-	return n.reqSubscriber.Subscribe(n.handleRegistration)
+func (n *RegistrationAsyncServer) Serve() error {
+	return n.reqSubscriber.Subscribe(n.register)
 }
 
-func (n AsyncRegistrationHandler) handleRegistration(msg []byte, replySubject string) {
+func (n *RegistrationAsyncServer) register(msg []byte, replySubject string) {
 	reqProto := &api.RegistrationReq{}
 	err := reqProto.Unmarshal(msg)
 	if err != nil {
@@ -54,6 +54,13 @@ func (n AsyncRegistrationHandler) handleRegistration(msg []byte, replySubject st
 		return
 	}
 	err = n.respPublisher.Publish(respMarshalled, replySubject)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func (n *RegistrationAsyncServer) GracefulStop() {
+	err := n.reqSubscriber.Unsubscribe()
 	if err != nil {
 		log.Println(err)
 	}

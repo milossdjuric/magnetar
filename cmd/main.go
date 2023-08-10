@@ -31,8 +31,8 @@ func main() {
 
 	<-shutdown
 
-	timeout := 3 * time.Second
+	timeout := 10 * time.Second
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
-	app.GracefulShutdown(ctx)
+	app.GracefulStop(ctx)
 }
