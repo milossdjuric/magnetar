@@ -10,7 +10,7 @@ type Label interface {
 	Key() string
 	Value() interface{}
 	StringValue() string
-	Compare(value string) (ComparisonResult, error)
+	Compare(value string) ([]ComparisonResult, error)
 }
 
 func NewBoolLabel(key string, value bool) Label {
@@ -47,15 +47,15 @@ func (b boolLabel) Value() interface{} {
 	return b.value
 }
 
-func (b boolLabel) Compare(value string) (ComparisonResult, error) {
+func (b boolLabel) Compare(value string) ([]ComparisonResult, error) {
 	refValue, err := strconv.ParseBool(value)
 	if err != nil {
-		return defaultCompRes, errors.New("incomparable")
+		return nil, errors.New("incomparable")
 	}
 	if b.value == refValue {
-		return CompResEq, nil
+		return []ComparisonResult{CompResEq}, nil
 	}
-	return CompResNeq, nil
+	return []ComparisonResult{CompResNeq}, nil
 }
 
 func (b boolLabel) StringValue() string {
@@ -75,18 +75,18 @@ func (f float64Label) Value() interface{} {
 	return f.value
 }
 
-func (f float64Label) Compare(value string) (ComparisonResult, error) {
+func (f float64Label) Compare(value string) ([]ComparisonResult, error) {
 	refValue, err := strconv.ParseFloat(value, 64)
 	if err != nil {
-		return defaultCompRes, errors.New("incomparable")
+		return nil, errors.New("incomparable")
 	}
 	if math.Round(f.value*100)/100 == math.Round(refValue*100)/100 {
-		return CompResEq, nil
+		return []ComparisonResult{CompResEq}, nil
 	}
 	if f.value > refValue {
-		return CompResGt, nil
+		return []ComparisonResult{CompResGt, CompResNeq}, nil
 	}
-	return CompResLt, nil
+	return []ComparisonResult{CompResLt, CompResNeq}, nil
 }
 
 func (f float64Label) StringValue() string {
@@ -110,11 +110,11 @@ func (s stringLabel) StringValue() string {
 	return s.value
 }
 
-func (s stringLabel) Compare(value string) (ComparisonResult, error) {
+func (s stringLabel) Compare(value string) ([]ComparisonResult, error) {
 	if s.value == value {
-		return CompResEq, nil
+		return []ComparisonResult{CompResEq}, nil
 	}
-	return CompResNeq, nil
+	return []ComparisonResult{CompResNeq}, nil
 }
 
 type ComparisonResult int8
@@ -157,10 +157,10 @@ func NewCompResultFromString(value string) (ComparisonResult, error) {
 }
 
 const (
-	eqString  = "EQ"
-	neqString = "NEQ"
-	ltString  = "LT"
-	gtString  = "GT"
+	eqString  = "="
+	neqString = "!="
+	ltString  = "<"
+	gtString  = ">"
 
 	defaultCompRes = CompResEq
 )

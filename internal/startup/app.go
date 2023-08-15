@@ -24,7 +24,7 @@ import (
 type app struct {
 	config                    *configs.Config
 	grpcServer                *grpc.Server
-	magnetarServer            *servers.MagnetarGrpcServer
+	magnetarServer            api.MagnetarServer
 	registrationServer        *servers.RegistrationAsyncServer
 	nodeService               *services.NodeService
 	labelService              *services.LabelService

@@ -8,7 +8,9 @@ service Magnetar {
   rpc GetNode(GetNodeReq) returns (GetNodeResp) {}
   rpc ListNodes(ListNodesReq) returns (ListNodesResp) {}
   rpc QueryNodes(QueryNodesReq) returns (QueryNodesResp) {}
-  rpc PutLabel(PutLabelReq) returns (PutLabelResp) {}
+  rpc PutBoolLabel(PutBoolLabelReq) returns (PutLabelResp) {}
+  rpc PutFloat64Label(PutFloat64LabelReq) returns (PutLabelResp) {}
+  rpc PutStringLabel(PutStringLabelReq) returns (PutLabelResp) {}
   rpc DeleteLabel(DeleteLabelReq) returns (DeleteLabelResp) {}
 }
 
@@ -40,9 +42,19 @@ message QueryNodesResp {
   repeated NodeStringified nodes = 1;
 }
 
-message PutLabelReq {
+message PutBoolLabelReq {
   string nodeId = 1;
-  Label label = 2;
+  BoolLabel label = 2;
+}
+
+message PutFloat64LabelReq {
+  string nodeId = 1;
+  Float64Label label = 2;
+}
+
+message PutStringLabelReq {
+  string nodeId = 1;
+  StringLabel label = 2;
 }
 
 message PutLabelResp {

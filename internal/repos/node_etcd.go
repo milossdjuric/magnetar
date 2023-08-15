@@ -187,12 +187,12 @@ func (n nodeEtcdRepo) query(query domain.Query) ([]domain.NodeId, error) {
 		if err != nil {
 			return nil, err
 		}
-		compResult, err := nodeLabel.Compare(query.Value)
+		cmpResult, err := nodeLabel.Compare(query.Value)
 		if err != nil {
 			log.Println(err)
 			continue
 		}
-		if query.ShouldBe == compResult {
+		if slices.Contains(cmpResult, query.ShouldBe) {
 			nodeId := strings.Split(string(kv.Key), "/")[1]
 			nodeIds = append(nodeIds, domain.NodeId{
 				Value: nodeId,

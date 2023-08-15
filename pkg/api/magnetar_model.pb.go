@@ -66,7 +66,7 @@ func (x Value_ValueTYpe) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Value_ValueTYpe.Descriptor instead.
 func (Value_ValueTYpe) EnumDescriptor() ([]byte, []int) {
-	return file_magnetar_model_proto_rawDescGZIP(), []int{2, 0}
+	return file_magnetar_model_proto_rawDescGZIP(), []int{5, 0}
 }
 
 type Node struct {
@@ -179,6 +179,171 @@ func (x *Label) GetValue() *Value {
 	return nil
 }
 
+type BoolLabel struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Key   string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Value bool   `protobuf:"varint,2,opt,name=value,proto3" json:"value,omitempty"`
+}
+
+func (x *BoolLabel) Reset() {
+	*x = BoolLabel{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_magnetar_model_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *BoolLabel) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BoolLabel) ProtoMessage() {}
+
+func (x *BoolLabel) ProtoReflect() protoreflect.Message {
+	mi := &file_magnetar_model_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BoolLabel.ProtoReflect.Descriptor instead.
+func (*BoolLabel) Descriptor() ([]byte, []int) {
+	return file_magnetar_model_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *BoolLabel) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
+}
+
+func (x *BoolLabel) GetValue() bool {
+	if x != nil {
+		return x.Value
+	}
+	return false
+}
+
+type Float64Label struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Key   string  `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Value float64 `protobuf:"fixed64,2,opt,name=value,proto3" json:"value,omitempty"`
+}
+
+func (x *Float64Label) Reset() {
+	*x = Float64Label{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_magnetar_model_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Float64Label) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Float64Label) ProtoMessage() {}
+
+func (x *Float64Label) ProtoReflect() protoreflect.Message {
+	mi := &file_magnetar_model_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Float64Label.ProtoReflect.Descriptor instead.
+func (*Float64Label) Descriptor() ([]byte, []int) {
+	return file_magnetar_model_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *Float64Label) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
+}
+
+func (x *Float64Label) GetValue() float64 {
+	if x != nil {
+		return x.Value
+	}
+	return 0
+}
+
+type StringLabel struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Key   string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Value string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+}
+
+func (x *StringLabel) Reset() {
+	*x = StringLabel{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_magnetar_model_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StringLabel) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StringLabel) ProtoMessage() {}
+
+func (x *StringLabel) ProtoReflect() protoreflect.Message {
+	mi := &file_magnetar_model_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StringLabel.ProtoReflect.Descriptor instead.
+func (*StringLabel) Descriptor() ([]byte, []int) {
+	return file_magnetar_model_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *StringLabel) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
+}
+
+func (x *StringLabel) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
 type Value struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -191,7 +356,7 @@ type Value struct {
 func (x *Value) Reset() {
 	*x = Value{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_magnetar_model_proto_msgTypes[2]
+		mi := &file_magnetar_model_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -204,7 +369,7 @@ func (x *Value) String() string {
 func (*Value) ProtoMessage() {}
 
 func (x *Value) ProtoReflect() protoreflect.Message {
-	mi := &file_magnetar_model_proto_msgTypes[2]
+	mi := &file_magnetar_model_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -217,7 +382,7 @@ func (x *Value) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Value.ProtoReflect.Descriptor instead.
 func (*Value) Descriptor() ([]byte, []int) {
-	return file_magnetar_model_proto_rawDescGZIP(), []int{2}
+	return file_magnetar_model_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *Value) GetType() Value_ValueTYpe {
@@ -245,7 +410,7 @@ type BoolValue struct {
 func (x *BoolValue) Reset() {
 	*x = BoolValue{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_magnetar_model_proto_msgTypes[3]
+		mi := &file_magnetar_model_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -258,7 +423,7 @@ func (x *BoolValue) String() string {
 func (*BoolValue) ProtoMessage() {}
 
 func (x *BoolValue) ProtoReflect() protoreflect.Message {
-	mi := &file_magnetar_model_proto_msgTypes[3]
+	mi := &file_magnetar_model_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -271,7 +436,7 @@ func (x *BoolValue) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BoolValue.ProtoReflect.Descriptor instead.
 func (*BoolValue) Descriptor() ([]byte, []int) {
-	return file_magnetar_model_proto_rawDescGZIP(), []int{3}
+	return file_magnetar_model_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *BoolValue) GetValue() bool {
@@ -292,7 +457,7 @@ type Float64Value struct {
 func (x *Float64Value) Reset() {
 	*x = Float64Value{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_magnetar_model_proto_msgTypes[4]
+		mi := &file_magnetar_model_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -305,7 +470,7 @@ func (x *Float64Value) String() string {
 func (*Float64Value) ProtoMessage() {}
 
 func (x *Float64Value) ProtoReflect() protoreflect.Message {
-	mi := &file_magnetar_model_proto_msgTypes[4]
+	mi := &file_magnetar_model_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -318,7 +483,7 @@ func (x *Float64Value) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Float64Value.ProtoReflect.Descriptor instead.
 func (*Float64Value) Descriptor() ([]byte, []int) {
-	return file_magnetar_model_proto_rawDescGZIP(), []int{4}
+	return file_magnetar_model_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *Float64Value) GetValue() float64 {
@@ -339,7 +504,7 @@ type StringValue struct {
 func (x *StringValue) Reset() {
 	*x = StringValue{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_magnetar_model_proto_msgTypes[5]
+		mi := &file_magnetar_model_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -352,7 +517,7 @@ func (x *StringValue) String() string {
 func (*StringValue) ProtoMessage() {}
 
 func (x *StringValue) ProtoReflect() protoreflect.Message {
-	mi := &file_magnetar_model_proto_msgTypes[5]
+	mi := &file_magnetar_model_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -365,7 +530,7 @@ func (x *StringValue) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StringValue.ProtoReflect.Descriptor instead.
 func (*StringValue) Descriptor() ([]byte, []int) {
-	return file_magnetar_model_proto_rawDescGZIP(), []int{5}
+	return file_magnetar_model_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *StringValue) GetValue() string {
@@ -387,7 +552,7 @@ type NodeStringified struct {
 func (x *NodeStringified) Reset() {
 	*x = NodeStringified{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_magnetar_model_proto_msgTypes[6]
+		mi := &file_magnetar_model_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -400,7 +565,7 @@ func (x *NodeStringified) String() string {
 func (*NodeStringified) ProtoMessage() {}
 
 func (x *NodeStringified) ProtoReflect() protoreflect.Message {
-	mi := &file_magnetar_model_proto_msgTypes[6]
+	mi := &file_magnetar_model_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -413,7 +578,7 @@ func (x *NodeStringified) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NodeStringified.ProtoReflect.Descriptor instead.
 func (*NodeStringified) Descriptor() ([]byte, []int) {
-	return file_magnetar_model_proto_rawDescGZIP(), []int{6}
+	return file_magnetar_model_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *NodeStringified) GetId() string {
@@ -442,7 +607,7 @@ type LabelStringified struct {
 func (x *LabelStringified) Reset() {
 	*x = LabelStringified{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_magnetar_model_proto_msgTypes[7]
+		mi := &file_magnetar_model_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -455,7 +620,7 @@ func (x *LabelStringified) String() string {
 func (*LabelStringified) ProtoMessage() {}
 
 func (x *LabelStringified) ProtoReflect() protoreflect.Message {
-	mi := &file_magnetar_model_proto_msgTypes[7]
+	mi := &file_magnetar_model_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -468,7 +633,7 @@ func (x *LabelStringified) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LabelStringified.ProtoReflect.Descriptor instead.
 func (*LabelStringified) Descriptor() ([]byte, []int) {
-	return file_magnetar_model_proto_rawDescGZIP(), []int{7}
+	return file_magnetar_model_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *LabelStringified) GetKey() string {
@@ -497,34 +662,44 @@ var file_magnetar_model_proto_rawDesc = []byte{
 	0x61, 0x62, 0x65, 0x6c, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x22, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18,
 	0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x56, 0x61,
-	0x6c, 0x75, 0x65, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x83, 0x01, 0x0a, 0x05, 0x56,
-	0x61, 0x6c, 0x75, 0x65, 0x12, 0x2a, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0e, 0x32, 0x16, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x56, 0x61, 0x6c, 0x75, 0x65,
-	0x2e, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x54, 0x59, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65,
-	0x12, 0x1e, 0x0a, 0x0a, 0x6d, 0x61, 0x72, 0x73, 0x68, 0x61, 0x6c, 0x6c, 0x65, 0x64, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x0c, 0x52, 0x0a, 0x6d, 0x61, 0x72, 0x73, 0x68, 0x61, 0x6c, 0x6c, 0x65, 0x64,
-	0x22, 0x2e, 0x0a, 0x09, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x54, 0x59, 0x70, 0x65, 0x12, 0x08, 0x0a,
-	0x04, 0x42, 0x6f, 0x6f, 0x6c, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x46, 0x6c, 0x6f, 0x61, 0x74,
-	0x36, 0x34, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x10, 0x02,
-	0x22, 0x21, 0x0a, 0x09, 0x42, 0x6f, 0x6f, 0x6c, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x14, 0x0a,
-	0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x05, 0x76, 0x61,
-	0x6c, 0x75, 0x65, 0x22, 0x24, 0x0a, 0x0c, 0x46, 0x6c, 0x6f, 0x61, 0x74, 0x36, 0x34, 0x56, 0x61,
-	0x6c, 0x75, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x01, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x23, 0x0a, 0x0b, 0x53, 0x74, 0x72,
-	0x69, 0x6e, 0x67, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75,
-	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x52,
-	0x0a, 0x0f, 0x4e, 0x6f, 0x64, 0x65, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x69, 0x66, 0x69, 0x65,
-	0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69,
-	0x64, 0x12, 0x2f, 0x0a, 0x06, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28,
-	0x0b, 0x32, 0x17, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x53,
-	0x74, 0x72, 0x69, 0x6e, 0x67, 0x69, 0x66, 0x69, 0x65, 0x64, 0x52, 0x06, 0x6c, 0x61, 0x62, 0x65,
-	0x6c, 0x73, 0x22, 0x3a, 0x0a, 0x10, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x53, 0x74, 0x72, 0x69, 0x6e,
-	0x67, 0x69, 0x66, 0x69, 0x65, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20,
+	0x6c, 0x75, 0x65, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x33, 0x0a, 0x09, 0x42, 0x6f,
+	0x6f, 0x6c, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22,
+	0x36, 0x0a, 0x0c, 0x46, 0x6c, 0x6f, 0x61, 0x74, 0x36, 0x34, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x12,
+	0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65,
+	0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x01,
+	0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x35, 0x0a, 0x0b, 0x53, 0x74, 0x72, 0x69, 0x6e,
+	0x67, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75,
-	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x42, 0x22,
-	0x5a, 0x20, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x31, 0x32,
-	0x73, 0x2f, 0x6d, 0x61, 0x67, 0x6e, 0x65, 0x74, 0x61, 0x72, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x61,
-	0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x83,
+	0x01, 0x0a, 0x05, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x2a, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x16, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x56,
+	0x61, 0x6c, 0x75, 0x65, 0x2e, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x54, 0x59, 0x70, 0x65, 0x52, 0x04,
+	0x74, 0x79, 0x70, 0x65, 0x12, 0x1e, 0x0a, 0x0a, 0x6d, 0x61, 0x72, 0x73, 0x68, 0x61, 0x6c, 0x6c,
+	0x65, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x0a, 0x6d, 0x61, 0x72, 0x73, 0x68, 0x61,
+	0x6c, 0x6c, 0x65, 0x64, 0x22, 0x2e, 0x0a, 0x09, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x54, 0x59, 0x70,
+	0x65, 0x12, 0x08, 0x0a, 0x04, 0x42, 0x6f, 0x6f, 0x6c, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x46,
+	0x6c, 0x6f, 0x61, 0x74, 0x36, 0x34, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x53, 0x74, 0x72, 0x69,
+	0x6e, 0x67, 0x10, 0x02, 0x22, 0x21, 0x0a, 0x09, 0x42, 0x6f, 0x6f, 0x6c, 0x56, 0x61, 0x6c, 0x75,
+	0x65, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08,
+	0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x24, 0x0a, 0x0c, 0x46, 0x6c, 0x6f, 0x61, 0x74,
+	0x36, 0x34, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x01, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x23, 0x0a,
+	0x0b, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x14, 0x0a, 0x05,
+	0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x22, 0x52, 0x0a, 0x0f, 0x4e, 0x6f, 0x64, 0x65, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67,
+	0x69, 0x66, 0x69, 0x65, 0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x2f, 0x0a, 0x06, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x18,
+	0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x4c, 0x61,
+	0x62, 0x65, 0x6c, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x69, 0x66, 0x69, 0x65, 0x64, 0x52, 0x06,
+	0x6c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x22, 0x3a, 0x0a, 0x10, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x53,
+	0x74, 0x72, 0x69, 0x6e, 0x67, 0x69, 0x66, 0x69, 0x65, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65,
+	0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05,
+	0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x42, 0x22, 0x5a, 0x20, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
+	0x2f, 0x63, 0x31, 0x32, 0x73, 0x2f, 0x6d, 0x61, 0x67, 0x6e, 0x65, 0x74, 0x61, 0x72, 0x2f, 0x70,
+	0x6b, 0x67, 0x2f, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -540,28 +715,31 @@ func file_magnetar_model_proto_rawDescGZIP() []byte {
 }
 
 var file_magnetar_model_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_magnetar_model_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_magnetar_model_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_magnetar_model_proto_goTypes = []interface{}{
 	(Value_ValueTYpe)(0),     // 0: proto.Value.ValueTYpe
 	(*Node)(nil),             // 1: proto.Node
 	(*Label)(nil),            // 2: proto.Label
-	(*Value)(nil),            // 3: proto.Value
-	(*BoolValue)(nil),        // 4: proto.BoolValue
-	(*Float64Value)(nil),     // 5: proto.Float64Value
-	(*StringValue)(nil),      // 6: proto.StringValue
-	(*NodeStringified)(nil),  // 7: proto.NodeStringified
-	(*LabelStringified)(nil), // 8: proto.LabelStringified
+	(*BoolLabel)(nil),        // 3: proto.BoolLabel
+	(*Float64Label)(nil),     // 4: proto.Float64Label
+	(*StringLabel)(nil),      // 5: proto.StringLabel
+	(*Value)(nil),            // 6: proto.Value
+	(*BoolValue)(nil),        // 7: proto.BoolValue
+	(*Float64Value)(nil),     // 8: proto.Float64Value
+	(*StringValue)(nil),      // 9: proto.StringValue
+	(*NodeStringified)(nil),  // 10: proto.NodeStringified
+	(*LabelStringified)(nil), // 11: proto.LabelStringified
 }
 var file_magnetar_model_proto_depIdxs = []int32{
-	2, // 0: proto.Node.labels:type_name -> proto.Label
-	3, // 1: proto.Label.value:type_name -> proto.Value
-	0, // 2: proto.Value.type:type_name -> proto.Value.ValueTYpe
-	8, // 3: proto.NodeStringified.labels:type_name -> proto.LabelStringified
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	2,  // 0: proto.Node.labels:type_name -> proto.Label
+	6,  // 1: proto.Label.value:type_name -> proto.Value
+	0,  // 2: proto.Value.type:type_name -> proto.Value.ValueTYpe
+	11, // 3: proto.NodeStringified.labels:type_name -> proto.LabelStringified
+	4,  // [4:4] is the sub-list for method output_type
+	4,  // [4:4] is the sub-list for method input_type
+	4,  // [4:4] is the sub-list for extension type_name
+	4,  // [4:4] is the sub-list for extension extendee
+	0,  // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_magnetar_model_proto_init() }
@@ -595,7 +773,7 @@ func file_magnetar_model_proto_init() {
 			}
 		}
 		file_magnetar_model_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Value); i {
+			switch v := v.(*BoolLabel); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -607,7 +785,7 @@ func file_magnetar_model_proto_init() {
 			}
 		}
 		file_magnetar_model_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*BoolValue); i {
+			switch v := v.(*Float64Label); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -619,7 +797,7 @@ func file_magnetar_model_proto_init() {
 			}
 		}
 		file_magnetar_model_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Float64Value); i {
+			switch v := v.(*StringLabel); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -631,7 +809,7 @@ func file_magnetar_model_proto_init() {
 			}
 		}
 		file_magnetar_model_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*StringValue); i {
+			switch v := v.(*Value); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -643,7 +821,7 @@ func file_magnetar_model_proto_init() {
 			}
 		}
 		file_magnetar_model_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*NodeStringified); i {
+			switch v := v.(*BoolValue); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -655,6 +833,42 @@ func file_magnetar_model_proto_init() {
 			}
 		}
 		file_magnetar_model_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Float64Value); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_magnetar_model_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StringValue); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_magnetar_model_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NodeStringified); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_magnetar_model_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*LabelStringified); i {
 			case 0:
 				return &v.state
@@ -673,7 +887,7 @@ func file_magnetar_model_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_magnetar_model_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   8,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -25,7 +25,9 @@ type MagnetarClient interface {
 	GetNode(ctx context.Context, in *GetNodeReq, opts ...grpc.CallOption) (*GetNodeResp, error)
 	ListNodes(ctx context.Context, in *ListNodesReq, opts ...grpc.CallOption) (*ListNodesResp, error)
 	QueryNodes(ctx context.Context, in *QueryNodesReq, opts ...grpc.CallOption) (*QueryNodesResp, error)
-	PutLabel(ctx context.Context, in *PutLabelReq, opts ...grpc.CallOption) (*PutLabelResp, error)
+	PutBoolLabel(ctx context.Context, in *PutBoolLabelReq, opts ...grpc.CallOption) (*PutLabelResp, error)
+	PutFloat64Label(ctx context.Context, in *PutFloat64LabelReq, opts ...grpc.CallOption) (*PutLabelResp, error)
+	PutStringLabel(ctx context.Context, in *PutStringLabelReq, opts ...grpc.CallOption) (*PutLabelResp, error)
 	DeleteLabel(ctx context.Context, in *DeleteLabelReq, opts ...grpc.CallOption) (*DeleteLabelResp, error)
 }
 
@@ -64,9 +66,27 @@ func (c *magnetarClient) QueryNodes(ctx context.Context, in *QueryNodesReq, opts
 	return out, nil
 }
 
-func (c *magnetarClient) PutLabel(ctx context.Context, in *PutLabelReq, opts ...grpc.CallOption) (*PutLabelResp, error) {
+func (c *magnetarClient) PutBoolLabel(ctx context.Context, in *PutBoolLabelReq, opts ...grpc.CallOption) (*PutLabelResp, error) {
 	out := new(PutLabelResp)
-	err := c.cc.Invoke(ctx, "/proto.Magnetar/PutLabel", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.Magnetar/PutBoolLabel", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *magnetarClient) PutFloat64Label(ctx context.Context, in *PutFloat64LabelReq, opts ...grpc.CallOption) (*PutLabelResp, error) {
+	out := new(PutLabelResp)
+	err := c.cc.Invoke(ctx, "/proto.Magnetar/PutFloat64Label", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *magnetarClient) PutStringLabel(ctx context.Context, in *PutStringLabelReq, opts ...grpc.CallOption) (*PutLabelResp, error) {
+	out := new(PutLabelResp)
+	err := c.cc.Invoke(ctx, "/proto.Magnetar/PutStringLabel", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +109,9 @@ type MagnetarServer interface {
 	GetNode(context.Context, *GetNodeReq) (*GetNodeResp, error)
 	ListNodes(context.Context, *ListNodesReq) (*ListNodesResp, error)
 	QueryNodes(context.Context, *QueryNodesReq) (*QueryNodesResp, error)
-	PutLabel(context.Context, *PutLabelReq) (*PutLabelResp, error)
+	PutBoolLabel(context.Context, *PutBoolLabelReq) (*PutLabelResp, error)
+	PutFloat64Label(context.Context, *PutFloat64LabelReq) (*PutLabelResp, error)
+	PutStringLabel(context.Context, *PutStringLabelReq) (*PutLabelResp, error)
 	DeleteLabel(context.Context, *DeleteLabelReq) (*DeleteLabelResp, error)
 	mustEmbedUnimplementedMagnetarServer()
 }
@@ -107,8 +129,14 @@ func (UnimplementedMagnetarServer) ListNodes(context.Context, *ListNodesReq) (*L
 func (UnimplementedMagnetarServer) QueryNodes(context.Context, *QueryNodesReq) (*QueryNodesResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryNodes not implemented")
 }
-func (UnimplementedMagnetarServer) PutLabel(context.Context, *PutLabelReq) (*PutLabelResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PutLabel not implemented")
+func (UnimplementedMagnetarServer) PutBoolLabel(context.Context, *PutBoolLabelReq) (*PutLabelResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutBoolLabel not implemented")
+}
+func (UnimplementedMagnetarServer) PutFloat64Label(context.Context, *PutFloat64LabelReq) (*PutLabelResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutFloat64Label not implemented")
+}
+func (UnimplementedMagnetarServer) PutStringLabel(context.Context, *PutStringLabelReq) (*PutLabelResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutStringLabel not implemented")
 }
 func (UnimplementedMagnetarServer) DeleteLabel(context.Context, *DeleteLabelReq) (*DeleteLabelResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteLabel not implemented")
@@ -180,20 +208,56 @@ func _Magnetar_QueryNodes_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Magnetar_PutLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PutLabelReq)
+func _Magnetar_PutBoolLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutBoolLabelReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MagnetarServer).PutLabel(ctx, in)
+		return srv.(MagnetarServer).PutBoolLabel(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Magnetar/PutLabel",
+		FullMethod: "/proto.Magnetar/PutBoolLabel",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MagnetarServer).PutLabel(ctx, req.(*PutLabelReq))
+		return srv.(MagnetarServer).PutBoolLabel(ctx, req.(*PutBoolLabelReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Magnetar_PutFloat64Label_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutFloat64LabelReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MagnetarServer).PutFloat64Label(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Magnetar/PutFloat64Label",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MagnetarServer).PutFloat64Label(ctx, req.(*PutFloat64LabelReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Magnetar_PutStringLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutStringLabelReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MagnetarServer).PutStringLabel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Magnetar/PutStringLabel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MagnetarServer).PutStringLabel(ctx, req.(*PutStringLabelReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -236,8 +300,16 @@ var Magnetar_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Magnetar_QueryNodes_Handler,
 		},
 		{
-			MethodName: "PutLabel",
-			Handler:    _Magnetar_PutLabel_Handler,
+			MethodName: "PutBoolLabel",
+			Handler:    _Magnetar_PutBoolLabel_Handler,
+		},
+		{
+			MethodName: "PutFloat64Label",
+			Handler:    _Magnetar_PutFloat64Label_Handler,
+		},
+		{
+			MethodName: "PutStringLabel",
+			Handler:    _Magnetar_PutStringLabel_Handler,
 		},
 		{
 			MethodName: "DeleteLabel",

@@ -76,16 +76,30 @@ func QueryNodesRespFromDomain(resp domain.QueryNodesResp) (*api.QueryNodesResp, 
 	return protoResp, nil
 }
 
-func PutLabelReqToDomain(req *api.PutLabelReq) (*domain.PutLabelReq, error) {
-	label, err := LabelToDomain(req.Label)
-	if err != nil {
-		return nil, err
-	}
+func PutBoolLabelReqToDomain(req *api.PutBoolLabelReq) (*domain.PutLabelReq, error) {
 	return &domain.PutLabelReq{
 		NodeId: domain.NodeId{
 			Value: req.NodeId,
 		},
-		Label: label,
+		Label: domain.NewBoolLabel(req.Label.Key, req.Label.Value),
+	}, nil
+}
+
+func PutFloat64LabelReqToDomain(req *api.PutFloat64LabelReq) (*domain.PutLabelReq, error) {
+	return &domain.PutLabelReq{
+		NodeId: domain.NodeId{
+			Value: req.NodeId,
+		},
+		Label: domain.NewFloat64Label(req.Label.Key, req.Label.Value),
+	}, nil
+}
+
+func PutStringLabelReqToDomain(req *api.PutStringLabelReq) (*domain.PutLabelReq, error) {
+	return &domain.PutLabelReq{
+		NodeId: domain.NodeId{
+			Value: req.NodeId,
+		},
+		Label: domain.NewStringLabel(req.Label.Key, req.Label.Value),
 	}, nil
 }
 

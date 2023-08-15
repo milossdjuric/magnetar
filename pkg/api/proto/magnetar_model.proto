@@ -13,6 +13,21 @@ message Label {
   Value value = 2;
 }
 
+message BoolLabel {
+  string key = 1;
+  bool value = 2;
+}
+
+message Float64Label {
+  string key = 1;
+  double value = 2;
+}
+
+message StringLabel {
+  string key = 1;
+  string value = 2;
+}
+
 message Value {
   enum ValueTYpe {
     Bool = 0;

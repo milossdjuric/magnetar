@@ -13,7 +13,7 @@ type MagnetarGrpcServer struct {
 	labelService services.LabelService
 }
 
-func NewMagnetarGrpcServer(nodeService services.NodeService, labelService services.LabelService) (*MagnetarGrpcServer, error) {
+func NewMagnetarGrpcServer(nodeService services.NodeService, labelService services.LabelService) (api.MagnetarServer, error) {
 	return &MagnetarGrpcServer{
 		nodeService:  nodeService,
 		labelService: labelService,
@@ -56,8 +56,32 @@ func (m *MagnetarGrpcServer) QueryNodes(ctx context.Context, req *api.QueryNodes
 	return proto.QueryNodesRespFromDomain(*domainResp)
 }
 
-func (m *MagnetarGrpcServer) PutLabel(ctx context.Context, req *api.PutLabelReq) (*api.PutLabelResp, error) {
-	domainReq, err := proto.PutLabelReqToDomain(req)
+func (m *MagnetarGrpcServer) PutBoolLabel(ctx context.Context, req *api.PutBoolLabelReq) (*api.PutLabelResp, error) {
+	domainReq, err := proto.PutBoolLabelReqToDomain(req)
+	if err != nil {
+		return nil, err
+	}
+	domainResp, err := m.labelService.PutLabel(*domainReq)
+	if err != nil {
+		return nil, err
+	}
+	return proto.PutLabelRespFromDomain(*domainResp)
+}
+
+func (m *MagnetarGrpcServer) PutFloat64Label(ctx context.Context, req *api.PutFloat64LabelReq) (*api.PutLabelResp, error) {
+	domainReq, err := proto.PutFloat64LabelReqToDomain(req)
+	if err != nil {
+		return nil, err
+	}
+	domainResp, err := m.labelService.PutLabel(*domainReq)
+	if err != nil {
+		return nil, err
+	}
+	return proto.PutLabelRespFromDomain(*domainResp)
+}
+
+func (m *MagnetarGrpcServer) PutStringLabel(ctx context.Context, req *api.PutStringLabelReq) (*api.PutLabelResp, error) {
+	domainReq, err := proto.PutStringLabelReqToDomain(req)
 	if err != nil {
 		return nil, err
 	}
