@@ -17,7 +17,6 @@ services:
     environment:
       - NATS_ADDRESS=${NATS_HOSTNAME}:${NATS_PORT}
       - ETCD_ADDRESS=${ETCD_HOSTNAME}:${ETCD_PORT}
-      - REGISTRATION_SUBJECT=${REGISTRATION_SUBJECT}
       - MAGNETAR_ADDRESS=:${MAGNETAR_PORT}
     networks:
       - network
@@ -40,7 +39,6 @@ services:
       - STAR_ADDRESS=:${STAR_PORT}
       - OORT_ADDRESS=${OORT_HOSTNAME}:${OORT_PORT}
       - NATS_ADDRESS=${NATS_HOSTNAME}:${NATS_PORT}
-      - REGISTRATION_SUBJECT=${REGISTRATION_SUBJECT}
       - REGISTRATION_REQ_TIMEOUT_MILLISECONDS=${REGISTRATION_REQ_TIMEOUT_MILLISECONDS}
       - MAX_REGISTRATION_RETRIES=${MAX_REGISTRATION_RETRIES}
       - NODE_ID_DIR_PATH=${NODE_ID_DIR_PATH}
@@ -77,6 +75,27 @@ services:
       - network
     depends_on:
       - neo4j
+      - nats
+
+  kuiper:
+    build:
+      context: ..
+      dockerfile: kuiper/Dockerfile
+    image: kuiper
+    container_name: kuiper
+    hostname: ${KUIPER_HOSTNAME}
+    expose:
+      - ${KUIPER_PORT}
+    ports:
+      - ${KUIPER_PORT}:${KUIPER_PORT}
+    environment:
+      - KUIPER_ADDRESS=:${KUIPER_PORT}
+      - OORT_ADDRESS=${OORT_HOSTNAME}:${OORT_PORT}
+      - MAGNETAR_ADDRESS=${MAGNETAR_HOSTNAME}:${MAGNETAR_PORT}
+      - NATS_ADDRESS=${NATS_HOSTNAME}:${NATS_PORT}
+    networks:
+      - network
+    depends_on:
       - nats
 
   neo4j:
