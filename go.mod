@@ -1,31 +1,36 @@
 module github.com/c12s/magnetar
 
-go 1.14
-
-replace github.com/coreos/go-systemd => github.com/coreos/go-systemd/v22 v22.0.0
-
-replace github.com/coreos/etcd => github.com/ozonru/etcd v3.3.20-grpc1.27-origmodule+incompatible
+go 1.19
 
 require (
-	github.com/c12s/scheme v0.0.0-20200617224552-d80e5c0a31df
-	github.com/coreos/etcd v3.3.22+incompatible
+	github.com/golang/protobuf v1.5.3
+	github.com/google/uuid v1.3.0
+	github.com/juliangruber/go-intersect v1.1.0
+	github.com/nats-io/nats.go v1.28.0
+	go.etcd.io/etcd/client/v3 v3.5.9
+	golang.org/x/exp v0.0.0-20230801115018-d63ba01acd4b
+	google.golang.org/grpc v1.57.0
+	google.golang.org/protobuf v1.30.0
+)
+
+require (
 	github.com/coreos/go-semver v0.3.0 // indirect
-	github.com/coreos/go-systemd v0.0.0-20191104093116-d3cd4ed1dbcf // indirect
-	github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f // indirect
-	github.com/gogo/protobuf v1.3.1 // indirect
-	github.com/golang/protobuf v1.4.2
-	github.com/google/uuid v1.1.1 // indirect
-	github.com/influxdata/influxdb1-client v0.0.0-20200515024757-02f0bf5dbca3
-	github.com/nats-io/jwt v1.0.1 // indirect
-	github.com/nats-io/nats.go v1.10.0
-	github.com/nats-io/nkeys v0.2.0 // indirect
-	go.etcd.io/etcd v3.3.20+incompatible // indirect
-	go.uber.org/zap v1.15.0 // indirect
-	golang.org/x/crypto v0.0.0-20200604202706-70a84ac30bf9 // indirect
-	golang.org/x/net v0.0.0-20200602114024-627f9648deb9 // indirect
-	golang.org/x/sys v0.0.0-20200610111108-226ff32320da // indirect
-	golang.org/x/text v0.3.2 // indirect
-	google.golang.org/genproto v0.0.0-20200610212329-df9b449b0ff2 // indirect
-	google.golang.org/grpc v1.29.1
-	gopkg.in/yaml.v2 v2.3.0
+	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
+	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/klauspost/compress v1.16.5 // indirect
+	github.com/nats-io/nats-server/v2 v2.9.20 // indirect
+	github.com/nats-io/nkeys v0.4.4 // indirect
+	github.com/nats-io/nuid v1.0.1 // indirect
+	go.etcd.io/etcd/api/v3 v3.5.9 // indirect
+	go.etcd.io/etcd/client/pkg/v3 v3.5.9 // indirect
+	go.uber.org/atomic v1.7.0 // indirect
+	go.uber.org/multierr v1.6.0 // indirect
+	go.uber.org/zap v1.17.0 // indirect
+	golang.org/x/crypto v0.9.0 // indirect
+	golang.org/x/net v0.10.0 // indirect
+	golang.org/x/sys v0.8.0 // indirect
+	golang.org/x/text v0.9.0 // indirect
+	google.golang.org/genproto v0.0.0-20230526161137-0005af68ea54 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20230525234035-dd9d682886f9 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230525234030-28d5490b6b19 // indirect
 )

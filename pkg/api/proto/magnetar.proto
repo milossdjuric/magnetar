@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+option go_package="github.com/c12s/magnetar/pkg/api";
+package proto;
+
+import "magnetar_model.proto";
+
+service Magnetar {
+  rpc GetNode(GetNodeReq) returns (GetNodeResp) {}
+  rpc ListNodes(ListNodesReq) returns (ListNodesResp) {}
+  rpc QueryNodes(QueryNodesReq) returns (QueryNodesResp) {}
+  rpc PutBoolLabel(PutBoolLabelReq) returns (PutLabelResp) {}
+  rpc PutFloat64Label(PutFloat64LabelReq) returns (PutLabelResp) {}
+  rpc PutStringLabel(PutStringLabelReq) returns (PutLabelResp) {}
+  rpc DeleteLabel(DeleteLabelReq) returns (DeleteLabelResp) {}
+}
+
+message GetNodeReq {
+  string nodeId = 1;
+}
+
+message GetNodeResp {
+  NodeStringified node = 1;
+}
+
+message ListNodesReq { }
+
+message ListNodesResp {
+  repeated NodeStringified nodes = 1;
+}
+
+message Query {
+  string labelKey = 3;
+  string shouldBe = 2;
+  string value = 1;
+}
+
+message QueryNodesReq {
+  repeated Query queries = 1;
+}
+
+message QueryNodesResp {
+  repeated NodeStringified nodes = 1;
+}
+
+message PutBoolLabelReq {
+  string nodeId = 1;
+  BoolLabel label = 2;
+}
+
+message PutFloat64LabelReq {
+  string nodeId = 1;
+  Float64Label label = 2;
+}
+
+message PutStringLabelReq {
+  string nodeId = 1;
+  StringLabel label = 2;
+}
+
+message PutLabelResp {
+  NodeStringified node = 1;
+}
+
+message DeleteLabelReq {
+  string nodeId = 1;
+  string labelKey = 2;
+}
+
+message DeleteLabelResp {
+  NodeStringified node = 1;
+}
