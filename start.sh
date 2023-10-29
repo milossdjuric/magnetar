@@ -13,6 +13,14 @@ export NATS_PORT=4222
 export ETCD_HOSTNAME=etcd
 export ETCD_PORT=2379
 
+export DB_PASSWORD=c12s_password
+export DB_USERNAME=postgres
+export DB_NAME=postgres
+export DB_HOST=database
+export DB_PORT=5432
+
+export BLACKHOLE_GRPC_PORT=50051
+
 export REGISTRATION_SUBJECT="register"
 export REGISTRATION_REQ_TIMEOUT_MILLISECONDS=1000
 export MAX_REGISTRATION_RETRIES=5
@@ -30,5 +38,5 @@ export NEO4J_apoc_import_file_enabled=true
 export NEO4J_apoc_import_file_use__neo4j__config=true
 export NEO4J_PLUGINS="[\"apoc\"]"
 
-docker-compose build
-docker-compose up
+docker compose build
+docker compose up
