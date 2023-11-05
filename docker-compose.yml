@@ -92,11 +92,55 @@ services:
       - KUIPER_ADDRESS=:${KUIPER_PORT}
       - OORT_ADDRESS=${OORT_HOSTNAME}:${OORT_PORT}
       - MAGNETAR_ADDRESS=${MAGNETAR_HOSTNAME}:${MAGNETAR_PORT}
+      - BLACKHOLE_ADDRESS=${BLACKHOLE_HOSTNAME}:${BLACKHOLE_PORT}
       - NATS_ADDRESS=${NATS_HOSTNAME}:${NATS_PORT}
     networks:
       - network
     depends_on:
       - nats
+      - queue
+
+  queue:
+    build:
+      context: ../blackhole
+      dockerfile: Dockerfile
+      args:
+        - GRPC_PORT=${BLACKHOLE_GRPC_PORT}
+    image: blackhole
+    container_name: blackhole
+    restart: always
+    networks:
+      - network
+    ports:
+      - ${BLACKHOLE_GRPC_PORT}:${BLACKHOLE_GRPC_PORT}
+    environment:
+      GRPC_PORT: ${BLACKHOLE_GRPC_PORT}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+    depends_on:
+      - database
+
+  database:
+    image: postgres:14.5
+    networks:
+      - network
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+
+  adminer:
+    image: adminer
+    restart: always
+    networks:
+      - network
+    ports:
+      - 7000:8080
 
   neo4j:
     image: neo4j:4.4.12
@@ -145,6 +189,9 @@ services:
       - ETCD_ADVERTISE_CLIENT_URLS=http://${ETCD_HOSTNAME}:${ETCD_PORT}
     networks:
       - network
+volumes:
+  db-data:
+    driver: local
 
 networks:
   network:
