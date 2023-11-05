@@ -12,6 +12,8 @@ export NATS_HOSTNAME=nats
 export NATS_PORT=4222
 export ETCD_HOSTNAME=etcd
 export ETCD_PORT=2379
+export BLACKHOLE_HOSTNAME=queue
+export BLACKHOLE_PORT=50051
 
 export DB_PASSWORD=c12s_password
 export DB_USERNAME=postgres
