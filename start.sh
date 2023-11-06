@@ -2,6 +2,7 @@ docker ps -aq | xargs docker stop | xargs docker rm
 
 export STAR_HOSTNAME=star
 export STAR_PORT=9000
+export STAR_HTTP_PORT=7777
 export MAGNETAR_HOSTNAME=magnetar
 export MAGNETAR_PORT=5000
 export KUIPER_HOSTNAME=kuiper
