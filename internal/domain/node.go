@@ -2,16 +2,21 @@ package domain
 
 type Node struct {
 	Id     NodeId
+	Org    string
 	Labels []Label
+}
+
+func (n Node) Claimed() bool {
+	return len(n.Org) > 0
 }
 
 type NodeId struct {
 	Value string
 }
 
-type QuerySelector []Query
+type Query []Selector
 
-type Query struct {
+type Selector struct {
 	LabelKey string
 	ShouldBe ComparisonResult
 	Value    string
@@ -19,11 +24,13 @@ type Query struct {
 
 type NodeRepo interface {
 	Put(node Node) error
-	Get(nodeId NodeId) (*Node, error)
-	List() ([]Node, error)
-	Query(selector QuerySelector) ([]NodeId, error)
-	PutLabel(nodeId NodeId, label Label) error
-	DeleteLabel(nodeId NodeId, labelKey string) error
+	Get(nodeId NodeId, org string) (*Node, error)
+	ListNodePool() ([]Node, error)
+	ListOrgOwnedNodes(org string) ([]Node, error)
+	QueryNodePool(query Query) ([]Node, error)
+	QueryOrgOwnedNodes(query Query, org string) ([]Node, error)
+	PutLabel(node Node, label Label) error
+	DeleteLabel(node Node, labelKey string) error
 }
 
 type NodeMarshaller interface {
@@ -31,25 +38,60 @@ type NodeMarshaller interface {
 	Unmarshal(nodeMarshalled []byte) (*Node, error)
 }
 
-type GetNodeReq struct {
+type GetFromNodePoolReq struct {
 	Id NodeId
 }
 
-type GetNodeResp struct {
+type GetFromNodePoolResp struct {
 	Node Node
 }
 
-type ListNodesReq struct {
+type GetFromOrgReq struct {
+	Id  NodeId
+	Org string
 }
 
-type ListNodesResp struct {
+type GetFromOrgResp struct {
+	Node Node
+}
+
+type ClaimOwnershipReq struct {
+	Query Query
+	Org   string
+}
+
+type ClaimOwnershipResp struct {
 	Nodes []Node
 }
 
-type QueryNodesReq struct {
-	Selector QuerySelector
+type ListNodePoolReq struct {
 }
 
-type QueryNodesResp struct {
+type ListNodePoolResp struct {
+	Nodes []Node
+}
+
+type ListOrgOwnedNodesReq struct {
+	Org string
+}
+
+type ListOrgOwnedNodesResp struct {
+	Nodes []Node
+}
+
+type QueryNodePoolReq struct {
+	Query Query
+}
+
+type QueryNodePoolResp struct {
+	Nodes []Node
+}
+
+type QueryOrgOwnedNodesReq struct {
+	Query Query
+	Org   string
+}
+
+type QueryOrgOwnedNodesResp struct {
 	Nodes []Node
 }

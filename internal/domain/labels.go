@@ -172,6 +172,7 @@ type LabelMarshaller interface {
 
 type PutLabelReq struct {
 	NodeId NodeId
+	Org    string
 	Label  Label
 }
 
@@ -181,6 +182,7 @@ type PutLabelResp struct {
 
 type DeleteLabelReq struct {
 	NodeId   NodeId
+	Org      string
 	LabelKey string
 }
 

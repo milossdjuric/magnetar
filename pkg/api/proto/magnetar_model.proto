@@ -5,7 +5,8 @@ package proto;
 
 message Node {
   string id = 1;
-  repeated Label labels = 2;
+  string org = 2;
+  repeated Label labels = 3;
 }
 
 message Label {
@@ -52,7 +53,8 @@ message StringValue {
 
 message NodeStringified {
   string id = 1;
-  repeated LabelStringified labels = 2;
+  string org = 2;
+  repeated LabelStringified labels = 3;
 }
 
 message LabelStringified {

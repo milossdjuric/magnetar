@@ -3,60 +3,171 @@ package proto
 import (
 	"github.com/c12s/magnetar/internal/domain"
 	"github.com/c12s/magnetar/pkg/api"
+	"log"
 )
 
-func GetNodeReqToDomain(req *api.GetNodeReq) (*domain.GetNodeReq, error) {
-	return &domain.GetNodeReq{
+func GetFromNodePoolReqToDomain(req *api.GetFromNodePoolReq) (*domain.GetFromNodePoolReq, error) {
+	return &domain.GetFromNodePoolReq{
 		Id: domain.NodeId{
 			Value: req.NodeId,
 		},
 	}, nil
 }
 
-func GetNodeRespFromDomain(resp domain.GetNodeResp) (*api.GetNodeResp, error) {
+func GetFromNodePoolRespFromDomain(resp domain.GetFromNodePoolResp) (*api.GetFromNodePoolResp, error) {
 	nodeProto, err := NodeStringifiedFromDomain(resp.Node)
 	if err != nil {
-		return nil, err
+		log.Println(err)
+		return nil, domain.ErrServerSide
 	}
-	return &api.GetNodeResp{
+	return &api.GetFromNodePoolResp{
 		Node: nodeProto,
 	}, nil
 }
 
-func ListNodesReqToDomain(req *api.ListNodesReq) (*domain.ListNodesReq, error) {
-	return &domain.ListNodesReq{}, nil
+func GetFromOrgReqToDomain(req *api.GetFromOrgReq) (*domain.GetFromOrgReq, error) {
+	return &domain.GetFromOrgReq{
+		Id: domain.NodeId{
+			Value: req.NodeId,
+		},
+		Org: req.Org,
+	}, nil
 }
 
-func ListNodesRespFromDomain(resp domain.ListNodesResp) (*api.ListNodesResp, error) {
+func GetFromOrgRespFromDomain(resp domain.GetFromOrgResp) (*api.GetFromOrgResp, error) {
+	nodeProto, err := NodeStringifiedFromDomain(resp.Node)
+	if err != nil {
+		log.Println(err)
+		return nil, domain.ErrServerSide
+	}
+	return &api.GetFromOrgResp{
+		Node: nodeProto,
+	}, nil
+}
+
+func ClaimOwnershipReqToDomain(req *api.ClaimOwnershipReq) (*domain.ClaimOwnershipReq, error) {
+	query, err := queryToDomain(req.Query)
+	if err != nil {
+		return nil, err
+	}
+	return &domain.ClaimOwnershipReq{
+		Query: query,
+		Org:   req.Org,
+	}, nil
+}
+
+func ClaimOwnershipRespFromDomain(resp domain.ClaimOwnershipResp) (*api.ClaimOwnershipResp, error) {
+	nodesProto := make([]*api.NodeStringified, 0)
+	for _, node := range resp.Nodes {
+		nodeProto, err := NodeStringifiedFromDomain(node)
+		if err != nil {
+			log.Println(err)
+			return nil, domain.ErrServerSide
+		}
+		nodesProto = append(nodesProto, nodeProto)
+	}
+	return &api.ClaimOwnershipResp{
+		Node: nodesProto,
+	}, nil
+}
+
+func ListNodePoolReqToDomain(req *api.ListNodePoolReq) (*domain.ListNodePoolReq, error) {
+	return &domain.ListNodePoolReq{}, nil
+}
+
+func ListNodePoolRespFromDomain(resp domain.ListNodePoolResp) (*api.ListNodePoolResp, error) {
 	nodesProto := make([]*api.NodeStringified, len(resp.Nodes))
 	for i, node := range resp.Nodes {
 		nodeProto, err := NodeStringifiedFromDomain(node)
 		if err != nil {
-			return nil, err
+			log.Println(err)
+			return nil, domain.ErrServerSide
 		}
 		nodesProto[i] = nodeProto
 	}
-	return &api.ListNodesResp{
+	return &api.ListNodePoolResp{
 		Nodes: nodesProto,
 	}, nil
 }
 
-func QueryNodesReqToDomain(req *api.QueryNodesReq) (*domain.QueryNodesReq, error) {
-	selector := make([]domain.Query, 0)
-	for _, query := range req.Queries {
-		resQuery, err := queryToDomain(query)
-		if err != nil {
-			return nil, err
-		}
-		selector = append(selector, *resQuery)
-	}
-	return &domain.QueryNodesReq{
-		Selector: selector,
+func ListOrgOwnedReqToDomain(req *api.ListOrgOwnedNodesReq) (*domain.ListOrgOwnedNodesReq, error) {
+	return &domain.ListOrgOwnedNodesReq{
+		Org: req.Org,
 	}, nil
 }
 
-func QueryNodesRespFromDomain(resp domain.QueryNodesResp) (*api.QueryNodesResp, error) {
-	protoResp := &api.QueryNodesResp{
+func ListOrgOwnedNodesRespFromDomain(resp domain.ListOrgOwnedNodesResp) (*api.ListOrgOwnedNodesResp, error) {
+	nodesProto := make([]*api.NodeStringified, len(resp.Nodes))
+	for i, node := range resp.Nodes {
+		nodeProto, err := NodeStringifiedFromDomain(node)
+		if err != nil {
+			log.Println(err)
+			return nil, domain.ErrServerSide
+		}
+		nodesProto[i] = nodeProto
+	}
+	return &api.ListOrgOwnedNodesResp{
+		Nodes: nodesProto,
+	}, nil
+}
+
+func QueryNodePoolReqToDomain(req *api.QueryNodePoolReq) (*domain.QueryNodePoolReq, error) {
+	query, err := queryToDomain(req.Query)
+	if err != nil {
+		return nil, err
+	}
+	return &domain.QueryNodePoolReq{
+		Query: query,
+	}, nil
+}
+
+func queryToDomain(query []*api.Selector) (domain.Query, error) {
+	queryDomain := make([]domain.Selector, 0)
+	for _, selector := range query {
+		selectorDomain, err := selectorToDomain(selector)
+		if err != nil {
+			log.Println(err)
+			return nil, domain.ErrServerSide
+		}
+		queryDomain = append(queryDomain, *selectorDomain)
+	}
+	return queryDomain, nil
+}
+
+func QueryNodePoolRespFromDomain(resp domain.QueryNodePoolResp) (*api.QueryNodePoolResp, error) {
+	protoResp := &api.QueryNodePoolResp{
+		Nodes: make([]*api.NodeStringified, 0),
+	}
+	for _, node := range resp.Nodes {
+		protoNode := &api.NodeStringified{
+			Id:     node.Id.Value,
+			Labels: make([]*api.LabelStringified, 0),
+		}
+		for _, label := range node.Labels {
+			protoLabel := &api.LabelStringified{
+				Key:   label.Key(),
+				Value: label.StringValue(),
+			}
+			protoNode.Labels = append(protoNode.Labels, protoLabel)
+		}
+		protoResp.Nodes = append(protoResp.Nodes, protoNode)
+	}
+	return protoResp, nil
+}
+
+func QueryOrgOwnedNodesReqToDomain(req *api.QueryOrgOwnedNodesReq) (*domain.QueryOrgOwnedNodesReq, error) {
+	query, err := queryToDomain(req.Query)
+	if err != nil {
+		return nil, err
+	}
+	return &domain.QueryOrgOwnedNodesReq{
+		Org:   req.Org,
+		Query: query,
+	}, nil
+}
+
+func QueryOrgOwnedNodesRespFromDomain(resp domain.QueryOrgOwnedNodesResp) (*api.QueryOrgOwnedNodesResp, error) {
+	protoResp := &api.QueryOrgOwnedNodesResp{
 		Nodes: make([]*api.NodeStringified, 0),
 	}
 	for _, node := range resp.Nodes {
@@ -82,6 +193,7 @@ func PutBoolLabelReqToDomain(req *api.PutBoolLabelReq) (*domain.PutLabelReq, err
 			Value: req.NodeId,
 		},
 		Label: domain.NewBoolLabel(req.Label.Key, req.Label.Value),
+		Org:   req.Org,
 	}, nil
 }
 
@@ -91,6 +203,7 @@ func PutFloat64LabelReqToDomain(req *api.PutFloat64LabelReq) (*domain.PutLabelRe
 			Value: req.NodeId,
 		},
 		Label: domain.NewFloat64Label(req.Label.Key, req.Label.Value),
+		Org:   req.Org,
 	}, nil
 }
 
@@ -100,13 +213,15 @@ func PutStringLabelReqToDomain(req *api.PutStringLabelReq) (*domain.PutLabelReq,
 			Value: req.NodeId,
 		},
 		Label: domain.NewStringLabel(req.Label.Key, req.Label.Value),
+		Org:   req.Org,
 	}, nil
 }
 
 func PutLabelRespFromDomain(resp domain.PutLabelResp) (*api.PutLabelResp, error) {
 	node, err := NodeStringifiedFromDomain(resp.Node)
 	if err != nil {
-		return nil, err
+		log.Println(err)
+		return nil, domain.ErrServerSide
 	}
 	return &api.PutLabelResp{
 		Node: node,
@@ -119,25 +234,28 @@ func DeleteLabelReqToDomain(req *api.DeleteLabelReq) (*domain.DeleteLabelReq, er
 			Value: req.NodeId,
 		},
 		LabelKey: req.LabelKey,
+		Org:      req.Org,
 	}, nil
 }
 
 func DeleteLabelRespFromDomain(resp domain.DeleteLabelResp) (*api.DeleteLabelResp, error) {
 	node, err := NodeStringifiedFromDomain(resp.Node)
 	if err != nil {
-		return nil, err
+		log.Println(err)
+		return nil, domain.ErrServerSide
 	}
 	return &api.DeleteLabelResp{
 		Node: node,
 	}, nil
 }
 
-func queryToDomain(query *api.Query) (*domain.Query, error) {
+func selectorToDomain(query *api.Selector) (*domain.Selector, error) {
 	shouldBe, err := domain.NewCompResultFromString(query.ShouldBe)
 	if err != nil {
-		return nil, err
+		log.Println(err)
+		return nil, domain.ErrServerSide
 	}
-	return &domain.Query{
+	return &domain.Selector{
 		LabelKey: query.LabelKey,
 		ShouldBe: shouldBe,
 		Value:    query.Value,

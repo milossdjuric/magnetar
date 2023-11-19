@@ -81,6 +81,7 @@ func NodeStringifiedFromDomain(node domain.Node) (*api.NodeStringified, error) {
 	}
 	return &api.NodeStringified{
 		Id:     node.Id.Value,
+		Org:    node.Org,
 		Labels: labels,
 	}, nil
 }
@@ -95,6 +96,7 @@ func LabelStringifiedFromDomain(label domain.Label) (*api.LabelStringified, erro
 func NodeFromDomain(node domain.Node) (*api.Node, error) {
 	resp := &api.Node{
 		Id:     node.Id.Value,
+		Org:    node.Org,
 		Labels: make([]*api.Label, len(node.Labels)),
 	}
 	for i, label := range node.Labels {
@@ -112,6 +114,7 @@ func NodeToDomain(node *api.Node) (*domain.Node, error) {
 		Id: domain.NodeId{
 			Value: node.Id,
 		},
+		Org:    node.Org,
 		Labels: make([]domain.Label, len(node.Labels)),
 	}
 	for i, protoLabel := range node.Labels {

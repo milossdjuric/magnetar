@@ -15,11 +15,12 @@ func NewLabelService(nodeRepo domain.NodeRepo) (*LabelService, error) {
 }
 
 func (l *LabelService) PutLabel(req domain.PutLabelReq) (*domain.PutLabelResp, error) {
-	err := l.nodeRepo.PutLabel(req.NodeId, req.Label)
+	// todo: authorize req
+	node, err := l.nodeRepo.Get(req.NodeId, req.Org)
 	if err != nil {
 		return nil, err
 	}
-	node, err := l.nodeRepo.Get(req.NodeId)
+	err = l.nodeRepo.PutLabel(*node, req.Label)
 	if err != nil {
 		return nil, err
 	}
@@ -29,11 +30,12 @@ func (l *LabelService) PutLabel(req domain.PutLabelReq) (*domain.PutLabelResp, e
 }
 
 func (l *LabelService) DeleteLabel(req domain.DeleteLabelReq) (*domain.DeleteLabelResp, error) {
-	err := l.nodeRepo.DeleteLabel(req.NodeId, req.LabelKey)
+	// todo: authorize req
+	node, err := l.nodeRepo.Get(req.NodeId, req.Org)
 	if err != nil {
 		return nil, err
 	}
-	node, err := l.nodeRepo.Get(req.NodeId)
+	err = l.nodeRepo.DeleteLabel(*node, req.LabelKey)
 	if err != nil {
 		return nil, err
 	}
