@@ -25,12 +25,13 @@ type Selector struct {
 type NodeRepo interface {
 	Put(node Node) error
 	Get(nodeId NodeId, org string) (*Node, error)
+	Delete(node Node) error
 	ListNodePool() ([]Node, error)
 	ListOrgOwnedNodes(org string) ([]Node, error)
 	QueryNodePool(query Query) ([]Node, error)
 	QueryOrgOwnedNodes(query Query, org string) ([]Node, error)
-	PutLabel(node Node, label Label) error
-	DeleteLabel(node Node, labelKey string) error
+	PutLabel(node Node, label Label) (*Node, error)
+	DeleteLabel(node Node, labelKey string) (*Node, error)
 }
 
 type NodeMarshaller interface {

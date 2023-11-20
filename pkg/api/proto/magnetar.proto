@@ -30,6 +30,8 @@ message GetFromNodePoolResp {
 message GetFromOrgReq {
   string nodeId = 1;
   string org = 2;
+  string subId = 3;
+  string subKind = 4;
 }
 
 message GetFromOrgResp {
@@ -39,6 +41,8 @@ message GetFromOrgResp {
 message ClaimOwnershipReq {
   repeated Selector query = 1;
   string org = 2;
+  string subId = 3;
+  string subKind = 4;
 }
 
 message ClaimOwnershipResp {
@@ -52,7 +56,9 @@ message ListNodePoolResp {
 }
 
 message ListOrgOwnedNodesReq {
-  string org = 2;
+  string org = 1;
+  string subId = 2;
+  string subKind = 3;
 }
 
 message ListOrgOwnedNodesResp {
@@ -76,6 +82,8 @@ message QueryNodePoolResp {
 message QueryOrgOwnedNodesReq {
   repeated Selector query = 1;
   string org = 2;
+  string subId = 3;
+  string subKind = 4;
 }
 
 message QueryOrgOwnedNodesResp {
@@ -86,18 +94,24 @@ message PutBoolLabelReq {
   string nodeId = 1;
   BoolLabel label = 2;
   string org = 3;
+  string subId = 4;
+  string subKind = 5;
 }
 
 message PutFloat64LabelReq {
   string nodeId = 1;
   Float64Label label = 2;
   string org = 3;
+  string subId = 4;
+  string subKind = 5;
 }
 
 message PutStringLabelReq {
   string nodeId = 1;
   StringLabel label = 2;
   string org = 3;
+  string subId = 4;
+  string subKind = 5;
 }
 
 message PutLabelResp {
@@ -108,6 +122,8 @@ message DeleteLabelReq {
   string nodeId = 1;
   string labelKey = 2;
   string org = 3;
+  string subId = 4;
+  string subKind = 5;
 }
 
 message DeleteLabelResp {

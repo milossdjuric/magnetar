@@ -35,20 +35,19 @@ func NewNodeEtcdRepo(etcd *etcd.Client, nodeMarshaller domain.NodeMarshaller, la
 }
 
 func (n nodeEtcdRepo) Put(node domain.Node) error {
-	tbdNode, err := n.Get(node.Id, node.Org)
-	// node was previously registered and possibly claimed by some org
-	// so we should remove all stale records of it
-	if err == nil && tbdNode != nil {
-		err = n.deleteNode(*tbdNode)
-		if err != nil {
-			return err
-		}
-	}
-	err = n.putNodeGetModel(node)
+	err := n.putNodeGetModel(node)
 	if err != nil {
 		return err
 	}
 	return n.putNodeQueryModel(node)
+}
+
+func (n nodeEtcdRepo) Delete(node domain.Node) error {
+	err := n.deleteNodeGetModel(node)
+	if err != nil {
+		return err
+	}
+	return n.deleteNodeQueryModel(node)
 }
 
 func (n nodeEtcdRepo) Get(nodeId domain.NodeId, org string) (*domain.Node, error) {
@@ -131,28 +130,28 @@ func (n nodeEtcdRepo) listNodes(keyPrefix string) ([]domain.Node, error) {
 	return nodes, nil
 }
 
-func (n nodeEtcdRepo) PutLabel(node domain.Node, label domain.Label) error {
+func (n nodeEtcdRepo) PutLabel(node domain.Node, label domain.Label) (*domain.Node, error) {
 	err := n.putLabelGetModel(node, label)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return n.putLabelQueryModel(node, label)
+	err = n.putLabelQueryModel(node, label)
+	if err != nil {
+		return nil, err
+	}
+	return n.Get(node.Id, node.Org)
 }
 
-func (n nodeEtcdRepo) DeleteLabel(node domain.Node, labelKey string) error {
+func (n nodeEtcdRepo) DeleteLabel(node domain.Node, labelKey string) (*domain.Node, error) {
 	err := n.deleteLabelGetModel(node, labelKey)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return n.deleteLabelQueryModel(node, labelKey)
-}
-
-func (n nodeEtcdRepo) deleteNode(node domain.Node) error {
-	err := n.deleteNodeGetModel(node)
+	err = n.deleteLabelQueryModel(node, labelKey)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return n.deleteNodeQueryModel(node)
+	return n.Get(node.Id, node.Org)
 }
 
 func (n nodeEtcdRepo) deleteNodeGetModel(node domain.Node) error {
