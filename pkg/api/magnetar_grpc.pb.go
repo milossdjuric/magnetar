@@ -22,9 +22,13 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MagnetarClient interface {
-	GetNode(ctx context.Context, in *GetNodeReq, opts ...grpc.CallOption) (*GetNodeResp, error)
-	ListNodes(ctx context.Context, in *ListNodesReq, opts ...grpc.CallOption) (*ListNodesResp, error)
-	QueryNodes(ctx context.Context, in *QueryNodesReq, opts ...grpc.CallOption) (*QueryNodesResp, error)
+	GetFromNodePool(ctx context.Context, in *GetFromNodePoolReq, opts ...grpc.CallOption) (*GetFromNodePoolResp, error)
+	GetFromOrg(ctx context.Context, in *GetFromOrgReq, opts ...grpc.CallOption) (*GetFromOrgResp, error)
+	ClaimOwnership(ctx context.Context, in *ClaimOwnershipReq, opts ...grpc.CallOption) (*ClaimOwnershipResp, error)
+	ListNodePool(ctx context.Context, in *ListNodePoolReq, opts ...grpc.CallOption) (*ListNodePoolResp, error)
+	ListOrgOwnedNodes(ctx context.Context, in *ListOrgOwnedNodesReq, opts ...grpc.CallOption) (*ListOrgOwnedNodesResp, error)
+	QueryNodePool(ctx context.Context, in *QueryNodePoolReq, opts ...grpc.CallOption) (*QueryNodePoolResp, error)
+	QueryOrgOwnedNodes(ctx context.Context, in *QueryOrgOwnedNodesReq, opts ...grpc.CallOption) (*QueryOrgOwnedNodesResp, error)
 	PutBoolLabel(ctx context.Context, in *PutBoolLabelReq, opts ...grpc.CallOption) (*PutLabelResp, error)
 	PutFloat64Label(ctx context.Context, in *PutFloat64LabelReq, opts ...grpc.CallOption) (*PutLabelResp, error)
 	PutStringLabel(ctx context.Context, in *PutStringLabelReq, opts ...grpc.CallOption) (*PutLabelResp, error)
@@ -39,27 +43,63 @@ func NewMagnetarClient(cc grpc.ClientConnInterface) MagnetarClient {
 	return &magnetarClient{cc}
 }
 
-func (c *magnetarClient) GetNode(ctx context.Context, in *GetNodeReq, opts ...grpc.CallOption) (*GetNodeResp, error) {
-	out := new(GetNodeResp)
-	err := c.cc.Invoke(ctx, "/proto.Magnetar/GetNode", in, out, opts...)
+func (c *magnetarClient) GetFromNodePool(ctx context.Context, in *GetFromNodePoolReq, opts ...grpc.CallOption) (*GetFromNodePoolResp, error) {
+	out := new(GetFromNodePoolResp)
+	err := c.cc.Invoke(ctx, "/proto.Magnetar/GetFromNodePool", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *magnetarClient) ListNodes(ctx context.Context, in *ListNodesReq, opts ...grpc.CallOption) (*ListNodesResp, error) {
-	out := new(ListNodesResp)
-	err := c.cc.Invoke(ctx, "/proto.Magnetar/ListNodes", in, out, opts...)
+func (c *magnetarClient) GetFromOrg(ctx context.Context, in *GetFromOrgReq, opts ...grpc.CallOption) (*GetFromOrgResp, error) {
+	out := new(GetFromOrgResp)
+	err := c.cc.Invoke(ctx, "/proto.Magnetar/GetFromOrg", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *magnetarClient) QueryNodes(ctx context.Context, in *QueryNodesReq, opts ...grpc.CallOption) (*QueryNodesResp, error) {
-	out := new(QueryNodesResp)
-	err := c.cc.Invoke(ctx, "/proto.Magnetar/QueryNodes", in, out, opts...)
+func (c *magnetarClient) ClaimOwnership(ctx context.Context, in *ClaimOwnershipReq, opts ...grpc.CallOption) (*ClaimOwnershipResp, error) {
+	out := new(ClaimOwnershipResp)
+	err := c.cc.Invoke(ctx, "/proto.Magnetar/ClaimOwnership", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *magnetarClient) ListNodePool(ctx context.Context, in *ListNodePoolReq, opts ...grpc.CallOption) (*ListNodePoolResp, error) {
+	out := new(ListNodePoolResp)
+	err := c.cc.Invoke(ctx, "/proto.Magnetar/ListNodePool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *magnetarClient) ListOrgOwnedNodes(ctx context.Context, in *ListOrgOwnedNodesReq, opts ...grpc.CallOption) (*ListOrgOwnedNodesResp, error) {
+	out := new(ListOrgOwnedNodesResp)
+	err := c.cc.Invoke(ctx, "/proto.Magnetar/ListOrgOwnedNodes", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *magnetarClient) QueryNodePool(ctx context.Context, in *QueryNodePoolReq, opts ...grpc.CallOption) (*QueryNodePoolResp, error) {
+	out := new(QueryNodePoolResp)
+	err := c.cc.Invoke(ctx, "/proto.Magnetar/QueryNodePool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *magnetarClient) QueryOrgOwnedNodes(ctx context.Context, in *QueryOrgOwnedNodesReq, opts ...grpc.CallOption) (*QueryOrgOwnedNodesResp, error) {
+	out := new(QueryOrgOwnedNodesResp)
+	err := c.cc.Invoke(ctx, "/proto.Magnetar/QueryOrgOwnedNodes", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -106,9 +146,13 @@ func (c *magnetarClient) DeleteLabel(ctx context.Context, in *DeleteLabelReq, op
 // All implementations must embed UnimplementedMagnetarServer
 // for forward compatibility
 type MagnetarServer interface {
-	GetNode(context.Context, *GetNodeReq) (*GetNodeResp, error)
-	ListNodes(context.Context, *ListNodesReq) (*ListNodesResp, error)
-	QueryNodes(context.Context, *QueryNodesReq) (*QueryNodesResp, error)
+	GetFromNodePool(context.Context, *GetFromNodePoolReq) (*GetFromNodePoolResp, error)
+	GetFromOrg(context.Context, *GetFromOrgReq) (*GetFromOrgResp, error)
+	ClaimOwnership(context.Context, *ClaimOwnershipReq) (*ClaimOwnershipResp, error)
+	ListNodePool(context.Context, *ListNodePoolReq) (*ListNodePoolResp, error)
+	ListOrgOwnedNodes(context.Context, *ListOrgOwnedNodesReq) (*ListOrgOwnedNodesResp, error)
+	QueryNodePool(context.Context, *QueryNodePoolReq) (*QueryNodePoolResp, error)
+	QueryOrgOwnedNodes(context.Context, *QueryOrgOwnedNodesReq) (*QueryOrgOwnedNodesResp, error)
 	PutBoolLabel(context.Context, *PutBoolLabelReq) (*PutLabelResp, error)
 	PutFloat64Label(context.Context, *PutFloat64LabelReq) (*PutLabelResp, error)
 	PutStringLabel(context.Context, *PutStringLabelReq) (*PutLabelResp, error)
@@ -120,14 +164,26 @@ type MagnetarServer interface {
 type UnimplementedMagnetarServer struct {
 }
 
-func (UnimplementedMagnetarServer) GetNode(context.Context, *GetNodeReq) (*GetNodeResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetNode not implemented")
+func (UnimplementedMagnetarServer) GetFromNodePool(context.Context, *GetFromNodePoolReq) (*GetFromNodePoolResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFromNodePool not implemented")
 }
-func (UnimplementedMagnetarServer) ListNodes(context.Context, *ListNodesReq) (*ListNodesResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListNodes not implemented")
+func (UnimplementedMagnetarServer) GetFromOrg(context.Context, *GetFromOrgReq) (*GetFromOrgResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFromOrg not implemented")
 }
-func (UnimplementedMagnetarServer) QueryNodes(context.Context, *QueryNodesReq) (*QueryNodesResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryNodes not implemented")
+func (UnimplementedMagnetarServer) ClaimOwnership(context.Context, *ClaimOwnershipReq) (*ClaimOwnershipResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ClaimOwnership not implemented")
+}
+func (UnimplementedMagnetarServer) ListNodePool(context.Context, *ListNodePoolReq) (*ListNodePoolResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListNodePool not implemented")
+}
+func (UnimplementedMagnetarServer) ListOrgOwnedNodes(context.Context, *ListOrgOwnedNodesReq) (*ListOrgOwnedNodesResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListOrgOwnedNodes not implemented")
+}
+func (UnimplementedMagnetarServer) QueryNodePool(context.Context, *QueryNodePoolReq) (*QueryNodePoolResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryNodePool not implemented")
+}
+func (UnimplementedMagnetarServer) QueryOrgOwnedNodes(context.Context, *QueryOrgOwnedNodesReq) (*QueryOrgOwnedNodesResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryOrgOwnedNodes not implemented")
 }
 func (UnimplementedMagnetarServer) PutBoolLabel(context.Context, *PutBoolLabelReq) (*PutLabelResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutBoolLabel not implemented")
@@ -154,56 +210,128 @@ func RegisterMagnetarServer(s grpc.ServiceRegistrar, srv MagnetarServer) {
 	s.RegisterService(&Magnetar_ServiceDesc, srv)
 }
 
-func _Magnetar_GetNode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetNodeReq)
+func _Magnetar_GetFromNodePool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFromNodePoolReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MagnetarServer).GetNode(ctx, in)
+		return srv.(MagnetarServer).GetFromNodePool(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Magnetar/GetNode",
+		FullMethod: "/proto.Magnetar/GetFromNodePool",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MagnetarServer).GetNode(ctx, req.(*GetNodeReq))
+		return srv.(MagnetarServer).GetFromNodePool(ctx, req.(*GetFromNodePoolReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Magnetar_ListNodes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListNodesReq)
+func _Magnetar_GetFromOrg_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFromOrgReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MagnetarServer).ListNodes(ctx, in)
+		return srv.(MagnetarServer).GetFromOrg(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Magnetar/ListNodes",
+		FullMethod: "/proto.Magnetar/GetFromOrg",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MagnetarServer).ListNodes(ctx, req.(*ListNodesReq))
+		return srv.(MagnetarServer).GetFromOrg(ctx, req.(*GetFromOrgReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Magnetar_QueryNodes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryNodesReq)
+func _Magnetar_ClaimOwnership_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ClaimOwnershipReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MagnetarServer).QueryNodes(ctx, in)
+		return srv.(MagnetarServer).ClaimOwnership(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Magnetar/QueryNodes",
+		FullMethod: "/proto.Magnetar/ClaimOwnership",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MagnetarServer).QueryNodes(ctx, req.(*QueryNodesReq))
+		return srv.(MagnetarServer).ClaimOwnership(ctx, req.(*ClaimOwnershipReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Magnetar_ListNodePool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListNodePoolReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MagnetarServer).ListNodePool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Magnetar/ListNodePool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MagnetarServer).ListNodePool(ctx, req.(*ListNodePoolReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Magnetar_ListOrgOwnedNodes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListOrgOwnedNodesReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MagnetarServer).ListOrgOwnedNodes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Magnetar/ListOrgOwnedNodes",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MagnetarServer).ListOrgOwnedNodes(ctx, req.(*ListOrgOwnedNodesReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Magnetar_QueryNodePool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryNodePoolReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MagnetarServer).QueryNodePool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Magnetar/QueryNodePool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MagnetarServer).QueryNodePool(ctx, req.(*QueryNodePoolReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Magnetar_QueryOrgOwnedNodes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryOrgOwnedNodesReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MagnetarServer).QueryOrgOwnedNodes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Magnetar/QueryOrgOwnedNodes",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MagnetarServer).QueryOrgOwnedNodes(ctx, req.(*QueryOrgOwnedNodesReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -288,16 +416,32 @@ var Magnetar_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MagnetarServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetNode",
-			Handler:    _Magnetar_GetNode_Handler,
+			MethodName: "GetFromNodePool",
+			Handler:    _Magnetar_GetFromNodePool_Handler,
 		},
 		{
-			MethodName: "ListNodes",
-			Handler:    _Magnetar_ListNodes_Handler,
+			MethodName: "GetFromOrg",
+			Handler:    _Magnetar_GetFromOrg_Handler,
 		},
 		{
-			MethodName: "QueryNodes",
-			Handler:    _Magnetar_QueryNodes_Handler,
+			MethodName: "ClaimOwnership",
+			Handler:    _Magnetar_ClaimOwnership_Handler,
+		},
+		{
+			MethodName: "ListNodePool",
+			Handler:    _Magnetar_ListNodePool_Handler,
+		},
+		{
+			MethodName: "ListOrgOwnedNodes",
+			Handler:    _Magnetar_ListOrgOwnedNodes_Handler,
+		},
+		{
+			MethodName: "QueryNodePool",
+			Handler:    _Magnetar_QueryNodePool_Handler,
+		},
+		{
+			MethodName: "QueryOrgOwnedNodes",
+			Handler:    _Magnetar_QueryOrgOwnedNodes_Handler,
 		},
 		{
 			MethodName: "PutBoolLabel",

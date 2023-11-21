@@ -5,6 +5,7 @@ import (
 	"github.com/c12s/magnetar/internal/mappers/proto"
 	"github.com/c12s/magnetar/internal/services"
 	"github.com/c12s/magnetar/pkg/api"
+	oortapi "github.com/c12s/oort/pkg/api"
 )
 
 type MagnetarGrpcServer struct {
@@ -20,40 +21,108 @@ func NewMagnetarGrpcServer(nodeService services.NodeService, labelService servic
 	}, nil
 }
 
-func (m *MagnetarGrpcServer) GetNode(ctx context.Context, req *api.GetNodeReq) (*api.GetNodeResp, error) {
-	domainReq, err := proto.GetNodeReqToDomain(req)
+func (m *MagnetarGrpcServer) GetFromNodePool(ctx context.Context, req *api.GetFromNodePoolReq) (*api.GetFromNodePoolResp, error) {
+	domainReq, err := proto.GetFromNodePoolReqToDomain(req)
 	if err != nil {
 		return nil, err
 	}
-	domainResp, err := m.nodeService.Get(*domainReq)
+	domainResp, err := m.nodeService.GetFromNodePool(ctx, *domainReq)
 	if err != nil {
 		return nil, err
 	}
-	return proto.GetNodeRespFromDomain(*domainResp)
+	return proto.GetFromNodePoolRespFromDomain(*domainResp)
 }
 
-func (m *MagnetarGrpcServer) ListNodes(ctx context.Context, req *api.ListNodesReq) (*api.ListNodesResp, error) {
-	domainReq, err := proto.ListNodesReqToDomain(req)
+func (m *MagnetarGrpcServer) GetFromOrg(ctx context.Context, req *api.GetFromOrgReq) (*api.GetFromOrgResp, error) {
+	domainReq, err := proto.GetFromOrgReqToDomain(req)
 	if err != nil {
 		return nil, err
 	}
-	domainResp, err := m.nodeService.List(*domainReq)
+	subject := &oortapi.Resource{
+		Id:   req.SubId,
+		Kind: req.SubKind,
+	}
+	ctx = context.WithValue(ctx, "subject", subject)
+	domainResp, err := m.nodeService.GetFromOrg(ctx, *domainReq)
 	if err != nil {
 		return nil, err
 	}
-	return proto.ListNodesRespFromDomain(*domainResp)
+	return proto.GetFromOrgRespFromDomain(*domainResp)
 }
 
-func (m *MagnetarGrpcServer) QueryNodes(ctx context.Context, req *api.QueryNodesReq) (*api.QueryNodesResp, error) {
-	domainReq, err := proto.QueryNodesReqToDomain(req)
+func (m *MagnetarGrpcServer) ClaimOwnership(ctx context.Context, req *api.ClaimOwnershipReq) (*api.ClaimOwnershipResp, error) {
+	domainReq, err := proto.ClaimOwnershipReqToDomain(req)
 	if err != nil {
 		return nil, err
 	}
-	domainResp, err := m.nodeService.Query(*domainReq)
+	subject := &oortapi.Resource{
+		Id:   req.SubId,
+		Kind: req.SubKind,
+	}
+	ctx = context.WithValue(ctx, "subject", subject)
+	domainResp, err := m.nodeService.ClaimOwnership(ctx, *domainReq)
 	if err != nil {
 		return nil, err
 	}
-	return proto.QueryNodesRespFromDomain(*domainResp)
+	return proto.ClaimOwnershipRespFromDomain(*domainResp)
+}
+
+func (m *MagnetarGrpcServer) ListNodePool(ctx context.Context, req *api.ListNodePoolReq) (*api.ListNodePoolResp, error) {
+	domainReq, err := proto.ListNodePoolReqToDomain(req)
+	if err != nil {
+		return nil, err
+	}
+	domainResp, err := m.nodeService.ListNodePool(ctx, *domainReq)
+	if err != nil {
+		return nil, err
+	}
+	return proto.ListNodePoolRespFromDomain(*domainResp)
+}
+
+func (m *MagnetarGrpcServer) ListOrgOwnedNodes(ctx context.Context, req *api.ListOrgOwnedNodesReq) (*api.ListOrgOwnedNodesResp, error) {
+	domainReq, err := proto.ListOrgOwnedReqToDomain(req)
+	if err != nil {
+		return nil, err
+	}
+	subject := &oortapi.Resource{
+		Id:   req.SubId,
+		Kind: req.SubKind,
+	}
+	ctx = context.WithValue(ctx, "subject", subject)
+	domainResp, err := m.nodeService.ListOrgOwnedNodes(ctx, *domainReq)
+	if err != nil {
+		return nil, err
+	}
+	return proto.ListOrgOwnedNodesRespFromDomain(*domainResp)
+}
+
+func (m *MagnetarGrpcServer) QueryNodePool(ctx context.Context, req *api.QueryNodePoolReq) (*api.QueryNodePoolResp, error) {
+	domainReq, err := proto.QueryNodePoolReqToDomain(req)
+	if err != nil {
+		return nil, err
+	}
+	domainResp, err := m.nodeService.QueryNodePool(ctx, *domainReq)
+	if err != nil {
+		return nil, err
+	}
+	return proto.QueryNodePoolRespFromDomain(*domainResp)
+}
+
+func (m *MagnetarGrpcServer) QueryOrgOwnedNodes(ctx context.Context, req *api.QueryOrgOwnedNodesReq) (*api.QueryOrgOwnedNodesResp, error) {
+	domainReq, err := proto.QueryOrgOwnedNodesReqToDomain(req)
+	if err != nil {
+		return nil, err
+	}
+	subject := &oortapi.Resource{
+		Id:   req.SubId,
+		Kind: req.SubKind,
+	}
+	ctx = context.WithValue(ctx, "subject", subject)
+	domainResp, err := m.nodeService.QueryOrgOwnedNodes(ctx, *domainReq)
+	if err != nil {
+		return nil, err
+	}
+	return proto.QueryOrgOwnedNodesRespFromDomain(*domainResp)
 }
 
 func (m *MagnetarGrpcServer) PutBoolLabel(ctx context.Context, req *api.PutBoolLabelReq) (*api.PutLabelResp, error) {
@@ -61,7 +130,12 @@ func (m *MagnetarGrpcServer) PutBoolLabel(ctx context.Context, req *api.PutBoolL
 	if err != nil {
 		return nil, err
 	}
-	domainResp, err := m.labelService.PutLabel(*domainReq)
+	subject := &oortapi.Resource{
+		Id:   req.SubId,
+		Kind: req.SubKind,
+	}
+	ctx = context.WithValue(ctx, "subject", subject)
+	domainResp, err := m.labelService.PutLabel(ctx, *domainReq)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +147,12 @@ func (m *MagnetarGrpcServer) PutFloat64Label(ctx context.Context, req *api.PutFl
 	if err != nil {
 		return nil, err
 	}
-	domainResp, err := m.labelService.PutLabel(*domainReq)
+	subject := &oortapi.Resource{
+		Id:   req.SubId,
+		Kind: req.SubKind,
+	}
+	ctx = context.WithValue(ctx, "subject", subject)
+	domainResp, err := m.labelService.PutLabel(ctx, *domainReq)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +164,12 @@ func (m *MagnetarGrpcServer) PutStringLabel(ctx context.Context, req *api.PutStr
 	if err != nil {
 		return nil, err
 	}
-	domainResp, err := m.labelService.PutLabel(*domainReq)
+	subject := &oortapi.Resource{
+		Id:   req.SubId,
+		Kind: req.SubKind,
+	}
+	ctx = context.WithValue(ctx, "subject", subject)
+	domainResp, err := m.labelService.PutLabel(ctx, *domainReq)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +181,12 @@ func (m *MagnetarGrpcServer) DeleteLabel(ctx context.Context, req *api.DeleteLab
 	if err != nil {
 		return nil, err
 	}
-	domainResp, err := m.labelService.DeleteLabel(*domainReq)
+	subject := &oortapi.Resource{
+		Id:   req.SubId,
+		Kind: req.SubKind,
+	}
+	ctx = context.WithValue(ctx, "subject", subject)
+	domainResp, err := m.labelService.DeleteLabel(ctx, *domainReq)
 	if err != nil {
 		return nil, err
 	}

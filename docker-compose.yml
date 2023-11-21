@@ -18,6 +18,7 @@ services:
       - NATS_ADDRESS=${NATS_HOSTNAME}:${NATS_PORT}
       - ETCD_ADDRESS=${ETCD_HOSTNAME}:${ETCD_PORT}
       - MAGNETAR_ADDRESS=:${MAGNETAR_PORT}
+      - OORT_ADDRESS=${OORT_HOSTNAME}:${OORT_PORT}
     networks:
       - network
     depends_on:
