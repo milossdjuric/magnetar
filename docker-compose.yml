@@ -30,12 +30,12 @@ services:
       context: ..
       dockerfile: star/Dockerfile
     image: star
-    container_name: star
+    # container_name: star
     hostname: ${STAR_HOSTNAME}
     expose:
       - ${STAR_PORT}
     ports:
-      - ${STAR_PORT}:${STAR_PORT}
+      - ${STAR_PORT}-${STAR_PORT_END}:${STAR_PORT}
     environment:
       - STAR_ADDRESS=:${STAR_PORT}
       - OORT_ADDRESS=${OORT_HOSTNAME}:${OORT_PORT}
@@ -47,9 +47,7 @@ services:
     networks:
       - network
     volumes:
-      - type: bind
-        source: ..
-        target: ${NODE_ID_DIR_PATH}
+      - ${NODE_ID_DIR_PATH}
     depends_on:
       - nats
       - magnetar
@@ -93,55 +91,32 @@ services:
       - KUIPER_ADDRESS=:${KUIPER_PORT}
       - OORT_ADDRESS=${OORT_HOSTNAME}:${OORT_PORT}
       - MAGNETAR_ADDRESS=${MAGNETAR_HOSTNAME}:${MAGNETAR_PORT}
-      - BLACKHOLE_ADDRESS=${BLACKHOLE_HOSTNAME}:${BLACKHOLE_PORT}
+      - STAR_HTTP_ADDRESS=${STAR_HOSTNAME}:${STAR_HTTP_PORT}
+      - AGENT_QUEUE_ADDRESS=${AGENT_QUEUE_HOSTNAME}:${AGENT_QUEUE_PORT}
       - NATS_ADDRESS=${NATS_HOSTNAME}:${NATS_PORT}
     networks:
       - network
     depends_on:
-      - nats
-      - queue
+      - agent_queue 
 
-  queue:
+  agent_queue:
     build:
-      context: ../blackhole
+      context: ../agent_queue
       dockerfile: Dockerfile
       args:
-        - GRPC_PORT=${BLACKHOLE_GRPC_PORT}
-    image: blackhole
-    container_name: blackhole
+        - GRPC_PORT=${AGENT_QUEUE_PORT}
+    image: agent_queue
+    container_name: agent_queue
     restart: always
     networks:
       - network
     ports:
-      - ${BLACKHOLE_GRPC_PORT}:${BLACKHOLE_GRPC_PORT}
+      - ${AGENT_QUEUE_PORT}:${AGENT_QUEUE_PORT}
     environment:
-      GRPC_PORT: ${BLACKHOLE_GRPC_PORT}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
+      GRPC_PORT: ${AGENT_QUEUE_PORT}
+      NATS_CONN_ADDRESS: ${NATS_HOSTNAME}:${NATS_PORT}
     depends_on:
-      - database
-
-  database:
-    image: postgres:14.5
-    networks:
-      - network
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-
-  adminer:
-    image: adminer
-    restart: always
-    networks:
-      - network
-    ports:
-      - 7000:8080
+      - nats
 
   neo4j:
     image: neo4j:4.4.12
@@ -172,6 +147,9 @@ services:
       - ${NATS_PORT}
     ports:
       - ${NATS_PORT}:${NATS_PORT}
+      - 8222:8222
+    volumes:
+      - ./nats.conf:/etc/nats/nats-server.conf
     hostname: ${NATS_HOSTNAME}
     restart: on-failure
     networks:
