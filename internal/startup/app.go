@@ -17,6 +17,7 @@ import (
 	etcd "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	apolloapi "iam-service/proto1"
 	"log"
 	"net"
 	"sync"
@@ -29,7 +30,9 @@ type app struct {
 	registrationServer        *servers.RegistrationAsyncServer
 	nodeService               *services.NodeService
 	labelService              *services.LabelService
+	authzService              services.AuthZService
 	registrationService       *services.RegistrationService
+	apolloClient              apolloapi.AuthServiceClient
 	evaluatorClient           oortapi.OortEvaluatorClient
 	administratorClient       *oortapi.AdministrationAsyncClient
 	publisher                 messaging.Publisher
@@ -119,9 +122,12 @@ func (a *app) init() {
 	a.initLabelProtoMarshaller()
 	a.initNodeEtcdRepo(etcdClient)
 
+	a.initApolloClient()
+
 	a.initAdministratorClient()
 	a.initEvaluatorClient()
 
+	a.initAuthZService()
 	a.initNodeService()
 	a.initLabelService()
 	a.initRegistrationService()
@@ -135,7 +141,7 @@ func (a *app) initGrpcServer() {
 	if a.magnetarServer == nil {
 		log.Fatalln("magnetar server is nil")
 	}
-	s := grpc.NewServer()
+	s := grpc.NewServer(grpc.UnaryInterceptor(servers.GetAuthInterceptor(a.apolloClient)))
 	api.RegisterMagnetarServer(s, a.magnetarServer)
 	reflection.Register(s)
 	a.grpcServer = s
@@ -187,7 +193,7 @@ func (a *app) initNodeService() {
 	if a.nodeRepo == nil {
 		log.Fatalln("node repo is nil")
 	}
-	nodeService, err := services.NewNodeService(a.nodeRepo, a.evaluatorClient, a.administratorClient)
+	nodeService, err := services.NewNodeService(a.nodeRepo, a.evaluatorClient, a.administratorClient, a.authzService)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -198,11 +204,15 @@ func (a *app) initLabelService() {
 	if a.nodeRepo == nil {
 		log.Fatalln("node repo is nil")
 	}
-	labelService, err := services.NewLabelService(a.nodeRepo, a.evaluatorClient)
+	labelService, err := services.NewLabelService(a.nodeRepo, a.evaluatorClient, a.authzService)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	a.labelService = labelService
+}
+
+func (a *app) initAuthZService() {
+	a.authzService = services.NewAuthZService(a.config.TokenKey())
 }
 
 func (a *app) initEvaluatorClient() {
@@ -219,6 +229,14 @@ func (a *app) initAdministratorClient() {
 		log.Fatalln(err)
 	}
 	a.administratorClient = client
+}
+
+func (a *app) initApolloClient() {
+	client, err := newApolloClient(a.config.ApolloAddress())
+	if err != nil {
+		log.Fatalln(err)
+	}
+	a.apolloClient = client
 }
 
 func (a *app) initNatsPublisher(conn *natsgo.Conn) {

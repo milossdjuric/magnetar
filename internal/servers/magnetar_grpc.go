@@ -5,7 +5,10 @@ import (
 	"github.com/c12s/magnetar/internal/mappers/proto"
 	"github.com/c12s/magnetar/internal/services"
 	"github.com/c12s/magnetar/pkg/api"
-	oortapi "github.com/c12s/oort/pkg/api"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
+	apolloapi "iam-service/proto1"
+	"log"
 )
 
 type MagnetarGrpcServer struct {
@@ -38,11 +41,6 @@ func (m *MagnetarGrpcServer) GetFromOrg(ctx context.Context, req *api.GetFromOrg
 	if err != nil {
 		return nil, err
 	}
-	subject := &oortapi.Resource{
-		Id:   req.SubId,
-		Kind: req.SubKind,
-	}
-	ctx = context.WithValue(ctx, "subject", subject)
 	domainResp, err := m.nodeService.GetFromOrg(ctx, *domainReq)
 	if err != nil {
 		return nil, err
@@ -55,11 +53,6 @@ func (m *MagnetarGrpcServer) ClaimOwnership(ctx context.Context, req *api.ClaimO
 	if err != nil {
 		return nil, err
 	}
-	subject := &oortapi.Resource{
-		Id:   req.SubId,
-		Kind: req.SubKind,
-	}
-	ctx = context.WithValue(ctx, "subject", subject)
 	domainResp, err := m.nodeService.ClaimOwnership(ctx, *domainReq)
 	if err != nil {
 		return nil, err
@@ -84,11 +77,6 @@ func (m *MagnetarGrpcServer) ListOrgOwnedNodes(ctx context.Context, req *api.Lis
 	if err != nil {
 		return nil, err
 	}
-	subject := &oortapi.Resource{
-		Id:   req.SubId,
-		Kind: req.SubKind,
-	}
-	ctx = context.WithValue(ctx, "subject", subject)
 	domainResp, err := m.nodeService.ListOrgOwnedNodes(ctx, *domainReq)
 	if err != nil {
 		return nil, err
@@ -113,11 +101,6 @@ func (m *MagnetarGrpcServer) QueryOrgOwnedNodes(ctx context.Context, req *api.Qu
 	if err != nil {
 		return nil, err
 	}
-	subject := &oortapi.Resource{
-		Id:   req.SubId,
-		Kind: req.SubKind,
-	}
-	ctx = context.WithValue(ctx, "subject", subject)
 	domainResp, err := m.nodeService.QueryOrgOwnedNodes(ctx, *domainReq)
 	if err != nil {
 		return nil, err
@@ -130,11 +113,6 @@ func (m *MagnetarGrpcServer) PutBoolLabel(ctx context.Context, req *api.PutBoolL
 	if err != nil {
 		return nil, err
 	}
-	subject := &oortapi.Resource{
-		Id:   req.SubId,
-		Kind: req.SubKind,
-	}
-	ctx = context.WithValue(ctx, "subject", subject)
 	domainResp, err := m.labelService.PutLabel(ctx, *domainReq)
 	if err != nil {
 		return nil, err
@@ -147,11 +125,6 @@ func (m *MagnetarGrpcServer) PutFloat64Label(ctx context.Context, req *api.PutFl
 	if err != nil {
 		return nil, err
 	}
-	subject := &oortapi.Resource{
-		Id:   req.SubId,
-		Kind: req.SubKind,
-	}
-	ctx = context.WithValue(ctx, "subject", subject)
 	domainResp, err := m.labelService.PutLabel(ctx, *domainReq)
 	if err != nil {
 		return nil, err
@@ -164,11 +137,6 @@ func (m *MagnetarGrpcServer) PutStringLabel(ctx context.Context, req *api.PutStr
 	if err != nil {
 		return nil, err
 	}
-	subject := &oortapi.Resource{
-		Id:   req.SubId,
-		Kind: req.SubKind,
-	}
-	ctx = context.WithValue(ctx, "subject", subject)
 	domainResp, err := m.labelService.PutLabel(ctx, *domainReq)
 	if err != nil {
 		return nil, err
@@ -181,14 +149,32 @@ func (m *MagnetarGrpcServer) DeleteLabel(ctx context.Context, req *api.DeleteLab
 	if err != nil {
 		return nil, err
 	}
-	subject := &oortapi.Resource{
-		Id:   req.SubId,
-		Kind: req.SubKind,
-	}
-	ctx = context.WithValue(ctx, "subject", subject)
 	domainResp, err := m.labelService.DeleteLabel(ctx, *domainReq)
 	if err != nil {
 		return nil, err
 	}
 	return proto.DeleteLabelRespFromDomain(*domainResp)
+}
+
+func GetAuthInterceptor(apollo apolloapi.AuthServiceClient) func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+		md, ok := metadata.FromIncomingContext(ctx)
+		if ok && len(md.Get("authn-token")) > 0 {
+			authnToken := md.Get("authn-token")[0]
+			log.Println(authnToken)
+			verifyResp, err := apollo.VerifyToken(ctx, &apolloapi.Token{Token: authnToken})
+			if err != nil {
+				log.Println(err)
+				// Calls the handler
+				return handler(ctx, req)
+			}
+			if !verifyResp.Token.Verified {
+				log.Println("token invalid")
+				return handler(ctx, req)
+			}
+			ctx = context.WithValue(ctx, "authz-token", verifyResp.Token.Jwt)
+		}
+		// Calls the handler
+		return handler(ctx, req)
+	}
 }

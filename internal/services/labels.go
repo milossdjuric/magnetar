@@ -4,36 +4,22 @@ import (
 	"context"
 	"github.com/c12s/magnetar/internal/domain"
 	oortapi "github.com/c12s/oort/pkg/api"
-	"log"
 )
 
 type LabelService struct {
-	nodeRepo  domain.NodeRepo
-	evaluator oortapi.OortEvaluatorClient
+	nodeRepo   domain.NodeRepo
+	authorizer AuthZService
 }
 
-func NewLabelService(nodeRepo domain.NodeRepo, evaluator oortapi.OortEvaluatorClient) (*LabelService, error) {
+func NewLabelService(nodeRepo domain.NodeRepo, evaluator oortapi.OortEvaluatorClient, authorizer AuthZService) (*LabelService, error) {
 	return &LabelService{
-		nodeRepo:  nodeRepo,
-		evaluator: evaluator,
+		nodeRepo:   nodeRepo,
+		authorizer: authorizer,
 	}, nil
 }
 
 func (l *LabelService) PutLabel(ctx context.Context, req domain.PutLabelReq) (*domain.PutLabelResp, error) {
-	subject, ok := ctx.Value("subject").(*oortapi.Resource)
-	if !ok {
-		return nil, domain.ErrForbidden
-	}
-	authzResp, err := l.evaluator.Authorize(ctx, &oortapi.AuthorizationReq{
-		Subject:        subject,
-		PermissionName: "node.label.put",
-		Object: &oortapi.Resource{
-			Id:   req.NodeId.Value,
-			Kind: "node",
-		},
-	})
-	if err != nil || !authzResp.Authorized {
-		log.Println(err)
+	if !l.authorizer.Authorize(ctx, "node.label.put", "node", req.NodeId.Value) {
 		return nil, domain.ErrForbidden
 	}
 	node, err := l.nodeRepo.Get(req.NodeId, req.Org)
@@ -50,20 +36,7 @@ func (l *LabelService) PutLabel(ctx context.Context, req domain.PutLabelReq) (*d
 }
 
 func (l *LabelService) DeleteLabel(ctx context.Context, req domain.DeleteLabelReq) (*domain.DeleteLabelResp, error) {
-	subject, ok := ctx.Value("subject").(*oortapi.Resource)
-	if !ok {
-		return nil, domain.ErrForbidden
-	}
-	authzResp, err := l.evaluator.Authorize(ctx, &oortapi.AuthorizationReq{
-		Subject:        subject,
-		PermissionName: "node.label.delete",
-		Object: &oortapi.Resource{
-			Id:   req.NodeId.Value,
-			Kind: "node",
-		},
-	})
-	if err != nil || !authzResp.Authorized {
-		log.Println(err)
+	if !l.authorizer.Authorize(ctx, "node.label.delete", "node", req.NodeId.Value) {
 		return nil, domain.ErrForbidden
 	}
 	node, err := l.nodeRepo.Get(req.NodeId, req.Org)
