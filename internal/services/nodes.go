@@ -9,15 +9,15 @@ import (
 
 type NodeService struct {
 	nodeRepo      domain.NodeRepo
-	evaluator     oortapi.OortEvaluatorClient
 	administrator *oortapi.AdministrationAsyncClient
+	authorizer    AuthZService
 }
 
-func NewNodeService(nodeRepo domain.NodeRepo, evaluator oortapi.OortEvaluatorClient, administrator *oortapi.AdministrationAsyncClient) (*NodeService, error) {
+func NewNodeService(nodeRepo domain.NodeRepo, evaluator oortapi.OortEvaluatorClient, administrator *oortapi.AdministrationAsyncClient, authorizer AuthZService) (*NodeService, error) {
 	return &NodeService{
 		nodeRepo:      nodeRepo,
-		evaluator:     evaluator,
 		administrator: administrator,
+		authorizer:    authorizer,
 	}, nil
 }
 
@@ -32,20 +32,7 @@ func (n *NodeService) GetFromNodePool(ctx context.Context, req domain.GetFromNod
 }
 
 func (n *NodeService) GetFromOrg(ctx context.Context, req domain.GetFromOrgReq) (*domain.GetFromOrgResp, error) {
-	subject, ok := ctx.Value("subject").(*oortapi.Resource)
-	if !ok {
-		return nil, domain.ErrForbidden
-	}
-	authzResp, err := n.evaluator.Authorize(ctx, &oortapi.AuthorizationReq{
-		Subject:        subject,
-		PermissionName: "node.get",
-		Object: &oortapi.Resource{
-			Id:   req.Id.Value,
-			Kind: "node",
-		},
-	})
-	if err != nil || !authzResp.Authorized {
-		log.Println(err)
+	if !n.authorizer.Authorize(ctx, "node.get", "node", req.Id.Value) {
 		return nil, domain.ErrForbidden
 	}
 	node, err := n.nodeRepo.Get(req.Id, req.Org)
@@ -58,20 +45,7 @@ func (n *NodeService) GetFromOrg(ctx context.Context, req domain.GetFromOrgReq) 
 }
 
 func (n *NodeService) ClaimOwnership(ctx context.Context, req domain.ClaimOwnershipReq) (*domain.ClaimOwnershipResp, error) {
-	subject, ok := ctx.Value("subject").(*oortapi.Resource)
-	if !ok {
-		return nil, domain.ErrForbidden
-	}
-	authzResp, err := n.evaluator.Authorize(ctx, &oortapi.AuthorizationReq{
-		Subject:        subject,
-		PermissionName: "node.put",
-		Object: &oortapi.Resource{
-			Id:   req.Org,
-			Kind: "org",
-		},
-	})
-	if err != nil || !authzResp.Authorized {
-		log.Println(err)
+	if !n.authorizer.Authorize(ctx, "node.put", "org", req.Org) {
 		return nil, domain.ErrForbidden
 	}
 	nodes, err := n.nodeRepo.QueryNodePool(req.Query)
@@ -124,20 +98,7 @@ func (n *NodeService) ListNodePool(ctx context.Context, req domain.ListNodePoolR
 }
 
 func (n *NodeService) ListOrgOwnedNodes(ctx context.Context, req domain.ListOrgOwnedNodesReq) (*domain.ListOrgOwnedNodesResp, error) {
-	subject, ok := ctx.Value("subject").(*oortapi.Resource)
-	if !ok {
-		return nil, domain.ErrForbidden
-	}
-	authzResp, err := n.evaluator.Authorize(ctx, &oortapi.AuthorizationReq{
-		Subject:        subject,
-		PermissionName: "node.get",
-		Object: &oortapi.Resource{
-			Id:   req.Org,
-			Kind: "org",
-		},
-	})
-	if err != nil || !authzResp.Authorized {
-		log.Println(err)
+	if !n.authorizer.Authorize(ctx, "node.get", "org", req.Org) {
 		return nil, domain.ErrForbidden
 	}
 	nodes, err := n.nodeRepo.ListOrgOwnedNodes(req.Org)
@@ -160,20 +121,7 @@ func (n *NodeService) QueryNodePool(ctx context.Context, req domain.QueryNodePoo
 }
 
 func (n *NodeService) QueryOrgOwnedNodes(ctx context.Context, req domain.QueryOrgOwnedNodesReq) (*domain.QueryOrgOwnedNodesResp, error) {
-	subject, ok := ctx.Value("subject").(*oortapi.Resource)
-	if !ok {
-		return nil, domain.ErrForbidden
-	}
-	authzResp, err := n.evaluator.Authorize(ctx, &oortapi.AuthorizationReq{
-		Subject:        subject,
-		PermissionName: "node.get",
-		Object: &oortapi.Resource{
-			Id:   req.Org,
-			Kind: "org",
-		},
-	})
-	if err != nil || !authzResp.Authorized {
-		log.Println(err)
+	if !n.authorizer.Authorize(ctx, "node.get", "org", req.Org) {
 		return nil, domain.ErrForbidden
 	}
 	nodes, err := n.nodeRepo.QueryOrgOwnedNodes(req.Query, req.Org)
