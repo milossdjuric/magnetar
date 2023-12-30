@@ -2,13 +2,17 @@ package servers
 
 import (
 	"context"
+	"errors"
+	apolloapi "iam-service/proto1"
+
+	"github.com/c12s/magnetar/internal/domain"
 	"github.com/c12s/magnetar/internal/mappers/proto"
 	"github.com/c12s/magnetar/internal/services"
 	"github.com/c12s/magnetar/pkg/api"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
-	apolloapi "iam-service/proto1"
-	"log"
+	"google.golang.org/grpc/status"
 )
 
 type MagnetarGrpcServer struct {
@@ -31,6 +35,9 @@ func (m *MagnetarGrpcServer) GetFromNodePool(ctx context.Context, req *api.GetFr
 	}
 	domainResp, err := m.nodeService.GetFromNodePool(ctx, *domainReq)
 	if err != nil {
+		if errors.Is(err, domain.ErrForbidden) {
+			return nil, status.Error(codes.PermissionDenied, err.Error())
+		}
 		return nil, err
 	}
 	return proto.GetFromNodePoolRespFromDomain(*domainResp)
@@ -43,6 +50,9 @@ func (m *MagnetarGrpcServer) GetFromOrg(ctx context.Context, req *api.GetFromOrg
 	}
 	domainResp, err := m.nodeService.GetFromOrg(ctx, *domainReq)
 	if err != nil {
+		if errors.Is(err, domain.ErrForbidden) {
+			return nil, status.Error(codes.PermissionDenied, err.Error())
+		}
 		return nil, err
 	}
 	return proto.GetFromOrgRespFromDomain(*domainResp)
@@ -55,6 +65,9 @@ func (m *MagnetarGrpcServer) ClaimOwnership(ctx context.Context, req *api.ClaimO
 	}
 	domainResp, err := m.nodeService.ClaimOwnership(ctx, *domainReq)
 	if err != nil {
+		if errors.Is(err, domain.ErrForbidden) {
+			return nil, status.Error(codes.PermissionDenied, err.Error())
+		}
 		return nil, err
 	}
 	return proto.ClaimOwnershipRespFromDomain(*domainResp)
@@ -67,6 +80,9 @@ func (m *MagnetarGrpcServer) ListNodePool(ctx context.Context, req *api.ListNode
 	}
 	domainResp, err := m.nodeService.ListNodePool(ctx, *domainReq)
 	if err != nil {
+		if errors.Is(err, domain.ErrForbidden) {
+			return nil, status.Error(codes.PermissionDenied, err.Error())
+		}
 		return nil, err
 	}
 	return proto.ListNodePoolRespFromDomain(*domainResp)
@@ -79,6 +95,9 @@ func (m *MagnetarGrpcServer) ListOrgOwnedNodes(ctx context.Context, req *api.Lis
 	}
 	domainResp, err := m.nodeService.ListOrgOwnedNodes(ctx, *domainReq)
 	if err != nil {
+		if errors.Is(err, domain.ErrForbidden) {
+			return nil, status.Error(codes.PermissionDenied, err.Error())
+		}
 		return nil, err
 	}
 	return proto.ListOrgOwnedNodesRespFromDomain(*domainResp)
@@ -91,6 +110,9 @@ func (m *MagnetarGrpcServer) QueryNodePool(ctx context.Context, req *api.QueryNo
 	}
 	domainResp, err := m.nodeService.QueryNodePool(ctx, *domainReq)
 	if err != nil {
+		if errors.Is(err, domain.ErrForbidden) {
+			return nil, status.Error(codes.PermissionDenied, err.Error())
+		}
 		return nil, err
 	}
 	return proto.QueryNodePoolRespFromDomain(*domainResp)
@@ -103,6 +125,9 @@ func (m *MagnetarGrpcServer) QueryOrgOwnedNodes(ctx context.Context, req *api.Qu
 	}
 	domainResp, err := m.nodeService.QueryOrgOwnedNodes(ctx, *domainReq)
 	if err != nil {
+		if errors.Is(err, domain.ErrForbidden) {
+			return nil, status.Error(codes.PermissionDenied, err.Error())
+		}
 		return nil, err
 	}
 	return proto.QueryOrgOwnedNodesRespFromDomain(*domainResp)
@@ -115,6 +140,9 @@ func (m *MagnetarGrpcServer) PutBoolLabel(ctx context.Context, req *api.PutBoolL
 	}
 	domainResp, err := m.labelService.PutLabel(ctx, *domainReq)
 	if err != nil {
+		if errors.Is(err, domain.ErrForbidden) {
+			return nil, status.Error(codes.PermissionDenied, err.Error())
+		}
 		return nil, err
 	}
 	return proto.PutLabelRespFromDomain(*domainResp)
@@ -127,6 +155,9 @@ func (m *MagnetarGrpcServer) PutFloat64Label(ctx context.Context, req *api.PutFl
 	}
 	domainResp, err := m.labelService.PutLabel(ctx, *domainReq)
 	if err != nil {
+		if errors.Is(err, domain.ErrForbidden) {
+			return nil, status.Error(codes.PermissionDenied, err.Error())
+		}
 		return nil, err
 	}
 	return proto.PutLabelRespFromDomain(*domainResp)
@@ -139,6 +170,9 @@ func (m *MagnetarGrpcServer) PutStringLabel(ctx context.Context, req *api.PutStr
 	}
 	domainResp, err := m.labelService.PutLabel(ctx, *domainReq)
 	if err != nil {
+		if errors.Is(err, domain.ErrForbidden) {
+			return nil, status.Error(codes.PermissionDenied, err.Error())
+		}
 		return nil, err
 	}
 	return proto.PutLabelRespFromDomain(*domainResp)
@@ -151,6 +185,9 @@ func (m *MagnetarGrpcServer) DeleteLabel(ctx context.Context, req *api.DeleteLab
 	}
 	domainResp, err := m.labelService.DeleteLabel(ctx, *domainReq)
 	if err != nil {
+		if errors.Is(err, domain.ErrForbidden) {
+			return nil, status.Error(codes.PermissionDenied, err.Error())
+		}
 		return nil, err
 	}
 	return proto.DeleteLabelRespFromDomain(*domainResp)
@@ -159,20 +196,8 @@ func (m *MagnetarGrpcServer) DeleteLabel(ctx context.Context, req *api.DeleteLab
 func GetAuthInterceptor(apollo apolloapi.AuthServiceClient) func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		md, ok := metadata.FromIncomingContext(ctx)
-		if ok && len(md.Get("authn-token")) > 0 {
-			authnToken := md.Get("authn-token")[0]
-			log.Println(authnToken)
-			verifyResp, err := apollo.VerifyToken(ctx, &apolloapi.Token{Token: authnToken})
-			if err != nil {
-				log.Println(err)
-				// Calls the handler
-				return handler(ctx, req)
-			}
-			if !verifyResp.Token.Verified {
-				log.Println("token invalid")
-				return handler(ctx, req)
-			}
-			ctx = context.WithValue(ctx, "authz-token", verifyResp.Token.Jwt)
+		if ok && len(md.Get("authz-token")) > 0 {
+			ctx = context.WithValue(ctx, "authz-token", md.Get("authz-token")[0])
 		}
 		// Calls the handler
 		return handler(ctx, req)
