@@ -3,7 +3,7 @@ package startup
 import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	apolloapi "iam-service/proto1"
+	apolloapi "apollo/proto1"
 )
 
 func newApolloClient(address string) (apolloapi.AuthServiceClient, error) {

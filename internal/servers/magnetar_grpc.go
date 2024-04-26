@@ -3,7 +3,7 @@ package servers
 import (
 	"context"
 	"errors"
-	apolloapi "iam-service/proto1"
+	apolloapi "apollo/proto1"
 
 	"github.com/c12s/magnetar/internal/domain"
 	"github.com/c12s/magnetar/internal/mappers/proto"
