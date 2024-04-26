@@ -15,7 +15,7 @@ export ETCD_HOSTNAME=etcd
 export ETCD_PORT=2379
 export AGENT_QUEUE_HOSTNAME=agent_queue
 export AGENT_QUEUE_PORT=50052
-export IAM_HOSTNAME=iam-service
+export IAM_HOSTNAME=apollo
 export IAM_PORT=8002
 
 export NODES_NUM=2

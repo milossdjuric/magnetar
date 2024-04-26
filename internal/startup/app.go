@@ -17,7 +17,7 @@ import (
 	etcd "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	apolloapi "iam-service/proto1"
+	apolloapi "apollo/proto1"
 	"log"
 	"net"
 	"sync"
