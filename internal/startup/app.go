@@ -3,6 +3,10 @@ package startup
 import (
 	"context"
 	"errors"
+	"log"
+	"net"
+	"sync"
+
 	"github.com/c12s/magnetar/internal/configs"
 	"github.com/c12s/magnetar/internal/domain"
 	"github.com/c12s/magnetar/internal/marshallers/proto"
@@ -17,10 +21,6 @@ import (
 	etcd "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	apolloapi "apollo/proto1"
-	"log"
-	"net"
-	"sync"
 )
 
 type app struct {
@@ -32,7 +32,6 @@ type app struct {
 	labelService              *services.LabelService
 	authzService              services.AuthZService
 	registrationService       *services.RegistrationService
-	apolloClient              apolloapi.AuthServiceClient
 	evaluatorClient           oortapi.OortEvaluatorClient
 	administratorClient       *oortapi.AdministrationAsyncClient
 	publisher                 messaging.Publisher
@@ -122,8 +121,6 @@ func (a *app) init() {
 	a.initLabelProtoMarshaller()
 	a.initNodeEtcdRepo(etcdClient)
 
-	a.initApolloClient()
-
 	a.initAdministratorClient()
 	a.initEvaluatorClient()
 
@@ -141,7 +138,7 @@ func (a *app) initGrpcServer() {
 	if a.magnetarServer == nil {
 		log.Fatalln("magnetar server is nil")
 	}
-	s := grpc.NewServer(grpc.UnaryInterceptor(servers.GetAuthInterceptor(a.apolloClient)))
+	s := grpc.NewServer(grpc.UnaryInterceptor(servers.GetAuthInterceptor()))
 	api.RegisterMagnetarServer(s, a.magnetarServer)
 	reflection.Register(s)
 	a.grpcServer = s
@@ -229,14 +226,6 @@ func (a *app) initAdministratorClient() {
 		log.Fatalln(err)
 	}
 	a.administratorClient = client
-}
-
-func (a *app) initApolloClient() {
-	client, err := newApolloClient(a.config.ApolloAddress())
-	if err != nil {
-		log.Fatalln(err)
-	}
-	a.apolloClient = client
 }
 
 func (a *app) initNatsPublisher(conn *natsgo.Conn) {
