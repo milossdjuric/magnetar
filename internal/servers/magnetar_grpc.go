@@ -3,7 +3,6 @@ package servers
 import (
 	"context"
 	"errors"
-	apolloapi "apollo/proto1"
 
 	"github.com/c12s/magnetar/internal/domain"
 	"github.com/c12s/magnetar/internal/mappers/proto"
@@ -193,7 +192,7 @@ func (m *MagnetarGrpcServer) DeleteLabel(ctx context.Context, req *api.DeleteLab
 	return proto.DeleteLabelRespFromDomain(*domainResp)
 }
 
-func GetAuthInterceptor(apollo apolloapi.AuthServiceClient) func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+func GetAuthInterceptor() func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		md, ok := metadata.FromIncomingContext(ctx)
 		if ok && len(md.Get("authz-token")) > 0 {
