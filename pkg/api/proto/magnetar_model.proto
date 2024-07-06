@@ -7,6 +7,7 @@ message Node {
   string id = 1;
   string org = 2;
   repeated Label labels = 3;
+  map<string, double> resources = 4;
 }
 
 message Label {
@@ -55,6 +56,7 @@ message NodeStringified {
   string id = 1;
   string org = 2;
   repeated LabelStringified labels = 3;
+  map<string, double> resources = 4;
 }
 
 message LabelStringified {

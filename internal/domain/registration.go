@@ -1,7 +1,8 @@
 package domain
 
 type RegistrationReq struct {
-	Labels []Label
+	Labels    []Label
+	Resources map[string]float64
 }
 
 type RegistrationResp struct {

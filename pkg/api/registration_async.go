@@ -2,11 +2,12 @@ package api
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/c12s/magnetar/pkg/messaging"
 	"github.com/c12s/magnetar/pkg/messaging/nats"
 	"github.com/golang/protobuf/proto"
 	natsgo "github.com/nats-io/nats.go"
-	"log"
 )
 
 type RegistrationAsyncClient struct {
@@ -72,7 +73,8 @@ type RegistrationReqBuilder struct {
 func NewRegistrationReqBuilder() RegistrationReqBuilder {
 	return RegistrationReqBuilder{
 		req: &RegistrationReq{
-			Labels: make([]*Label, 0),
+			Labels:    make([]*Label, 0),
+			Resources: map[string]float64{},
 		},
 	}
 }

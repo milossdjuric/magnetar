@@ -16,10 +16,12 @@ import (
 	"github.com/c12s/magnetar/pkg/api"
 	"github.com/c12s/magnetar/pkg/messaging"
 	"github.com/c12s/magnetar/pkg/messaging/nats"
+	meridian_api "github.com/c12s/meridian/pkg/api"
 	oortapi "github.com/c12s/oort/pkg/api"
 	natsgo "github.com/nats-io/nats.go"
 	etcd "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -34,6 +36,7 @@ type app struct {
 	registrationService       *services.RegistrationService
 	evaluatorClient           oortapi.OortEvaluatorClient
 	administratorClient       *oortapi.AdministrationAsyncClient
+	meridian                  meridian_api.MeridianClient
 	publisher                 messaging.Publisher
 	registrationSubscriber    messaging.Subscriber
 	nodeRepo                  domain.NodeRepo
@@ -123,6 +126,7 @@ func (a *app) init() {
 
 	a.initAdministratorClient()
 	a.initEvaluatorClient()
+	a.initMeridian()
 
 	a.initAuthZService()
 	a.initNodeService()
@@ -190,7 +194,10 @@ func (a *app) initNodeService() {
 	if a.nodeRepo == nil {
 		log.Fatalln("node repo is nil")
 	}
-	nodeService, err := services.NewNodeService(a.nodeRepo, a.evaluatorClient, a.administratorClient, a.authzService)
+	if a.meridian == nil {
+		log.Fatalln("meridian is nil")
+	}
+	nodeService, err := services.NewNodeService(a.nodeRepo, a.evaluatorClient, a.administratorClient, a.authzService, a.meridian)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -210,6 +217,14 @@ func (a *app) initLabelService() {
 
 func (a *app) initAuthZService() {
 	a.authzService = services.NewAuthZService(a.config.TokenKey())
+}
+
+func (a *app) initMeridian() {
+	conn, err := grpc.NewClient(a.config.MeridianAddress(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalln(err)
+	}
+	a.meridian = meridian_api.NewMeridianClient(conn)
 }
 
 func (a *app) initEvaluatorClient() {

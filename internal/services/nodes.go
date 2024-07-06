@@ -2,22 +2,27 @@ package services
 
 import (
 	"context"
-	"github.com/c12s/magnetar/internal/domain"
-	oortapi "github.com/c12s/oort/pkg/api"
 	"log"
+	"strings"
+
+	"github.com/c12s/magnetar/internal/domain"
+	meridian_api "github.com/c12s/meridian/pkg/api"
+	oortapi "github.com/c12s/oort/pkg/api"
 )
 
 type NodeService struct {
 	nodeRepo      domain.NodeRepo
 	administrator *oortapi.AdministrationAsyncClient
 	authorizer    AuthZService
+	meridian      meridian_api.MeridianClient
 }
 
-func NewNodeService(nodeRepo domain.NodeRepo, evaluator oortapi.OortEvaluatorClient, administrator *oortapi.AdministrationAsyncClient, authorizer AuthZService) (*NodeService, error) {
+func NewNodeService(nodeRepo domain.NodeRepo, evaluator oortapi.OortEvaluatorClient, administrator *oortapi.AdministrationAsyncClient, authorizer AuthZService, meridian meridian_api.MeridianClient) (*NodeService, error) {
 	return &NodeService{
 		nodeRepo:      nodeRepo,
 		administrator: administrator,
 		authorizer:    authorizer,
+		meridian:      meridian,
 	}, nil
 }
 
@@ -77,6 +82,53 @@ func (n *NodeService) ClaimOwnership(ctx context.Context, req domain.ClaimOwners
 			if resp.Error != "" {
 				log.Println(resp.Error)
 			}
+		})
+		if err != nil {
+			log.Println(err)
+		}
+	}
+	// upsert ns
+	listNodesResp, err := n.ListOrgOwnedNodes(ctx, domain.ListOrgOwnedNodesReq{
+		Org: req.Org,
+	})
+	if err != nil {
+		return nil, err
+	}
+	resources := make(map[string]float64)
+	for _, node := range listNodesResp.Nodes {
+		for resource, quota := range node.Resources {
+			resources[resource] = resources[resource] + quota
+		}
+	}
+	_, err = n.meridian.GetNamespace(ctx, &meridian_api.GetNamespaceReq{
+		OrgId: req.Org,
+		Name:  "default",
+	})
+	if err != nil {
+		log.Println(err)
+		log.Println(resources)
+		if strings.Contains(err.Error(), "not found") {
+			_, err = n.meridian.AddNamespace(ctx, &meridian_api.AddNamespaceReq{
+				OrgId:                     req.Org,
+				Name:                      "default",
+				Labels:                    make(map[string]string),
+				Quotas:                    resources,
+				SeccompDefinitionStrategy: "redefine",
+				Profile: &meridian_api.SeccompProfile{
+					Version:       "v1.0.0",
+					DefaultAction: "ALLOW",
+					Syscalls:      make([]*meridian_api.SyscallRule, 0),
+				},
+			})
+			if err != nil {
+				log.Println(err)
+			}
+		}
+	} else {
+		_, err = n.meridian.SetNamespaceResources(ctx, &meridian_api.SetNamespaceResourcesReq{
+			OrgId:  req.Org,
+			Name:   "default",
+			Quotas: resources,
 		})
 		if err != nil {
 			log.Println(err)

@@ -1,9 +1,10 @@
 package proto
 
 import (
+	"log"
+
 	"github.com/c12s/magnetar/internal/domain"
 	"github.com/c12s/magnetar/pkg/api"
-	"log"
 )
 
 func GetFromNodePoolReqToDomain(req *api.GetFromNodePoolReq) (*domain.GetFromNodePoolReq, error) {
@@ -140,8 +141,9 @@ func QueryNodePoolRespFromDomain(resp domain.QueryNodePoolResp) (*api.QueryNodeP
 	}
 	for _, node := range resp.Nodes {
 		protoNode := &api.NodeStringified{
-			Id:     node.Id.Value,
-			Labels: make([]*api.LabelStringified, 0),
+			Id:        node.Id.Value,
+			Labels:    make([]*api.LabelStringified, 0),
+			Resources: node.Resources,
 		}
 		for _, label := range node.Labels {
 			protoLabel := &api.LabelStringified{
@@ -172,8 +174,9 @@ func QueryOrgOwnedNodesRespFromDomain(resp domain.QueryOrgOwnedNodesResp) (*api.
 	}
 	for _, node := range resp.Nodes {
 		protoNode := &api.NodeStringified{
-			Id:     node.Id.Value,
-			Labels: make([]*api.LabelStringified, 0),
+			Id:        node.Id.Value,
+			Labels:    make([]*api.LabelStringified, 0),
+			Resources: node.Resources,
 		}
 		for _, label := range node.Labels {
 			protoLabel := &api.LabelStringified{

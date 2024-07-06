@@ -4,12 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
+	"strings"
+
 	"github.com/c12s/magnetar/internal/domain"
 	"github.com/juliangruber/go-intersect"
 	etcd "go.etcd.io/etcd/client/v3"
 	"golang.org/x/exp/slices"
-	"log"
-	"strings"
 )
 
 // data model
