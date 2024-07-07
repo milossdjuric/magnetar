@@ -5,6 +5,7 @@ import (
 	"log"
 	"strings"
 
+	gravity_api "github.com/c12s/agent_queue/pkg/api"
 	"github.com/c12s/magnetar/internal/domain"
 	meridian_api "github.com/c12s/meridian/pkg/api"
 	oortapi "github.com/c12s/oort/pkg/api"
@@ -15,6 +16,7 @@ type NodeService struct {
 	administrator *oortapi.AdministrationAsyncClient
 	authorizer    AuthZService
 	meridian      meridian_api.MeridianClient
+	gravity       gravity_api.AgentQueueClient
 }
 
 func NewNodeService(nodeRepo domain.NodeRepo, evaluator oortapi.OortEvaluatorClient, administrator *oortapi.AdministrationAsyncClient, authorizer AuthZService, meridian meridian_api.MeridianClient) (*NodeService, error) {
@@ -52,6 +54,10 @@ func (n *NodeService) GetFromOrg(ctx context.Context, req domain.GetFromOrgReq) 
 func (n *NodeService) ClaimOwnership(ctx context.Context, req domain.ClaimOwnershipReq) (*domain.ClaimOwnershipResp, error) {
 	if !n.authorizer.Authorize(ctx, "node.put", "org", req.Org) {
 		return nil, domain.ErrForbidden
+	}
+	cluster, err := n.nodeRepo.ListOrgOwnedNodes(req.Org)
+	if err != nil {
+		return nil, err
 	}
 	nodes, err := n.nodeRepo.QueryNodePool(req.Query)
 	if err != nil {
@@ -106,7 +112,6 @@ func (n *NodeService) ClaimOwnership(ctx context.Context, req domain.ClaimOwners
 	})
 	if err != nil {
 		log.Println(err)
-		log.Println(resources)
 		if strings.Contains(err.Error(), "not found") {
 			_, err = n.meridian.AddNamespace(ctx, &meridian_api.AddNamespaceReq{
 				OrgId:                     req.Org,
@@ -129,6 +134,26 @@ func (n *NodeService) ClaimOwnership(ctx context.Context, req domain.ClaimOwners
 			OrgId:  req.Org,
 			Name:   "default",
 			Quotas: resources,
+		})
+		if err != nil {
+			log.Println(err)
+		}
+	}
+	// join cluster
+	if len(nodes) == 0 {
+		return &domain.ClaimOwnershipResp{
+			Nodes: nodes,
+		}, nil
+	}
+	joinAddress := nodes[0].BindAddress
+	if len(cluster) > 0 {
+		joinAddress = cluster[0].BindAddress
+	}
+	log.Println("join address: " + joinAddress)
+	for _, node := range nodes {
+		_, err = n.gravity.JoinCluster(ctx, &gravity_api.JoinClusterRequest{
+			NodeId:      node.Id.Value,
+			JoinAddress: joinAddress,
 		})
 		if err != nil {
 			log.Println(err)

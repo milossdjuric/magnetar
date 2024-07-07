@@ -3,6 +3,7 @@ module github.com/c12s/magnetar
 go 1.22.3
 
 require (
+	github.com/c12s/agent_queue v0.0.0-00010101000000-000000000000
 	github.com/c12s/meridian v1.0.0
 	github.com/c12s/oort v1.0.0
 	github.com/golang-jwt/jwt/v5 v5.2.1
@@ -39,3 +40,5 @@ require (
 replace github.com/c12s/oort => ../oort
 
 replace github.com/c12s/meridian => ../meridian
+
+replace github.com/c12s/agent_queue => ../gravity

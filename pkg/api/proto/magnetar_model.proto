@@ -8,6 +8,7 @@ message Node {
   string org = 2;
   repeated Label labels = 3;
   map<string, double> resources = 4;
+  string bindAddress = 5;
 }
 
 message Label {

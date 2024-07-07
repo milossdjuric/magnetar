@@ -8,6 +8,7 @@ import "magnetar_model.proto";
 message RegistrationReq {
   repeated Label labels = 1;
   map<string, double> resources = 2;
+  string bindAddress = 3;
 }
 
 message RegistrationResp {

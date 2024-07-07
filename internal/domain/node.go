@@ -1,10 +1,11 @@
 package domain
 
 type Node struct {
-	Id        NodeId
-	Org       string
-	Labels    []Label
-	Resources map[string]float64
+	Id          NodeId
+	Org         string
+	Labels      []Label
+	Resources   map[string]float64
+	BindAddress string
 }
 
 func (n Node) Claimed() bool {
