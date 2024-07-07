@@ -7,6 +7,7 @@ import (
 	"net"
 	"sync"
 
+	gravity_api "github.com/c12s/agent_queue/pkg/api"
 	"github.com/c12s/magnetar/internal/configs"
 	"github.com/c12s/magnetar/internal/domain"
 	"github.com/c12s/magnetar/internal/marshallers/proto"
@@ -37,6 +38,7 @@ type app struct {
 	evaluatorClient           oortapi.OortEvaluatorClient
 	administratorClient       *oortapi.AdministrationAsyncClient
 	meridian                  meridian_api.MeridianClient
+	gravity                   gravity_api.AgentQueueClient
 	publisher                 messaging.Publisher
 	registrationSubscriber    messaging.Subscriber
 	nodeRepo                  domain.NodeRepo
@@ -127,6 +129,7 @@ func (a *app) init() {
 	a.initAdministratorClient()
 	a.initEvaluatorClient()
 	a.initMeridian()
+	a.initGravity()
 
 	a.initAuthZService()
 	a.initNodeService()
@@ -197,7 +200,10 @@ func (a *app) initNodeService() {
 	if a.meridian == nil {
 		log.Fatalln("meridian is nil")
 	}
-	nodeService, err := services.NewNodeService(a.nodeRepo, a.evaluatorClient, a.administratorClient, a.authzService, a.meridian)
+	if a.gravity == nil {
+		log.Fatalln("gravity is nil")
+	}
+	nodeService, err := services.NewNodeService(a.nodeRepo, a.evaluatorClient, a.administratorClient, a.authzService, a.meridian, a.gravity)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -225,6 +231,15 @@ func (a *app) initMeridian() {
 		log.Fatalln(err)
 	}
 	a.meridian = meridian_api.NewMeridianClient(conn)
+}
+
+func (a *app) initGravity() {
+	log.Println(a.config.GravityAddress())
+	conn, err := grpc.NewClient(a.config.GravityAddress(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalln(err)
+	}
+	a.gravity = gravity_api.NewAgentQueueClient(conn)
 }
 
 func (a *app) initEvaluatorClient() {

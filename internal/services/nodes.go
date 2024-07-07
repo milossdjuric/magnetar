@@ -19,12 +19,13 @@ type NodeService struct {
 	gravity       gravity_api.AgentQueueClient
 }
 
-func NewNodeService(nodeRepo domain.NodeRepo, evaluator oortapi.OortEvaluatorClient, administrator *oortapi.AdministrationAsyncClient, authorizer AuthZService, meridian meridian_api.MeridianClient) (*NodeService, error) {
+func NewNodeService(nodeRepo domain.NodeRepo, evaluator oortapi.OortEvaluatorClient, administrator *oortapi.AdministrationAsyncClient, authorizer AuthZService, meridian meridian_api.MeridianClient, gravity gravity_api.AgentQueueClient) (*NodeService, error) {
 	return &NodeService{
 		nodeRepo:      nodeRepo,
 		administrator: administrator,
 		authorizer:    authorizer,
 		meridian:      meridian,
+		gravity:       gravity,
 	}, nil
 }
 
