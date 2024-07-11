@@ -188,6 +188,10 @@ func (n *NodeService) ListOrgOwnedNodes(ctx context.Context, req domain.ListOrgO
 	}, nil
 }
 
+func (n *NodeService) ListAllNodes(ctx context.Context) ([]domain.Node, error) {
+	return n.nodeRepo.ListAllNodes()
+}
+
 func (n *NodeService) QueryNodePool(ctx context.Context, req domain.QueryNodePoolReq) (*domain.QueryNodePoolResp, error) {
 	nodes, err := n.nodeRepo.QueryNodePool(req.Query)
 	if err != nil {

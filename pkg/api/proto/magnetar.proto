@@ -17,6 +17,7 @@ service Magnetar {
   rpc PutFloat64Label(PutFloat64LabelReq) returns (PutLabelResp) {}
   rpc PutStringLabel(PutStringLabelReq) returns (PutLabelResp) {}
   rpc DeleteLabel(DeleteLabelReq) returns (DeleteLabelResp) {}
+  rpc ListAllNodes(ListAllNodesReq) returns (ListAllNodesResp) {}
 }
 
 message GetFromNodePoolReq {
@@ -43,6 +44,12 @@ message ClaimOwnershipReq {
 
 message ClaimOwnershipResp {
   repeated NodeStringified node = 1;
+}
+
+message ListAllNodesReq { }
+
+message ListAllNodesResp {
+  repeated NodeStringified nodes = 1;
 }
 
 message ListNodePoolReq { }

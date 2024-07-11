@@ -34,6 +34,7 @@ type NodeRepo interface {
 	QueryOrgOwnedNodes(query Query, org string) ([]Node, error)
 	PutLabel(node Node, label Label) (*Node, error)
 	DeleteLabel(node Node, labelKey string) (*Node, error)
+	ListAllNodes() ([]Node, error)
 }
 
 type NodeMarshaller interface {

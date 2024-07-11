@@ -112,6 +112,21 @@ func ListOrgOwnedNodesRespFromDomain(resp domain.ListOrgOwnedNodesResp) (*api.Li
 	}, nil
 }
 
+func ListAlldNodesRespFromDomain(nodes []domain.Node) (*api.ListAllNodesResp, error) {
+	nodesProto := make([]*api.NodeStringified, len(nodes))
+	for i, node := range nodes {
+		nodeProto, err := NodeStringifiedFromDomain(node)
+		if err != nil {
+			log.Println(err)
+			return nil, domain.ErrServerSide
+		}
+		nodesProto[i] = nodeProto
+	}
+	return &api.ListAllNodesResp{
+		Nodes: nodesProto,
+	}, nil
+}
+
 func QueryNodePoolReqToDomain(req *api.QueryNodePoolReq) (*domain.QueryNodePoolReq, error) {
 	query, err := queryToDomain(req.Query)
 	if err != nil {

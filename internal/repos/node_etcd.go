@@ -73,6 +73,10 @@ func (n nodeEtcdRepo) ListOrgOwnedNodes(org string) ([]domain.Node, error) {
 	return n.listNodes(keyPrefix)
 }
 
+func (n nodeEtcdRepo) ListAllNodes() ([]domain.Node, error) {
+	return n.listNodes(getKeyPrefix)
+}
+
 func (n nodeEtcdRepo) QueryNodePool(query domain.Query) ([]domain.Node, error) {
 	keyPrefix := fmt.Sprintf("%s/pool", queryKeyPrefix)
 	if len(query) == 0 {
