@@ -155,6 +155,7 @@ func (n *NodeService) ClaimOwnership(ctx context.Context, req domain.ClaimOwners
 		_, err = n.gravity.JoinCluster(ctx, &gravity_api.JoinClusterRequest{
 			NodeId:      node.Id.Value,
 			JoinAddress: joinAddress,
+			ClusterId:   req.Org,
 		})
 		if err != nil {
 			log.Println(err)
