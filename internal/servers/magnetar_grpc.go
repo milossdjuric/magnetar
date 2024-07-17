@@ -192,6 +192,14 @@ func (m *MagnetarGrpcServer) DeleteLabel(ctx context.Context, req *api.DeleteLab
 	return proto.DeleteLabelRespFromDomain(*domainResp)
 }
 
+func (m *MagnetarGrpcServer) ListAllNodes(ctx context.Context, req *api.ListAllNodesReq) (*api.ListAllNodesResp, error) {
+	nodes, err := m.nodeService.ListAllNodes(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return proto.ListAlldNodesRespFromDomain(nodes)
+}
+
 func GetAuthInterceptor() func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		md, ok := metadata.FromIncomingContext(ctx)

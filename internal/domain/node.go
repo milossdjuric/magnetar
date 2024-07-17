@@ -1,9 +1,11 @@
 package domain
 
 type Node struct {
-	Id     NodeId
-	Org    string
-	Labels []Label
+	Id          NodeId
+	Org         string
+	Labels      []Label
+	Resources   map[string]float64
+	BindAddress string
 }
 
 func (n Node) Claimed() bool {
@@ -32,6 +34,7 @@ type NodeRepo interface {
 	QueryOrgOwnedNodes(query Query, org string) ([]Node, error)
 	PutLabel(node Node, label Label) (*Node, error)
 	DeleteLabel(node Node, labelKey string) (*Node, error)
+	ListAllNodes() ([]Node, error)
 }
 
 type NodeMarshaller interface {

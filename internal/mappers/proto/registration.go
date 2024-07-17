@@ -15,7 +15,9 @@ func RegistrationReqToDomain(req *api.RegistrationReq) (*domain.RegistrationReq,
 		labels = append(labels, label)
 	}
 	return &domain.RegistrationReq{
-		Labels: labels,
+		Labels:      labels,
+		Resources:   req.Resources,
+		BindAddress: req.BindAddress,
 	}, nil
 }
 

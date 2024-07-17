@@ -1,9 +1,10 @@
 package proto
 
 import (
+	"log"
+
 	"github.com/c12s/magnetar/internal/domain"
 	"github.com/c12s/magnetar/pkg/api"
-	"log"
 )
 
 func GetFromNodePoolReqToDomain(req *api.GetFromNodePoolReq) (*domain.GetFromNodePoolReq, error) {
@@ -111,6 +112,21 @@ func ListOrgOwnedNodesRespFromDomain(resp domain.ListOrgOwnedNodesResp) (*api.Li
 	}, nil
 }
 
+func ListAlldNodesRespFromDomain(nodes []domain.Node) (*api.ListAllNodesResp, error) {
+	nodesProto := make([]*api.NodeStringified, len(nodes))
+	for i, node := range nodes {
+		nodeProto, err := NodeStringifiedFromDomain(node)
+		if err != nil {
+			log.Println(err)
+			return nil, domain.ErrServerSide
+		}
+		nodesProto[i] = nodeProto
+	}
+	return &api.ListAllNodesResp{
+		Nodes: nodesProto,
+	}, nil
+}
+
 func QueryNodePoolReqToDomain(req *api.QueryNodePoolReq) (*domain.QueryNodePoolReq, error) {
 	query, err := queryToDomain(req.Query)
 	if err != nil {
@@ -140,8 +156,9 @@ func QueryNodePoolRespFromDomain(resp domain.QueryNodePoolResp) (*api.QueryNodeP
 	}
 	for _, node := range resp.Nodes {
 		protoNode := &api.NodeStringified{
-			Id:     node.Id.Value,
-			Labels: make([]*api.LabelStringified, 0),
+			Id:        node.Id.Value,
+			Labels:    make([]*api.LabelStringified, 0),
+			Resources: node.Resources,
 		}
 		for _, label := range node.Labels {
 			protoLabel := &api.LabelStringified{
@@ -172,8 +189,9 @@ func QueryOrgOwnedNodesRespFromDomain(resp domain.QueryOrgOwnedNodesResp) (*api.
 	}
 	for _, node := range resp.Nodes {
 		protoNode := &api.NodeStringified{
-			Id:     node.Id.Value,
-			Labels: make([]*api.LabelStringified, 0),
+			Id:        node.Id.Value,
+			Labels:    make([]*api.LabelStringified, 0),
+			Resources: node.Resources,
 		}
 		for _, label := range node.Labels {
 			protoLabel := &api.LabelStringified{

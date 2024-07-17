@@ -2,6 +2,7 @@ package proto
 
 import (
 	"errors"
+
 	"github.com/c12s/magnetar/internal/domain"
 	"github.com/c12s/magnetar/pkg/api"
 	"github.com/golang/protobuf/proto"
@@ -50,15 +51,15 @@ func ValueFromDomain(value interface{}) (*api.Value, error) {
 	var marshalled []byte
 	var valueType api.Value_ValueTYpe
 	var err error
-	switch value.(type) {
+	switch value := value.(type) {
 	case bool:
-		marshalled, err = proto.Marshal(&api.BoolValue{Value: value.(bool)})
+		marshalled, err = proto.Marshal(&api.BoolValue{Value: value})
 		valueType = api.Value_Bool
 	case float64:
-		marshalled, err = proto.Marshal(&api.Float64Value{Value: value.(float64)})
+		marshalled, err = proto.Marshal(&api.Float64Value{Value: value})
 		valueType = api.Value_Float64
 	case string:
-		marshalled, err = proto.Marshal(&api.StringValue{Value: value.(string)})
+		marshalled, err = proto.Marshal(&api.StringValue{Value: value})
 		valueType = api.Value_String
 	default:
 		err = errors.New("unsupported data type")
@@ -80,9 +81,10 @@ func NodeStringifiedFromDomain(node domain.Node) (*api.NodeStringified, error) {
 		labels[i] = labelProto
 	}
 	return &api.NodeStringified{
-		Id:     node.Id.Value,
-		Org:    node.Org,
-		Labels: labels,
+		Id:        node.Id.Value,
+		Org:       node.Org,
+		Labels:    labels,
+		Resources: node.Resources,
 	}, nil
 }
 
@@ -95,9 +97,11 @@ func LabelStringifiedFromDomain(label domain.Label) (*api.LabelStringified, erro
 
 func NodeFromDomain(node domain.Node) (*api.Node, error) {
 	resp := &api.Node{
-		Id:     node.Id.Value,
-		Org:    node.Org,
-		Labels: make([]*api.Label, len(node.Labels)),
+		Id:          node.Id.Value,
+		Org:         node.Org,
+		Labels:      make([]*api.Label, len(node.Labels)),
+		Resources:   node.Resources,
+		BindAddress: node.BindAddress,
 	}
 	for i, label := range node.Labels {
 		protoLabel, err := LabelFromDomain(label)
@@ -114,8 +118,10 @@ func NodeToDomain(node *api.Node) (*domain.Node, error) {
 		Id: domain.NodeId{
 			Value: node.Id,
 		},
-		Org:    node.Org,
-		Labels: make([]domain.Label, len(node.Labels)),
+		Org:       node.Org,
+		Labels:    make([]domain.Label, len(node.Labels)),
+		Resources: node.Resources,
+		BindAddress: node.BindAddress,
 	}
 	for i, protoLabel := range node.Labels {
 		label, err := LabelToDomain(protoLabel)

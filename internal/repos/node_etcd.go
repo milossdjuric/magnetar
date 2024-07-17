@@ -4,12 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
+	"strings"
+
 	"github.com/c12s/magnetar/internal/domain"
 	"github.com/juliangruber/go-intersect"
 	etcd "go.etcd.io/etcd/client/v3"
 	"golang.org/x/exp/slices"
-	"log"
-	"strings"
 )
 
 // data model
@@ -70,6 +71,10 @@ func (n nodeEtcdRepo) ListNodePool() ([]domain.Node, error) {
 func (n nodeEtcdRepo) ListOrgOwnedNodes(org string) ([]domain.Node, error) {
 	keyPrefix := fmt.Sprintf("%s/orgs/%s", getKeyPrefix, org)
 	return n.listNodes(keyPrefix)
+}
+
+func (n nodeEtcdRepo) ListAllNodes() ([]domain.Node, error) {
+	return n.listNodes(getKeyPrefix)
 }
 
 func (n nodeEtcdRepo) QueryNodePool(query domain.Query) ([]domain.Node, error) {
