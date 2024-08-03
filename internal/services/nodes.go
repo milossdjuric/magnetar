@@ -177,9 +177,9 @@ func (n *NodeService) ListNodePool(ctx context.Context, req domain.ListNodePoolR
 }
 
 func (n *NodeService) ListOrgOwnedNodes(ctx context.Context, req domain.ListOrgOwnedNodesReq) (*domain.ListOrgOwnedNodesResp, error) {
-	if !n.authorizer.Authorize(ctx, "node.get", "org", req.Org) {
-		return nil, domain.ErrForbidden
-	}
+	// if !n.authorizer.Authorize(ctx, "node.get", "org", req.Org) {
+	// 	return nil, domain.ErrForbidden
+	// }
 	nodes, err := n.nodeRepo.ListOrgOwnedNodes(req.Org)
 	if err != nil {
 		return nil, err
