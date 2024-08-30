@@ -101,7 +101,7 @@ func (n nodeEtcdRepo) QueryNodePool(query domain.Query) ([]domain.Node, error) {
 func (n nodeEtcdRepo) QueryOrgOwnedNodes(query domain.Query, org string) ([]domain.Node, error) {
 	keyPrefix := fmt.Sprintf("%s/orgs/%s", queryKeyPrefix, org)
 	if len(query) == 0 {
-		return n.listNodes(keyPrefix)
+		return n.ListOrgOwnedNodes(org)
 	}
 	nodeIds, err := n.queryNodes(query, keyPrefix)
 	if err != nil {
