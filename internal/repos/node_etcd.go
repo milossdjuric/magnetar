@@ -200,17 +200,12 @@ func (n nodeEtcdRepo) putLabelGetModel(node domain.Node, label domain.Label) err
 }
 
 func (n nodeEtcdRepo) deleteLabelGetModel(node domain.Node, labelKey string) error {
-	labelIndex := -1
-	for i, nodeLabel := range node.Labels {
-		if nodeLabel.Key() == labelKey {
-			labelIndex = i
-		}
-	}
+	labelIndex := findIndexByLabelKey(node, labelKey)
 	if labelIndex >= 0 {
 		node.Labels = slices.Delete(node.Labels, labelIndex, labelIndex+1)
 		return n.putNodeGetModel(node)
 	}
-	return nil
+	return domain.ErrNotFound("label")
 }
 
 func (n nodeEtcdRepo) putNodeQueryModel(node domain.Node) error {
@@ -265,6 +260,11 @@ func (n nodeEtcdRepo) selectNodes(selector domain.Selector, keyPrefix string) ([
 	if err != nil {
 		return nil, err
 	}
+
+	if len(resp.Kvs) == 0 {
+		return nil, domain.ErrNotFound("nodes")
+	}
+
 	nodeIds := make([]domain.NodeId, 0)
 	for _, kv := range resp.Kvs {
 		nodeLabel, err := n.labelMarshaller.Unmarshal(kv.Value)
@@ -310,4 +310,17 @@ func extractNodeIdFromQueryKey(key string) string {
 		return strings.Split(key, "/")[3]
 	}
 	return strings.Split(key, "/")[4]
+}
+
+func findIndexByLabelKey(node domain.Node, labelKey string) int {
+	labelIndex := -1
+	for i, nodeLabel := range node.Labels {
+		if nodeLabel.Key() == labelKey {
+			labelIndex = i
+			break
+		}
+	}
+
+	return labelIndex
+
 }

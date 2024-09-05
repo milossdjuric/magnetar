@@ -3,6 +3,7 @@ package servers
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/c12s/magnetar/internal/domain"
 	"github.com/c12s/magnetar/internal/mappers/proto"
@@ -60,12 +61,14 @@ func (m *MagnetarGrpcServer) GetFromOrg(ctx context.Context, req *api.GetFromOrg
 func (m *MagnetarGrpcServer) ClaimOwnership(ctx context.Context, req *api.ClaimOwnershipReq) (*api.ClaimOwnershipResp, error) {
 	domainReq, err := proto.ClaimOwnershipReqToDomain(req)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 	domainResp, err := m.nodeService.ClaimOwnership(ctx, *domainReq)
 	if err != nil {
 		if errors.Is(err, domain.ErrForbidden) {
 			return nil, status.Error(codes.PermissionDenied, err.Error())
+		} else if strings.Contains(err.Error(), "not found") {
+			return nil, status.Error(codes.NotFound, err.Error())
 		}
 		return nil, err
 	}
@@ -105,12 +108,14 @@ func (m *MagnetarGrpcServer) ListOrgOwnedNodes(ctx context.Context, req *api.Lis
 func (m *MagnetarGrpcServer) QueryNodePool(ctx context.Context, req *api.QueryNodePoolReq) (*api.QueryNodePoolResp, error) {
 	domainReq, err := proto.QueryNodePoolReqToDomain(req)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 	domainResp, err := m.nodeService.QueryNodePool(ctx, *domainReq)
 	if err != nil {
 		if errors.Is(err, domain.ErrForbidden) {
 			return nil, status.Error(codes.PermissionDenied, err.Error())
+		} else if strings.Contains(err.Error(), "not found") {
+			return nil, status.Error(codes.NotFound, err.Error())
 		}
 		return nil, err
 	}
@@ -120,12 +125,14 @@ func (m *MagnetarGrpcServer) QueryNodePool(ctx context.Context, req *api.QueryNo
 func (m *MagnetarGrpcServer) QueryOrgOwnedNodes(ctx context.Context, req *api.QueryOrgOwnedNodesReq) (*api.QueryOrgOwnedNodesResp, error) {
 	domainReq, err := proto.QueryOrgOwnedNodesReqToDomain(req)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 	domainResp, err := m.nodeService.QueryOrgOwnedNodes(ctx, *domainReq)
 	if err != nil {
 		if errors.Is(err, domain.ErrForbidden) {
 			return nil, status.Error(codes.PermissionDenied, err.Error())
+		} else if strings.Contains(err.Error(), "not found") {
+			return nil, status.Error(codes.NotFound, err.Error())
 		}
 		return nil, err
 	}
@@ -157,7 +164,7 @@ func (m *MagnetarGrpcServer) PutFloat64Label(ctx context.Context, req *api.PutFl
 		if errors.Is(err, domain.ErrForbidden) {
 			return nil, status.Error(codes.PermissionDenied, err.Error())
 		}
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 	return proto.PutLabelRespFromDomain(*domainResp)
 }
@@ -172,7 +179,7 @@ func (m *MagnetarGrpcServer) PutStringLabel(ctx context.Context, req *api.PutStr
 		if errors.Is(err, domain.ErrForbidden) {
 			return nil, status.Error(codes.PermissionDenied, err.Error())
 		}
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 	return proto.PutLabelRespFromDomain(*domainResp)
 }
@@ -186,6 +193,8 @@ func (m *MagnetarGrpcServer) DeleteLabel(ctx context.Context, req *api.DeleteLab
 	if err != nil {
 		if errors.Is(err, domain.ErrForbidden) {
 			return nil, status.Error(codes.PermissionDenied, err.Error())
+		} else if strings.Contains(err.Error(), "not found") {
+			return nil, status.Error(codes.NotFound, err.Error())
 		}
 		return nil, err
 	}
