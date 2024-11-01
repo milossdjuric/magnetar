@@ -3,12 +3,14 @@ package services
 import (
 	"context"
 	"log"
-	"strings"
 
 	gravity_api "github.com/c12s/agent_queue/pkg/api"
 	"github.com/c12s/magnetar/internal/domain"
 	meridian_api "github.com/c12s/meridian/pkg/api"
 	oortapi "github.com/c12s/oort/pkg/api"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 )
 
 type NodeService struct {
@@ -107,13 +109,15 @@ func (n *NodeService) ClaimOwnership(ctx context.Context, req domain.ClaimOwners
 			resources[resource] = resources[resource] + quota
 		}
 	}
+	ctx = setOutgoingContext(ctx)
 	_, err = n.meridian.GetNamespace(ctx, &meridian_api.GetNamespaceReq{
 		OrgId: req.Org,
 		Name:  "default",
 	})
 	if err != nil {
 		log.Println(err)
-		if strings.Contains(err.Error(), "not found") {
+		status, _ := status.FromError(err)
+		if status.Code() == codes.NotFound {
 			_, err = n.meridian.AddNamespace(ctx, &meridian_api.AddNamespaceReq{
 				OrgId:                     req.Org,
 				Name:                      "default",
@@ -152,6 +156,7 @@ func (n *NodeService) ClaimOwnership(ctx context.Context, req domain.ClaimOwners
 	}
 	log.Println("join address: " + joinAddress)
 	for _, node := range nodes {
+		ctx = setOutgoingContext(ctx)
 		_, err = n.gravity.JoinCluster(ctx, &gravity_api.JoinClusterRequest{
 			NodeId:      node.Id.Value,
 			JoinAddress: joinAddress,
@@ -177,9 +182,9 @@ func (n *NodeService) ListNodePool(ctx context.Context, req domain.ListNodePoolR
 }
 
 func (n *NodeService) ListOrgOwnedNodes(ctx context.Context, req domain.ListOrgOwnedNodesReq) (*domain.ListOrgOwnedNodesResp, error) {
-	// if !n.authorizer.Authorize(ctx, "node.get", "org", req.Org) {
-	// 	return nil, domain.ErrForbidden
-	// }
+	if !n.authorizer.Authorize(ctx, "node.get", "org", req.Org) {
+		return nil, domain.ErrForbidden
+	}
 	nodes, err := n.nodeRepo.ListOrgOwnedNodes(req.Org)
 	if err != nil {
 		return nil, err
@@ -214,4 +219,13 @@ func (n *NodeService) QueryOrgOwnedNodes(ctx context.Context, req domain.QueryOr
 	return &domain.QueryOrgOwnedNodesResp{
 		Nodes: nodes,
 	}, nil
+}
+
+func setOutgoingContext(ctx context.Context) context.Context {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		log.Println("[WARN] no metadata in ctx when sending req")
+		return ctx
+	}
+	return metadata.NewOutgoingContext(ctx, md)
 }

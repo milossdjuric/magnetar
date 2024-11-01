@@ -1,6 +1,7 @@
 package proto
 
 import (
+	"errors"
 	"log"
 
 	"github.com/c12s/magnetar/internal/domain"
@@ -142,6 +143,9 @@ func queryToDomain(query []*api.Selector) (domain.Query, error) {
 	for _, selector := range query {
 		selectorDomain, err := selectorToDomain(selector)
 		if err != nil {
+			if errors.Is(err, domain.ErrFieldRequired) {
+				return nil, domain.ErrFieldRequired
+			}
 			log.Println(err)
 			return nil, domain.ErrServerSide
 		}
@@ -268,6 +272,9 @@ func DeleteLabelRespFromDomain(resp domain.DeleteLabelResp) (*api.DeleteLabelRes
 }
 
 func selectorToDomain(query *api.Selector) (*domain.Selector, error) {
+	if query.ShouldBe == "" {
+		return nil, domain.ErrFieldRequired
+	}
 	shouldBe, err := domain.NewCompResultFromString(query.ShouldBe)
 	if err != nil {
 		log.Println(err)
