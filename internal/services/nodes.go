@@ -229,3 +229,13 @@ func setOutgoingContext(ctx context.Context) context.Context {
 	}
 	return metadata.NewOutgoingContext(ctx, md)
 }
+
+func (n *NodeService) ListOrgOwnedNodesNoAuth(ctx context.Context, req domain.ListOrgOwnedNodesReq) (*domain.ListOrgOwnedNodesResp, error) {
+	nodes, err := n.nodeRepo.ListOrgOwnedNodes(req.Org)
+	if err != nil {
+		return nil, err
+	}
+	return &domain.ListOrgOwnedNodesResp{
+		Nodes: nodes,
+	}, nil
+}

@@ -219,3 +219,18 @@ func GetAuthInterceptor() func(ctx context.Context, req interface{}, info *grpc.
 		return handler(ctx, req)
 	}
 }
+
+func (m *MagnetarGrpcServer) ListOrgOwnedNodesNoAuth(ctx context.Context, req *api.ListOrgOwnedNodesNoAuthReq) (*api.ListOrgOwnedNodesNoAuthResp, error) {
+	domainReq, err := proto.ListOrgOwnedNoAuthReqToDomain(req)
+	if err != nil {
+		return nil, err
+	}
+	domainResp, err := m.nodeService.ListOrgOwnedNodes(ctx, *domainReq)
+	if err != nil {
+		if errors.Is(err, domain.ErrForbidden) {
+			return nil, status.Error(codes.PermissionDenied, err.Error())
+		}
+		return nil, err
+	}
+	return proto.ListOrgOwnedNodesNoAuthRespFromDomain(*domainResp)
+}
