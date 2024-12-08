@@ -98,6 +98,12 @@ func ListOrgOwnedReqToDomain(req *api.ListOrgOwnedNodesReq) (*domain.ListOrgOwne
 	}, nil
 }
 
+func ListOrgOwnedNoAuthReqToDomain(req *api.ListOrgOwnedNodesNoAuthReq) (*domain.ListOrgOwnedNodesReq, error) {
+	return &domain.ListOrgOwnedNodesReq{
+		Org: req.Org,
+	}, nil
+}
+
 func ListOrgOwnedNodesRespFromDomain(resp domain.ListOrgOwnedNodesResp) (*api.ListOrgOwnedNodesResp, error) {
 	nodesProto := make([]*api.NodeStringified, len(resp.Nodes))
 	for i, node := range resp.Nodes {
@@ -110,12 +116,6 @@ func ListOrgOwnedNodesRespFromDomain(resp domain.ListOrgOwnedNodesResp) (*api.Li
 	}
 	return &api.ListOrgOwnedNodesResp{
 		Nodes: nodesProto,
-	}, nil
-}
-
-func ListOrgOwnedNoAuthReqToDomain(req *api.ListOrgOwnedNodesNoAuthReq) (*domain.ListOrgOwnedNodesReq, error) {
-	return &domain.ListOrgOwnedNodesReq{
-		Org: req.Org,
 	}, nil
 }
 
