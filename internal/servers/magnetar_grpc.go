@@ -225,7 +225,7 @@ func (m *MagnetarGrpcServer) ListOrgOwnedNodesNoAuth(ctx context.Context, req *a
 	if err != nil {
 		return nil, err
 	}
-	domainResp, err := m.nodeService.ListOrgOwnedNodes(ctx, *domainReq)
+	domainResp, err := m.nodeService.ListOrgOwnedNodesNoAuth(ctx, *domainReq)
 	if err != nil {
 		if errors.Is(err, domain.ErrForbidden) {
 			return nil, status.Error(codes.PermissionDenied, err.Error())
