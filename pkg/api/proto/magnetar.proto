@@ -18,6 +18,7 @@ service Magnetar {
   rpc PutStringLabel(PutStringLabelReq) returns (PutLabelResp) {}
   rpc DeleteLabel(DeleteLabelReq) returns (DeleteLabelResp) {}
   rpc ListAllNodes(ListAllNodesReq) returns (ListAllNodesResp) {}
+  rpc ListOrgOwnedNodesNoAuth(ListOrgOwnedNodesNoAuthReq) returns (ListOrgOwnedNodesNoAuthResp) {}
 }
 
 message GetFromNodePoolReq {
@@ -119,4 +120,12 @@ message DeleteLabelReq {
 
 message DeleteLabelResp {
   NodeStringified node = 1;
+}
+
+message ListOrgOwnedNodesNoAuthReq {
+  string org = 1;
+}
+
+message ListOrgOwnedNodesNoAuthResp {
+  repeated NodeStringified nodes = 1;
 }
